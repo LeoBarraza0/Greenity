@@ -1,13 +1,16 @@
-from flask import Flask, request, jsonify, redirect, render_template
-from Config.db import app
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from flask_marshmallow import Marshmallow
 
-@app.route("/")
-def index():
-    return "Hola Mundo Web"
+app = Flask(__name__)
 
-@app.route("/main")
-def main():
-    return "Hola Mundo Web desde main"
+#creamos las credenciales para conectarnos a la bd
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root@localhost/greenity_db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-if __name__ == "__main__":
-    app.run(debug=True, port=5000, host='0.0.0.0')
+app.secret_key = "web"
+
+#creamos los objetos de bd
+
+db = SQLAlchemy(app)
+ma = Marshmallow(app)
