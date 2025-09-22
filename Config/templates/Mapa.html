@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mapa de Puntos de Reciclaje - Grennity</title>
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='Img/LogoGnormal.png') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='Styles/Mapa.css') }}">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/LogoGnormal.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Mapa.css') }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <!-- CSS de Leaflet -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
@@ -15,31 +15,31 @@
     <header class="header">
         <div class="container">
             <div class="logo">
-                <img src="{{ url_for('static', filename='Img/LogoNavBar.jpg') }}" alt="Grennity Logo">
+                <img src="{{ url_for('static', filename='img/LogoNavBar.jpg') }}" alt="Grennity Logo">
             </div>
             <nav class="nav">
-                <a href="../index.html" class="nav-item">
+                <a href="{{ url_for('index') }}" class="nav-item">
                     <i class="fas fa-home"></i>
                     Inicio
                 </a>
-                <a href="/pages/Mapa.html" class="nav-item active">
+                <a href="{{ url_for('mapa') }}" class="nav-item active">
                     <i class="fas fa-map"></i>
                     Mapa
                 </a>
-                <a href="/pages/Educativo.html" class="nav-item">
+                <a href="{{ url_for('edu') }}" class="nav-item">
                     <i class="fas fa-book"></i>
                     Educativo
                 </a>
-                <a href="/pages/SugerirPunto.html" class="nav-item">
+                <a href="{{ url_for('rec') }}" class="nav-item">
                     <i class="fas fa-plus"></i>
                     Sugerir Punto
                     <span class="new-badge">Nuevo</span>
                 </a>
-                <a href="#" class="nav-item">
+                <a href="{{ url_for('contacto') }}" class="nav-item">
                     <i class="fas fa-phone"></i>
                     Contacto
                 </a>
-                <a href="#" class="nav-item">
+                <a href="{{ url_for('config') }}" class="nav-item">
                     <i class="fas fa-cog"></i>
                     Configuración
                 </a>
@@ -501,6 +501,6 @@
     <!-- JS de Leaflet -->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <!-- Tu script con Leaflet -->
-    <script src="{{ url_for('static', filename='Logic/Mapa.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/Mapa.js') }}"></script>
 </body>
 </html>
