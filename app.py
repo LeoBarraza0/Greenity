@@ -3,7 +3,7 @@ from Config.db import app
 
 @app.route("/")
 def index():
-    return "Hola Mundo Web"
+    return render_template("Mapa.html")
 
 
 if __name__ == "__main__":
