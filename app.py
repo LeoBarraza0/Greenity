@@ -3,6 +3,10 @@ from Config.db import app
 
 @app.route("/")
 def index():
+    return render_template("Login.html")
+
+@app.route("/Mapa")
+def mapa():
     return render_template("Mapa.html")
 
 
