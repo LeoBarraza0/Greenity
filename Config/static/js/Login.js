@@ -257,6 +257,7 @@ document.addEventListener('DOMContentLoaded', function() {
             form.reset();
             clearAllValidations();
             
+            
         }, 2000);
     }
 
