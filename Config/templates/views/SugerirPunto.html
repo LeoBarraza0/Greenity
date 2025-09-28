@@ -30,7 +30,7 @@
                     <i class="fas fa-book"></i>
                     Educativo
                 </a>
-                <a href="{{ url_for('rec') }}" class="nav-item active">
+                <a href="{{ url_for('rec') }}" class="nav-item {% if request.path == url_for('rec') %}active{% endif %}">
                     <i class="fas fa-plus"></i>
                     Sugerir Punto
                     <span class="new-badge">Nuevo</span>

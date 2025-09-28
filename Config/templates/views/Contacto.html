@@ -33,7 +33,7 @@
                     Sugerir Punto
                     <span class="new-badge">Nuevo</span>
                 </a>
-                <a href="{{ url_for('contacto') }}" class="nav-item active">
+                <a href="{{ url_for('contacto') }}" class="nav-item {% if request.path == url_for('contacto') %}active{% endif %}">
                     <i class="fas fa-phone"></i>
                     Contacto
                 </a>
