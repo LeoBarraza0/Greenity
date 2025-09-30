@@ -1,54 +1,11 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Configuración - Grennity</title>
+{% extends "main/layout.html" %}
+{% block header %}
+<title>Configuración - Grennity</title>
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/LogoGnormal.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/Configuracion.css') }}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-</head>
-<body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <div class="logo">
-                <img src="{{ url_for('static', filename='img/LogoNavBar.jpg') }}" alt="Grennity Logo">
-            </div>
-            <nav class="nav">
-                <a href="{{ url_for('index') }}" class="nav-item">
-                    <i class="fas fa-home"></i>
-                    Inicio
-                </a>
-                <a href="{{ url_for('mapa') }}" class="nav-item">
-                    <i class="fas fa-map"></i>
-                    Mapa
-                </a>
-                <a href="{{ url_for('edu') }}" class="nav-item">
-                    <i class="fas fa-book"></i>
-                    Educativo
-                </a>
-                <a href="{{ url_for('rec') }}" class="nav-item">
-                    <i class="fas fa-plus"></i>
-                    Sugerir Punto
-                    <span class="new-badge">Nuevo</span>
-                </a>
-                <a href="{{ url_for('contacto') }}" class="nav-item">
-                    <i class="fas fa-phone"></i>
-                    Contacto
-                </a>
-                <a href="{{ url_for('config') }}" class="nav-item {% if request.path == url_for('config') %}active{% endif %}">
-                    <i class="fas fa-cog"></i>
-                    Configuración
-                </a>
-                <button class="login-btn">
-                    <i class="fas fa-user"></i>
-                    Iniciar Sesión
-                </button>
-            </nav>
-        </div>
-    </header>
-
+{% endblock %}
+{% block content %}
     <!-- Main Content -->
     <main class="main-content">
         <div class="container">
@@ -372,5 +329,4 @@
       </script>
 
     <script src="{{ url_for('static', filename='js/Configuracion.js') }}"></script>
-</body>
-</html>
+{% endblock %}

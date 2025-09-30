@@ -2,6 +2,8 @@
 {% block header %}
 <title>Mapa de Puntos de Reciclaje - Grennity</title>
 <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/LogoGnormal.png') }}">
+<!-- CSS de Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 <link rel="stylesheet" href="{{ url_for('static', filename='css/Mapa.css') }}">
 {% endblock %}
 {% block content %}

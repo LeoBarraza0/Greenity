@@ -5,6 +5,10 @@ from Config.db import app
 def index():
     return render_template("views/Login.html")
 
+@app.route("/Main")
+def main():
+    return render_template("views/index.html")
+
 @app.route("/Mapa")
 def mapa():
     return render_template("views/Mapa.html")
