@@ -1,5 +1,12 @@
 // JavaScript optimizado para la página del mapa
 
+// Variables globales compartidas (necesarias porque algunas funciones
+// están definidas fuera del scope de DOMContentLoaded y necesitan acceder
+// a los mismos datos/objetos del mapa)
+var puntosReciclaje = [];
+var leafletMap = null;
+var markersGroup = null;
+
 document.addEventListener("DOMContentLoaded", function () {
   // Elementos del DOM
   const distanceSlider = document.getElementById("distance-slider");
@@ -17,16 +24,13 @@ document.addEventListener("DOMContentLoaded", function () {
   const dataStatus = document.getElementById("data-status");
   const statusText = document.getElementById("status-text");
 
-  // Variables globales
+  // Variables globales de componente
   let currentView = "list";
   let currentFilters = {
     distance: 1,
     materials: [],
     schedules: [],
   };
-  let puntosReciclaje = []; // Datos del scraping
-  let leafletMap = null;
-  let markersGroup = null;
 
   // Inicialización
   init();
@@ -258,6 +262,8 @@ document.addEventListener("DOMContentLoaded", function () {
     
     // Volver a configurar event listeners para las nuevas tarjetas
     setupPointCards();
+    // Asegurar que los marcadores se actualizan tras renderizar las tarjetas
+    updateMapMarkers();
   }
   // Configurar slider de distancia
   function setupDistanceSlider() {
@@ -393,6 +399,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Configurar tarjetas de puntos
   function setupPointCards() {
+    const pointCards = document.querySelectorAll('.point-card');
     pointCards.forEach((card) => {
       card.addEventListener("mouseenter", function () {
         this.style.transform = "translateY(-5px)";
@@ -401,22 +408,32 @@ document.addEventListener("DOMContentLoaded", function () {
         this.style.transform = "translateY(0)";
       });
     });
+
+    // Después de crear/actualizar las tarjetas también reconfiguramos
+    // los listeners de los botones de acción para que respondan correctamente
+    setupActionButtons();
   }
 
   // Configurar botones de acción
   function setupActionButtons() {
-    actionBtns.forEach((btn) => {
-      btn.addEventListener("click", function (e) {
+    // Re-obtener botones dinámicos en cada llamada (las tarjetas se re-renderizan)
+    const actionButtons = document.querySelectorAll('.point-card .action-btn');
+    actionButtons.forEach((btn) => {
+      // evitar duplicar listeners: clonamos y reemplazamos si ya tiene listener
+      const newBtn = btn.cloneNode(true);
+      btn.parentNode.replaceChild(newBtn, btn);
+
+      newBtn.addEventListener("click", function (e) {
         e.stopPropagation();
-        
+
         const action = this.textContent.trim();
         const card = this.closest(".point-card");
-        const pointName = card.querySelector(".point-name").textContent;
+        const pointName = card ? card.querySelector(".point-name").textContent : 'Lugar';
 
         if (action.includes("Cómo llegar")) {
           alert(`Abriendo Google Maps para: ${pointName}`);
         } else if (action.includes("Llamar")) {
-          const phoneNumber = "+54 11 1234-5678";
+          const phoneNumber = card ? (card.querySelector('.point-phone span') ? card.querySelector('.point-phone span').textContent : '+54 11 1234-5678') : '+54 11 1234-5678';
           if (confirm(`¿Llamar a ${pointName}?\nTeléfono: ${phoneNumber}`)) {
             window.location.href = `tel:${phoneNumber}`;
           }
@@ -586,19 +603,42 @@ function initLeafletMap() {
 
 // Actualizar marcadores en el mapa según filtros
 function updateMapMarkers() {
-  if (!markersGroup || !leafletMap) return;
-  
+  if (!leafletMap) {
+    console.warn('updateMapMarkers: leafletMap no está inicializado todavía');
+    return;
+  }
+
+  // Asegurar grupo de marcadores
+  if (!markersGroup) {
+    markersGroup = L.layerGroup().addTo(leafletMap);
+  }
+
   // Limpiar marcadores existentes
   markersGroup.clearLayers();
-  
+
   // Obtener puntos visibles (según filtros)
   const visibleCards = document.querySelectorAll(".point-card:not([style*='display: none'])");
-  const visibleIds = Array.from(visibleCards).map(card => parseInt(card.dataset.id));
-  
+  let visibleIds = Array.from(visibleCards).map(card => parseInt(card.dataset.id));
+
+  // Si no hay tarjetas visibles (posible carrera entre render y marker update), asumimos que todos son visibles
+  if (visibleIds.length === 0 && puntosReciclaje && puntosReciclaje.length > 0) {
+    visibleIds = puntosReciclaje.map(p => p.id);
+  }
+
+  console.debug('updateMapMarkers: puntosReciclaje.length=', puntosReciclaje.length, 'visibleIds.length=', visibleIds.length);
+
   // Agregar marcadores para puntos visibles
-  puntosReciclaje.forEach(function(punto) {
+  puntosReciclaje.forEach(function(punto, idx) {
     if (!visibleIds.includes(punto.id)) return;
-    
+
+    const lat = Number(punto.lat);
+    const lng = Number(punto.lng);
+
+    if (!isFinite(lat) || !isFinite(lng)) {
+      console.warn(`Punto ${punto.name} id=${punto.id} tiene coordenadas inválidas: lat=${punto.lat}, lng=${punto.lng}`);
+      return;
+    }
+
     // Crear icono personalizado según el tipo
     const iconClass = getIconClass(punto.type);
     const customIcon = L.divIcon({
@@ -607,9 +647,9 @@ function updateMapMarkers() {
       iconSize: [30, 30],
       iconAnchor: [15, 15]
     });
-    
-    const marker = L.marker([punto.lat, punto.lng], { icon: customIcon });
-    
+
+    const marker = L.marker([lat, lng], { icon: customIcon });
+
     const popupContent = `
       <div style="min-width: 250px; max-width: 300px;">
         <h3 style="color: #22c55e; margin: 0 0 10px 0; font-size: 16px;">${punto.name}</h3>
@@ -620,7 +660,7 @@ function updateMapMarkers() {
         <p style="margin: 5px 0; font-size: 14px;"><strong>🕒 Horario:</strong> ${punto.schedule}</p>
         <p style="margin: 5px 0; font-size: 14px;"><strong>📏 Distancia:</strong> ${punto.distance.toFixed(1)} km</p>
         <div style="margin-top: 15px; display: flex; gap: 10px;">
-          <button onclick="openDirections(${punto.lat}, ${punto.lng})" 
+          <button onclick="openDirections(${lat}, ${lng})" 
                   style="background: #22c55e; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; flex: 1;">
             <i class="fas fa-paper-plane"></i> Cómo llegar
           </button>
@@ -631,7 +671,7 @@ function updateMapMarkers() {
         </div>
       </div>
     `;
-    
+
     marker.bindPopup(popupContent);
     markersGroup.addLayer(marker);
   });
