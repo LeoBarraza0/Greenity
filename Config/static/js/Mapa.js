@@ -59,9 +59,12 @@ document.addEventListener("DOMContentLoaded", function () {
       const data = await response.json();
       
       if (data.success && data.categorias) {
-        puntosReciclaje = processScrapingData(data.categorias);
-        updatePointCards();
-        updateMaterialFilters(data.categorias);
+          puntosReciclaje = processScrapingData(data.categorias);
+          // primero actualizar filtros (checkboxes) y luego renderizar tarjetas
+          updateMaterialFilters(data.categorias);
+          updatePointCards();
+          // aplicar filtros actuales tras renderizar tarjetas
+          applyFilters();
         console.log(`Cargados ${puntosReciclaje.length} puntos de reciclaje`);
       } else {
         console.error("Error cargando datos:", data.error);
@@ -85,6 +88,10 @@ document.addEventListener("DOMContentLoaded", function () {
         const coordinates = extractCoordinatesFromAddress(punto.nombre);
         
         const tipo = (typeof window.classifyPoint === 'function') ? window.classifyPoint(punto.nombre, categoria.organizacion, punto.texto_completo) : getPointType(categoria.organizacion);
+        // Normalizar y separar materiales (puede venir como "Papel, Cartón")
+        const rawMaterials = String(categoria.material || '');
+        const materialsArray = rawMaterials.split(/[;,]/).map(m => m.trim()).filter(Boolean);
+        const materialsNormalized = materialsArray.map(m => normalizeText(m).replace(/\s+/g, ''));
 
         puntos.push({
           id: id++,
@@ -93,8 +100,8 @@ document.addEventListener("DOMContentLoaded", function () {
           phone: punto.telefono,
           lat: coordinates.lat,
           lng: coordinates.lng,
-          materials: [categoria.material],
-          materials_normalized: [categoria.material.toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '')],
+          materials: materialsArray,
+          materials_normalized: materialsNormalized,
           category: categoria.material,
           organization: categoria.organizacion,
           type: tipo,
@@ -258,16 +265,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Actualizar filtros de materiales dinámicamente
   function updateMaterialFilters(categorias) {
-    const materialesUnicos = [...new Set(categorias.map(cat => cat.material))];
+    // Extraer tokens de materiales (separados por comas o punto y coma)
+    const tokens = new Set();
+    categorias.forEach(cat => {
+      const parts = String(cat.material || '').split(/[;,]/).map(s => s.trim()).filter(Boolean);
+      parts.forEach(p => tokens.add(p));
+    });
+
+    const materialesUnicos = Array.from(tokens);
     const checkboxContainer = document.querySelector('.checkbox-group');
-    
+
     if (checkboxContainer) {
       // Limpiar checkboxes existentes
       checkboxContainer.innerHTML = '';
-      
+
       // Crear checkboxes dinámicos
-      materialesUnicos.forEach((material, index) => {
-        const materialKey = material.toLowerCase().replace(/\s+/g, '').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      materialesUnicos.forEach((material) => {
+        const materialKey = normalizeText(material).replace(/\s+/g, '');
         const checkboxHTML = `
           <label class="checkbox-item">
             <input type="checkbox" class="material-checkbox" value="${materialKey}">
@@ -277,9 +291,17 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
         checkboxContainer.insertAdjacentHTML('beforeend', checkboxHTML);
       });
-      
+
       // Volver a configurar event listeners
       setupCheckboxes();
+
+      // Restaurar el estado de checkboxes según filtros actuales (si hay)
+      if (currentFilters && Array.isArray(currentFilters.materials) && currentFilters.materials.length > 0) {
+        const allCheckboxes = document.querySelectorAll('.material-checkbox');
+        allCheckboxes.forEach(cb => {
+          if (currentFilters.materials.includes(cb.value)) cb.checked = true;
+        });
+      }
     }
   }
 
@@ -339,11 +361,17 @@ document.addEventListener("DOMContentLoaded", function () {
     `).join('');
     
     pointsContainer.innerHTML = cardsHTML;
-    
+
     // Volver a configurar event listeners para las nuevas tarjetas
     setupPointCards();
+    // Aplicar filtros para sincronizar tarjetas + marcadores
+    applyFilters();
     // Asegurar que los marcadores se actualizan tras renderizar las tarjetas
     updateMapMarkers();
+    // Si estamos en vista cuadrícula aplicar stagger para entrada en cascada
+    if (currentView === 'grid') {
+      applyStagger();
+    }
   }
   // Configurar slider de distancia
   function setupDistanceSlider() {
@@ -355,6 +383,8 @@ document.addEventListener("DOMContentLoaded", function () {
         this.style.background = `linear-gradient(to right, #22c55e 0%, #22c55e ${
           (value / 20) * 100
         }%, #e5e7eb ${(value / 20) * 100}%, #e5e7eb 100%)`;
+        // Aplicar filtros en vivo al mover el slider
+        applyFilters();
       });
       distanceSlider.dispatchEvent(new Event("input"));
     }
@@ -369,13 +399,14 @@ document.addEventListener("DOMContentLoaded", function () {
     currentMaterialCheckboxes.forEach((checkbox) => {
       checkbox.addEventListener("change", function () {
         if (this.checked) {
-          currentFilters.materials.push(this.value);
+          if (!currentFilters.materials.includes(this.value)) currentFilters.materials.push(this.value);
         } else {
           currentFilters.materials = currentFilters.materials.filter(
             (m) => m !== this.value
           );
         }
         updateFilterCount();
+        applyFilters(); // aplicar inmediatamente para UX más rápido
       });
     });
 
@@ -389,6 +420,7 @@ document.addEventListener("DOMContentLoaded", function () {
           );
         }
         updateFilterCount();
+        applyFilters();
       });
     });
   }
@@ -424,10 +456,28 @@ document.addEventListener("DOMContentLoaded", function () {
   // Cambiar vista
   function switchView(view) {
     if (currentView === view) return;
+    if (pointsContainer) {
+      pointsContainer.classList.add('is-switching');
+      void pointsContainer.offsetWidth;
+    }
+
     currentView = view;
     listViewBtn.classList.toggle("active", view === "list");
     gridViewBtn.classList.toggle("active", view === "grid");
     pointsContainer.classList.toggle("grid-view", view === "grid");
+
+    // Si entramos a cuadrícula, aplicar stagger; si salimos, limpiar
+    if (view === 'grid') {
+      // dar tiempo a que la clase grid-view aplique antes de stagger
+      setTimeout(() => applyStagger(), 40);
+    } else {
+      clearStagger();
+    }
+
+    // Después de la animación retirar la clase de switching
+    setTimeout(() => {
+      if (pointsContainer) pointsContainer.classList.remove('is-switching');
+    }, 320);
   }
 
   // Configurar controles del mapa
@@ -502,6 +552,27 @@ document.addEventListener("DOMContentLoaded", function () {
     // Después de crear/actualizar las tarjetas también reconfiguramos
     // los listeners de los botones de acción para que respondan correctamente
     setupActionButtons();
+  }
+
+  // Stagger helpers: aplicar entrada en cascada a tarjetas
+  let _staggerTimeouts = [];
+  function clearStagger() {
+    _staggerTimeouts.forEach(t => clearTimeout(t));
+    _staggerTimeouts = [];
+    const cards = document.querySelectorAll('.points-container .point-card.enter');
+    cards.forEach(c => c.classList.remove('enter'));
+  }
+
+  function applyStagger() {
+    clearStagger();
+    const cards = Array.from(document.querySelectorAll('.points-container.grid-view .point-card'));
+    cards.forEach((card, idx) => {
+      // cada tarjeta recibe la clase enter con un delay incremental
+      const t = setTimeout(() => {
+        card.classList.add('enter');
+      }, idx * 80); // 80ms entre tarjetas
+      _staggerTimeouts.push(t);
+    });
   }
 
   // Configurar botones de acción

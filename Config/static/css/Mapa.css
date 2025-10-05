@@ -587,6 +587,8 @@ body {
     display: flex;
     flex-direction: column;
     gap: 20px;
+    /* transición suave al cambiar layout */
+    transition: all 300ms ease-in-out;
 }
 
 .points-container.grid-view {
@@ -595,16 +597,38 @@ body {
     gap: 20px;
 }
 
+/* Staggered entry: when in grid view, cards start slightly translated and transparent
+   and then receive the .enter class to fade/slide into place with staggered delays. */
+.points-container.grid-view .point-card {
+    opacity: 0;
+    transform: translateY(12px);
+}
+.points-container.grid-view .point-card.enter {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Make sure transitions are smooth */
+.points-container.grid-view .point-card {
+    transition: transform 360ms cubic-bezier(.2,.9,.2,1), opacity 320ms ease-in-out;
+}
+
+/* Clase usada durante la animación para evitar saltos bruscos */
+.points-container.is-switching {
+    transition: height 300ms ease-in-out;
+}
+
 /* Point Cards */
 .point-card {
     background: white;
     border-radius: 15px;
     padding: 25px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    transition: all 0.3s ease;
+    transition: transform 300ms cubic-bezier(.2,.9,.2,1), opacity 300ms ease-in-out;
     border: 2px solid transparent;
     position: relative;
     overflow: hidden;
+    opacity: 1;
 }
 
 .point-card::before {
