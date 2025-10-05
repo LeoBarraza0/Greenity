@@ -84,6 +84,8 @@ document.addEventListener("DOMContentLoaded", function () {
       categoria.puntos.forEach(punto => {
         const coordinates = extractCoordinatesFromAddress(punto.nombre);
         
+        const tipo = (typeof window.classifyPoint === 'function') ? window.classifyPoint(punto.nombre, categoria.organizacion, punto.texto_completo) : getPointType(categoria.organizacion);
+
         puntos.push({
           id: id++,
           name: punto.nombre,
@@ -94,7 +96,7 @@ document.addEventListener("DOMContentLoaded", function () {
           materials: [categoria.material],
           category: categoria.material,
           organization: categoria.organizacion,
-          type: getPointType(categoria.organizacion),
+          type: tipo,
           distance: Math.random() * 5 + 0.5, // Distancia simulada
           status: "open", // Estado simulado
           rating: (Math.random() * 2 + 3).toFixed(1), // Rating simulado
@@ -123,19 +125,96 @@ document.addEventListener("DOMContentLoaded", function () {
     };
   }
 
-  // Determinar tipo de punto basado en la organización
-  function getPointType(organizacion) {
-    if (organizacion.toLowerCase().includes('fundación') || 
-        organizacion.toLowerCase().includes('ong')) {
-      return 'empresas';
-    } else if (organizacion.toLowerCase().includes('centro') || 
-               organizacion.toLowerCase().includes('mall')) {
-      return 'centros';
-    } else if (organizacion.toLowerCase().includes('universidad') || 
-               organizacion.toLowerCase().includes('colegio')) {
-      return 'universidades';
+  // Clasificador heurístico para determinar tipo de punto (empresas, centros, universidades)
+  // Usa: 1) overrides por nombre exacto/parcial (lista suministrada por el usuario),
+  //      2) keywords en organización/nombre/texto, y 3) fallback a 'empresas'.
+  const TYPE_OVERRIDES = {
+    // Mapeos directos (normalizados a minúsculas)
+    'fundación sanar cra 75 no.79b – 50': 'empresas',
+    'c.c portal del prado cl. 53 #46-192': 'centros',
+    'buenavista 1 y 2 cl. 98 #52-115': 'centros',
+    'margarita saieh (viva) cra 51b # 87-50': 'empresas',
+    'mensajeria 4/72 cra 52 72 114': 'empresas',
+    'c.c unico cl. 74 # 38d 113': 'centros',
+    'makro villa santos cra 51b- 110': 'empresas',
+    'todos los margarita saieh': 'empresas',
+    'la bodega calle 54 # 53-39': 'empresas',
+    'hospital niño jesús cra 75 # 79b': 'empresas',
+    'procaps cl 80 # 78b-201': 'empresas',
+    'c.c miramar cra 43 # 99-50': 'centros',
+    'ctr. empresarial las americas 1y 2 cl 77b # 57 -141': 'empresas',
+    'universidad del norte km.5 vía puerto colombia.': 'universidades',
+    'universidad del libre cl. 53 #46-180': 'universidades',
+    'cuc cl. 58 # 55 – 66': 'universidades',
+    'club de leones barranquilla cl. 66 #38-99': 'empresas',
+    'coolitoral cra 30 # 17- esq.': 'empresas',
+    'transquiroga cl. 4 # 30 239': 'empresas',
+    'colegios distritales': 'universidades',
+    'cuc cl 58 # 55-66': 'universidades',
+    'home center norte cra. 53 # 98 – 2': 'centros',
+    'c buenavista cl 98 #52-115': 'centros',
+    'carulla villacountry cl 78 #53-70': 'centros',
+    'pepe ganga c.c buenavista cl 98 352-66 local 321': 'centros',
+    'universidad del atlantico km.5 vía puerto colombia': 'universidades',
+    'universidad del norte km.5 vía puerto colombia': 'universidades',
+    'makro villa santos cra 51b- 110': 'centros',
+    'fna (c.c viva bquilla) cra 51b #87-50': 'centros',
+    'exito murillo cl 45 #26-129': 'centros',
+    'sede 3 u. simón bolívar cra 59 # 59-65': 'universidades',
+    'éxito murillo cl 45 # 26-129': 'centros',
+    'homecenter norte cra 53 # 99-160': 'centros'
+  };
+
+  // Palabras claves por tipo (en minúsculas)
+  const TYPE_KEYWORDS = {
+    universidades: ['universidad', 'universitario', 'u.', 'u ', 'colegio', 'sede'],
+    centros: ['c.c', 'cc', 'centro comercial', 'mall', 'homecenter', 'exito', 'makro', 'carulla', 'supermercado', 'home center', 'homecenter'],
+    empresas: ['fundación', 'fundacion', 'empresa', 's.a', 'sas', 'servicios', 'hospital', 'clinica', 'clinic', 'laboratorio', 'fna', 'grupo']
+  };
+
+  function normalizeText(t) {
+    if (!t) return '';
+    // normalizar y quitar diacríticos
+    const s = t.toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    return s.replace(/\s+/g, ' ').replace(/[\u2013\u2014–—]/g, '-').trim();
+  }
+
+  // La función ahora puede recibir nombre/organizacion/texto (soporte pasado por processScrapingData)
+  function classifyPoint(name = '', organizacion = '', texto = '') {
+    const nName = normalizeText(name);
+    const nOrg = normalizeText(organizacion);
+    const nText = normalizeText(texto);
+
+    // 1) Overrides por coincidencia exacta o parcial
+    for (const key in TYPE_OVERRIDES) {
+      if (nName.includes(key) || nOrg.includes(key) || nText.includes(key)) {
+        return TYPE_OVERRIDES[key];
+      }
     }
-    return 'empresas'; // Por defecto
+
+    // 2) Keywords (priorizar universidades, luego centros, luego empresas)
+    for (const k of TYPE_KEYWORDS['universidades']) {
+      if (nName.includes(k) || nOrg.includes(k) || nText.includes(k)) return 'universidades';
+    }
+    for (const k of TYPE_KEYWORDS['centros']) {
+      if (nName.includes(k) || nOrg.includes(k) || nText.includes(k)) return 'centros';
+    }
+    for (const k of TYPE_KEYWORDS['empresas']) {
+      if (nName.includes(k) || nOrg.includes(k) || nText.includes(k)) return 'empresas';
+    }
+
+    // 3) Fallback: si organización contiene mayúsculas típicas de nombre propio, asumir empresa
+    if (nOrg && nOrg.length > 2) return 'empresas';
+
+    return 'empresas';
+  }
+
+  // Se expone la función para uso en processScrapingData (name, organizacion, texto)
+  window.classifyPoint = classifyPoint;
+
+  // Envuelve la API anterior: getPointType(organizacion) -> usa classifyPoint
+  function getPointType(organizacion) {
+    return classifyPoint('', organizacion, '');
   }
 
   // Datos de ejemplo como fallback
