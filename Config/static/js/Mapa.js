@@ -94,6 +94,7 @@ document.addEventListener("DOMContentLoaded", function () {
           lat: coordinates.lat,
           lng: coordinates.lng,
           materials: [categoria.material],
+          materials_normalized: [categoria.material.toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '')],
           category: categoria.material,
           organization: categoria.organizacion,
           type: tipo,
@@ -266,7 +267,7 @@ document.addEventListener("DOMContentLoaded", function () {
       
       // Crear checkboxes dinámicos
       materialesUnicos.forEach((material, index) => {
-        const materialKey = material.toLowerCase().replace(/\s+/g, '');
+        const materialKey = material.toLowerCase().replace(/\s+/g, '').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
         const checkboxHTML = `
           <label class="checkbox-item">
             <input type="checkbox" class="material-checkbox" value="${materialKey}">
@@ -287,10 +288,10 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!pointsContainer) return;
     
     const cardsHTML = puntosReciclaje.map(punto => `
-      <div class="point-card" data-type="${punto.type}" data-id="${punto.id}">
+  <div class="point-card type-${punto.type}" data-type="${punto.type}" data-id="${punto.id}">
         <div class="point-header">
-          <div class="point-icon">
-            <i class="fas fa-recycle"></i>
+          <div class="point-icon ${punto.type}">
+            <i class="${getCardIcon(punto.type)}"></i>
           </div>
           <div class="point-info">
             <h3 class="point-name">${punto.name}</h3>
@@ -399,6 +400,16 @@ document.addEventListener("DOMContentLoaded", function () {
       applyFiltersBtn.innerHTML = `<i class="fas fa-filter"></i> Aplicar Filtros (${totalFilters})`;
     } else {
       applyFiltersBtn.innerHTML = `<i class="fas fa-filter"></i> Aplicar Filtros`;
+    }
+  }
+
+  // Icono para las tarjetas según tipo
+  function getCardIcon(type) {
+    switch(type) {
+      case 'empresas': return 'fas fa-building';
+      case 'centros': return 'fas fa-shopping-cart';
+      case 'universidades': return 'fas fa-graduation-cap';
+      default: return 'fas fa-recycle';
     }
   }
 
@@ -539,13 +550,10 @@ document.addEventListener("DOMContentLoaded", function () {
         show = false;
       }
 
-      // Filtrar por materiales
+      // Filtrar por materiales (usar versiones normalizadas)
       if (currentFilters.materials.length > 0) {
         const hasMaterial = currentFilters.materials.some(filter =>
-          punto.materials.some(material => 
-            material.toLowerCase().includes(filter) || 
-            filter.includes(material.toLowerCase().replace(/\s+/g, ''))
-          )
+          (punto.materials_normalized || []).some(mn => mn === filter)
         );
         if (!hasMaterial) show = false;
       }

@@ -371,7 +371,7 @@ body {
     background: white;
     border-radius: 15px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    overflow: hidden;
+    overflow: visible;
 }
 
 .map-title {
@@ -384,19 +384,26 @@ body {
 
 .map-container {
     position: relative;
-    height: 600px;
-    margin: 0 20px 20px;
+    /* dejar que el contenido (el div #map) controle la altura para evitar espacio extra */
+    height: auto;
+    margin: 0; /* eliminar márgenes que generaban espacio debajo */
     border-radius: 10px;
-    overflow: hidden;
+    /* permitir mostrar elementos flotantes (leyenda) sin recortarlos */
+    overflow: visible;
     background: #f8fafc;
 }
 
 /* Estilos específicos para el mapa de Leaflet */
 #map {
     width: 100% !important;
-    height: 400px !important;
+    /* Ocupar el máximo espacio vertical restante debajo del header
+       y respetar el espacio de filtros; ajustar el valor si tu header
+       tiene diferente altura */
+    height: calc(100vh - 260px) !important;
     border-radius: 12px;
     z-index: 1;
+    display: block;
+    min-height: 360px;
 }
 
 /* Asegurar que los tiles de Leaflet se muestren correctamente */
@@ -482,6 +489,7 @@ body {
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     min-width: 200px;
+    z-index: 9999; /* forzar por encima del mapa */
 }
 
 .map-legend h4 {
@@ -501,10 +509,15 @@ body {
 }
 
 .legend-icon {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
     flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
 }
 
 .legend-icon.empresas {
@@ -606,6 +619,11 @@ body {
     transition: transform 0.3s ease;
 }
 
+/* Colores por tipo en la tarjeta */
+.point-card.type-empresas::before { background: #22c55e; }
+.point-card.type-centros::before { background: #f59e0b; }
+.point-card.type-universidades::before { background: #3b82f6; }
+
 .point-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 30px rgba(0,0,0,0.12);
@@ -636,6 +654,10 @@ body {
     flex-shrink: 0;
     box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
 }
+
+.point-icon.centros { background: linear-gradient(135deg, #f59e0b, #d97706); box-shadow: 0 4px 12px rgba(245,158,11,0.25); }
+.point-icon.universidades { background: linear-gradient(135deg, #3b82f6, #2563eb); box-shadow: 0 4px 12px rgba(59,130,246,0.25); }
+.point-icon.empresas { background: linear-gradient(135deg, #22c55e, #16a34a); box-shadow: 0 4px 12px rgba(34,197,94,0.25); }
 
 .point-info {
     flex: 1;
