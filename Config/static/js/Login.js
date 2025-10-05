@@ -21,6 +21,20 @@ document.addEventListener('DOMContentLoaded', function() {
         setupFormValidation();
         setupFormSubmissions();
         setupAnimations();
+        showCSRFToken();
+    }
+
+    // Mostrar el token CSRF en la consola
+    function showCSRFToken() {
+        const loginToken = document.getElementById('login-csrf-token');
+        const registerToken = document.getElementById('register-csrf-token');
+        
+        if (loginToken) {
+            console.log('🔐 Token CSRF (Login):', loginToken.value);
+        }
+        if (registerToken) {
+            console.log('🔐 Token CSRF (Register):', registerToken.value);
+        }
     }
 
     // Cambio de tabs con animaciones
@@ -241,24 +255,61 @@ document.addEventListener('DOMContentLoaded', function() {
         submitBtn.classList.add('loading');
         submitBtn.innerHTML = '<i class="fas fa-spinner"></i> Procesando...';
         
-        // Simular petición
-        setTimeout(() => {
+
+
+        
+        // Obtener datos del formulario
+        const formData = new FormData(form);
+        const token = formData.get('csrf_token');
+        
+        // Determinar la URL del endpoint
+        const endpoint = type === 'login' ? '/login' : '/register';
+        
+        // Realizar petición con protección CSRF
+        console.log('Enviando petición a:', endpoint);
+        console.log('Token CSRF:', token);
+        console.log('Datos del formulario:', Object.fromEntries(formData));
+        
+        fetch(endpoint, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-Token': token
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
             isSubmitting = false;
             submitBtn.classList.remove('loading');
             submitBtn.innerHTML = originalText;
             
-            // Mostrar éxito
-            showNotification(
-                type === 'login' ? '¡Bienvenido a Greenity!' : '¡Cuenta creada exitosamente!',
-                'success'
-            );
+            if (data.status === 200) {
+                // Mostrar éxito
+                showNotification(data.message, 'success');
+                
+                // Resetear formulario
+                form.reset();
+                clearAllValidations();
+                
+                // Redirigir si hay URL
+                if (data.url) {
+                    setTimeout(() => {
+                        window.location.href = data.url;
+                    }, 1500);
+                }
+            } else {
+                // Mostrar error
+                showNotification(data.message, 'error');
+            }
+        })
+        .catch(error => {
+            isSubmitting = false;
+            submitBtn.classList.remove('loading');
+            submitBtn.innerHTML = originalText;
             
-            // Resetear formulario
-            form.reset();
-            clearAllValidations();
-            
-            
-        }, 2000);
+            console.error('Error:', error);
+            showNotification('Error de conexión. Inténtalo de nuevo.', 'error');
+        });
     }
 
     function clearAllValidations() {

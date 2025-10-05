@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
+import secrets
 
 app = Flask(__name__)
 
@@ -8,7 +9,8 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root@localhost/greenity_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-app.secret_key = "web"
+# Clave secreta más segura para las sesiones
+app.secret_key = secrets.token_hex(32)
 
 #creamos los objetos de bd
 

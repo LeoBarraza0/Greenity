@@ -30,10 +30,29 @@
                 <i class="fas fa-cog"></i>
                 Configuración
             </a>
+            {% if session.user_authenticated %}
+            <div class="user-menu">
+                <div class="user-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span class="user-name">{{ session.user_email.split('@')[0] }}</span>
+                </div>
+                <div class="user-dropdown">
+                    <a href="{{ url_for('config') }}" class="dropdown-item">
+                        <i class="fas fa-cog"></i>
+                        Mi Perfil
+                    </a>
+                    <a href="{{ url_for('logout') }}" class="dropdown-item">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Cerrar Sesión
+                    </a>
+                </div>
+            </div>
+            {% else %}
             <a href="{{ url_for('index') }}" class="login-btn">
                 <i class="fas fa-user"></i>
                 Iniciar Sesión
             </a>
+            {% endif %}
         </nav>
     </div>
 </header>
