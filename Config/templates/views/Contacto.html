@@ -369,24 +369,7 @@
     </main>
 
     <!-- Script para chatbot de Voiceflow -->
-    <script type="text/javascript">
-        (function(d, t) {
-            var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
-            v.onload = function() {
-              window.voiceflow.chat.load({
-                verify: { projectID: '68ce0e495682320b1b0f1dfe' },
-                url: 'https://general-runtime.voiceflow.com',
-                versionID: 'production',
-                voice: {
-                  url: "https://runtime-api.voiceflow.com"
-                }
-              });
-            }
-            v.src = "https://cdn.voiceflow.com/widget-next/bundle.mjs"; 
-            v.type = "text/javascript"; 
-            s.parentNode.insertBefore(v, s);
-        })(document, 'script');
-    </script>
+    
 
     <!-- JavaScript específico para la página de contacto -->
     <script src="{{ url_for('static', filename='js/Contacto.js') }}"></script>
