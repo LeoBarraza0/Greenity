@@ -1,4 +1,8 @@
 // Login animado y moderno para Greenity
+// Este archivo gestiona la UI de login/registro: cambio de pestañas,
+// toggles de contraseña, validación en cliente, envío de formularios
+// (con token CSRF), animaciones y notificaciones.
+// IMPORTANTE: Sólo se añaden comentarios; no se modifica la lógica.
 document.addEventListener('DOMContentLoaded', function() {
     // Elementos del DOM
     const tabButtons = document.querySelectorAll('.tab-btn');
@@ -12,7 +16,8 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentTab = 'login';
     let isSubmitting = false;
 
-    // Inicialización
+    // Inicialización: agrupa la configuración de eventos y comportamiento.
+    // Mantener init() como punto de entrada facilita pruebas y lectura.
     init();
 
     function init() {
@@ -24,7 +29,9 @@ document.addEventListener('DOMContentLoaded', function() {
         showCSRFToken();
     }
 
-    // Mostrar el token CSRF en la consola
+    // Muestra en consola los tokens CSRF presentes en los formularios.
+    // Útil para depuración: confirma que los tokens se han renderizado
+    // desde el servidor y que estarán disponibles para enviar con la petición.
     function showCSRFToken() {
         const loginToken = document.getElementById('login-csrf-token');
         const registerToken = document.getElementById('register-csrf-token');
@@ -37,7 +44,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Cambio de tabs con animaciones
+    // Configura el cambio de pestañas (login/register).
+    // Detecta clicks en los botones de tab y llama a switchTab si cambia
+    // la pestaña activa.
     function setupTabSwitching() {
         tabButtons.forEach(button => {
             button.addEventListener('click', function() {
@@ -49,6 +58,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Cambia visualmente entre el formulario de login y registro.
+    // - Quita/añade clases, aplica transiciones y actualiza el estado actualTab.
+    // - Las animaciones están controladas por estilos inline para un efecto
+    //   fluido sin depender de clases CSS adicionales.
     function switchTab(tabName) {
         // Remover clase active de todos los tabs
         tabButtons.forEach(btn => btn.classList.remove('active'));
@@ -57,20 +70,22 @@ document.addEventListener('DOMContentLoaded', function() {
         const activeButton = document.querySelector(`[data-tab="${tabName}"]`);
         activeButton.classList.add('active');
         
-        // Ocultar formulario actual con animación
+        // Determinar qué formulario ocultar y cuál mostrar
         const currentForm = tabName === 'login' ? registerForm : loginForm;
         const newForm = tabName === 'login' ? loginForm : registerForm;
         
+        // Aplicar animación de salida al formulario actual
         currentForm.style.opacity = '0';
         currentForm.style.transform = 'translateX(30px)';
         
         setTimeout(() => {
+            // Tras la animación de salida, ocultar/mostrar formularios
             currentForm.classList.add('hidden');
             newForm.classList.remove('hidden');
             newForm.style.opacity = '0';
             newForm.style.transform = 'translateX(30px)';
             
-            // Animar entrada del nuevo formulario
+            // Forzar el frame para iniciar la animación de entrada
             requestAnimationFrame(() => {
                 newForm.style.transition = 'all 0.5s ease-out';
                 newForm.style.opacity = '1';
@@ -81,7 +96,9 @@ document.addEventListener('DOMContentLoaded', function() {
         currentTab = tabName;
     }
 
-    // Toggle de visibilidad de contraseñas
+    // Prepara los toggles para mostrar/ocultar contraseñas.
+    // Por convención el id del toggle sigue el patrón 'toggle-{inputId}'.
+    // Al activar el toggle se cambia el type del input y el icono.
     function setupPasswordToggles() {
         togglePasswordButtons.forEach(button => {
             button.addEventListener('click', function() {
@@ -99,7 +116,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     icon.classList.add('fa-eye');
                 }
                 
-                // Efecto de animación en el icono
+                // Pequeña animación en el icono como feedback visual.
                 icon.style.transform = 'scale(1.2)';
                 setTimeout(() => {
                     icon.style.transform = 'scale(1)';
@@ -108,7 +125,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Validación de formularios
+    // Enlaza validaciones en tiempo real sobre inputs requeridos.
+    // - 'blur' dispara validación, 'input' limpia mensajes previos.
     function setupFormValidation() {
         const inputs = document.querySelectorAll('input[required]');
         
@@ -124,6 +142,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Valida un input individual aplicando reglas por tipo.
+    // Retorna true si el campo es válido. Añade clases 'error'/'success'
+    // y muestra un tooltip de validación cuando procede.
     function validateInput(input) {
         const wrapper = input.closest('.input-wrapper');
         const value = input.value.trim();
@@ -133,25 +154,29 @@ document.addEventListener('DOMContentLoaded', function() {
         // Limpiar clases anteriores
         wrapper.classList.remove('error', 'success');
         
-        // Validaciones específicas
+        // Validaciones específicas según el tipo de input
         if (input.type === 'email') {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             isValid = emailRegex.test(value);
             message = 'Por favor ingresa un email válido';
         } else if (input.type === 'password') {
+            // Si es campo de confirmación, comparar con la contraseña original.
             if (input.id.includes('confirm')) {
                 const password = document.getElementById(input.id.replace('confirm-', ''));
                 isValid = value === password.value;
                 message = 'Las contraseñas no coinciden';
             } else {
+                // Requerir longitud mínima para contraseñas.
                 isValid = value.length >= 6;
                 message = 'La contraseña debe tener al menos 6 caracteres';
             }
         } else if (input.type === 'text') {
+            // Nombre mínimo de 2 caracteres.
             isValid = value.length >= 2;
             message = 'El nombre debe tener al menos 2 caracteres';
         }
 
+        // Mostrar estados visuales sólo cuando el usuario ha escrito algo.
         if (!isValid && value !== '') {
             wrapper.classList.add('error');
             showTooltip(input, message);
@@ -162,12 +187,16 @@ document.addEventListener('DOMContentLoaded', function() {
         return isValid;
     }
 
+    // Limpiar estado de validación y tooltip asociado a un input.
     function clearValidation(input) {
         const wrapper = input.closest('.input-wrapper');
         wrapper.classList.remove('error', 'success');
         hideTooltip(input);
     }
 
+    // Crea y muestra un tooltip de validación (mensaje) junto al input.
+    // - Se asegura de eliminar cualquier tooltip previo para evitar duplicados.
+    // - El tooltip se añade al wrapper para posicionamiento relativo.
     function showTooltip(input, message) {
         hideTooltip(input); // Remover tooltip existente
         
@@ -193,6 +222,7 @@ document.addEventListener('DOMContentLoaded', function() {
         wrapper.appendChild(tooltip);
     }
 
+    // Elimina el tooltip de validación asociado a un input si existe.
     function hideTooltip(input) {
         const tooltip = input.closest('.input-wrapper').querySelector('.validation-tooltip');
         if (tooltip) {
@@ -200,7 +230,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Envío de formularios
+    // Enlaza el evento submit de los formularios de login y registro.
+    // - Previene el envío por defecto y delega a handleFormSubmission.
     function setupFormSubmissions() {
         loginFormElement.addEventListener('submit', function(e) {
             e.preventDefault();
@@ -213,6 +244,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Maneja la lógica de envío de formularios:
+    // - Evita envíos concurrentes con isSubmitting
+    // - Valida todos los campos requeridos
+    // - Realiza comprobaciones adicionales para registro (coincidencia de contraseñas)
+    // - Llama a submitForm que realiza la petición HTTP real
     function handleFormSubmission(form, type) {
         if (isSubmitting) return;
         
@@ -231,7 +267,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Validación adicional para registro
+        // Validación adicional para registro: revisión explícita de confirmación
         if (type === 'register') {
             const password = document.getElementById('register-password').value;
             const confirmPassword = document.getElementById('register-confirm-password').value;
@@ -242,27 +278,29 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        // Simular envío
+        // Si todo es correcto, proceder al envío (función que hace fetch).
         submitForm(form, type);
     }
 
+    // Envía el formulario al servidor usando fetch.
+    // - Marca isSubmitting para evitar envíos duplicados
+    // - Añade cabecera con token CSRF extraída del FormData
+    // - Maneja la respuesta JSON: éxito (reset, redirección opcional) o error
+    // - Realiza limpieza del estado del botón y tratamiento de errores de red
     function submitForm(form, type) {
         isSubmitting = true;
         const submitBtn = form.querySelector('.submit-btn');
         const originalText = submitBtn.innerHTML;
         
-        // Estado de carga
+        // Estado de carga: feedback visual mientras dura la petición.
         submitBtn.classList.add('loading');
         submitBtn.innerHTML = '<i class="fas fa-spinner"></i> Procesando...';
-        
-
-
         
         // Obtener datos del formulario
         const formData = new FormData(form);
         const token = formData.get('csrf_token');
         
-        // Determinar la URL del endpoint
+        // Determinar la URL del endpoint (login vs register)
         const endpoint = type === 'login' ? '/login' : '/register';
         
         // Realizar petición con protección CSRF
@@ -279,30 +317,30 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.json())
         .then(data => {
+            // Restaurar estado del botón y marca isSubmitting=false
             isSubmitting = false;
             submitBtn.classList.remove('loading');
             submitBtn.innerHTML = originalText;
             
             if (data.status === 200) {
-                // Mostrar éxito
+                // En caso de éxito: notificar, resetear formulario y opcionalmente redirigir
                 showNotification(data.message, 'success');
                 
-                // Resetear formulario
                 form.reset();
                 clearAllValidations();
                 
-                // Redirigir si hay URL
                 if (data.url) {
                     setTimeout(() => {
                         window.location.href = data.url;
                     }, 1500);
                 }
             } else {
-                // Mostrar error
+                // Mostrar mensaje de error provisto por el servidor
                 showNotification(data.message, 'error');
             }
         })
         .catch(error => {
+            // En caso de fallo de red o excepción: restaurar estados y avisar
             isSubmitting = false;
             submitBtn.classList.remove('loading');
             submitBtn.innerHTML = originalText;
@@ -312,6 +350,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Limpia todos los estados de validación presentes (clases y tooltips).
     function clearAllValidations() {
         const wrappers = document.querySelectorAll('.input-wrapper');
         wrappers.forEach(wrapper => {
@@ -321,7 +360,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Notificaciones
+    // Muestra una notificación temporal en pantalla.
+    // - 'type' controla color e ícono (success/error/info).
+    // - La notificación se elimina automáticamente tras unos segundos.
     function showNotification(message, type = 'info') {
         const notification = document.createElement('div');
         notification.className = `notification notification-${type}`;
@@ -349,14 +390,16 @@ document.addEventListener('DOMContentLoaded', function() {
         
         document.body.appendChild(notification);
         
-        // Auto-remover después de 4 segundos
+        // Auto-remover después de 4 segundos (animación de salida incluida).
         setTimeout(() => {
             notification.style.animation = 'slideOutRight 0.5s ease-out';
             setTimeout(() => notification.remove(), 500);
         }, 4000);
     }
 
-    // Animaciones adicionales
+    // Prepara animaciones y micro-interacciones adicionales.
+    // - Focus en inputs para dar feedback visual
+    // - Hover en botones (respetando estado 'loading')
     function setupAnimations() {
         // Animación de entrada para inputs
         const inputs = document.querySelectorAll('input');
@@ -385,7 +428,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Agregar estilos CSS para animaciones adicionales
+    // Agregar estilos CSS para animaciones adicionales.
+    // Estos estilos se inyectan dinámicamente para no depender de
+    // archivos CSS externos y asegurar que las keyframes estén disponibles.
     const additionalStyles = `
         @keyframes slideInRight {
             from { transform: translateX(100%); opacity: 0; }
@@ -417,7 +462,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.head.appendChild(styleSheet);
 });
 
-// Función para enlace "¿Olvidaste tu contraseña?"
+// Enlaza la acción del enlace "¿Olvidaste tu contraseña?".
+// Actualmente muestra un placeholder; aquí se podría abrir un modal
+// o iniciar el flujo de recuperación de contraseña en el servidor.
 document.addEventListener('DOMContentLoaded', function() {
     const forgotPasswordLink = document.querySelector('.forgot-password');
     if (forgotPasswordLink) {

@@ -1,47 +1,51 @@
-// JavaScript para funcionalidad de la página contacto
-
+// Espera a que el DOM esté listo para enlazar listeners y ejecutar
+// inicializadores. Mantener toda la inicialización dentro de
+// DOMContentLoaded evita referencias a elementos inexistentes.
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Página Contacto cargada');
     
-    // Inicializar todas las funcionalidades
-    initNavigation();
-    initFormValidation();
-    initFAQ();
-    initContactButtons();
-    initAnimations();
+    // Inicializar modularmente cada responsabilidad de la página.
+    initNavigation();       // manejo del menú/nav
+    initFormValidation();   // validaciones del formulario de contacto
+    initFAQ();              // comportamiento del FAQ y búsqueda
+    initContactButtons();   // botones rápidos (llamar, email, ubicación)
+    initAnimations();       // efectos visuales y observers
     
-    // Funcionalidad del botón de Iniciar Sesión
+    // Botón de Iniciar Sesión: efecto visual + navegación.
     const loginBtn = document.querySelector('.login-btn');
     if (loginBtn) {
         loginBtn.addEventListener('click', function() {
-            // Efecto visual de click
+            // Pequeña animación para dar feedback táctil al usuario.
             this.style.transform = 'translateY(-1px) scale(1.02)';
             setTimeout(() => {
                 this.style.transform = '';
             }, 150);
             
-            // Redirigir a la página de login
+            // Redirige a la página de login (ruta relativa usada por el proyecto).
             window.location.href = '/pages/Login.html';
         });
     }
 });
 
 // Funcionalidad de navegación
+// Inicializa la lógica de la navegación (barra/menu).
+// - Añade la clase 'active' al item clickeado.
+// - Intercepta enlaces internos (sin href o con '#') para manejar
+//   la navegación usando rutas relativas del proyecto.
 function initNavigation() {
     const navItems = document.querySelectorAll('.nav-item');
     navItems.forEach(item => {
         item.addEventListener('click', function(e) {
-            // Solo interceptar si no tiene href o es un enlace interno
+            // Sólo interceptamos cuando el enlace no apunta a otra URL.
             if (!this.href || this.href.includes('#')) {
                 e.preventDefault();
                 
-                // Remover clase active de todos los elementos
+                // Limpiar estado activo en todos los elementos y marcar el actual.
                 navItems.forEach(nav => nav.classList.remove('active'));
-                
-                // Añadir clase active al elemento clickeado
                 this.classList.add('active');
                 
-                // Mostrar mensaje según la sección
+                // Según el texto del elemento redirigimos a la vista correspondiente.
+                // Este switch usa rutas del proyecto; agregar nuevas opciones según sea necesario.
                 const text = this.textContent.trim();
                 switch(text) {
                     case 'Inicio':
@@ -57,39 +61,45 @@ function initNavigation() {
                         window.location.href = '/pages/SugerirPunto.html';
                         break;
                     case 'Contacto':
-                        // Ya estamos en la página contacto
+                        // Ya estamos en esta página, no hacemos nada.
                         break;
                     case 'Configuración':
+                        // Placeholder: mostrar aviso temporal.
                         alert('Sección Configuración - Próximamente disponible');
                         break;
                 }
             }
-            // Si tiene href válido, permitir navegación normal
+            // Si el elemento tiene un href externo válido, se permite la navegación.
         });
     });
 }
 
 // Validación del formulario
+// Inicializa la validación del formulario de contacto.
+// Enlaza validación en tiempo real (blur/input) y controla el envío.
 function initFormValidation() {
     const form = document.getElementById('contactForm');
     const inputs = form.querySelectorAll('input, textarea, select');
     
+    // Validación por campo en eventos comunes para mejor UX.
     inputs.forEach(input => {
-        // Validación en tiempo real
+        // Validar cuando el usuario sale del campo (blur).
         input.addEventListener('blur', function() {
             validateField(this);
         });
         
+        // Limpiar errores mientras el usuario escribe.
         input.addEventListener('input', function() {
             clearFieldError(this);
         });
     });
     
-    // Envío del formulario
+    // Manejo del envío: prevenimos comportamiento por defecto,
+    // validamos todos los campos requeridos y mostramos feedback.
     form.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        // Validar todos los campos
+        // Seleccionar sólo los campos marcados como required.
         const inputs = form.querySelectorAll('input[required], textarea[required], select[required]');
         let isValid = true;
         
@@ -100,27 +110,28 @@ function initFormValidation() {
         });
         
         if (isValid) {
-            // Efecto visual de envío
+            // Feedback visual: botón en modo 'enviando'.
             const submitBtn = form.querySelector('.submit-btn');
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
             submitBtn.disabled = true;
             
-            // Simular envío
+            // Simulación de envío (sustituir por llamada real al backend).
             setTimeout(() => {
+                // Estado: envío completado con éxito.
                 submitBtn.innerHTML = '<i class="fas fa-check"></i> ¡Enviado!';
                 submitBtn.style.background = '#22c55e';
                 
-                // Mostrar mensaje de éxito
+                // Mostrar notificación de éxito al usuario.
                 showSuccessMessage();
                 
-                // Resetear formulario después de un tiempo
+                // Restablecer el formulario después de unos segundos.
                 setTimeout(() => {
                     form.reset();
                     submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar mensaje';
                     submitBtn.style.background = '';
                     submitBtn.disabled = false;
                     
-                    // Limpiar clases de validación
+                    // Limpiar clases y mensajes de validación existentes.
                     const fields = form.querySelectorAll('.form-field');
                     fields.forEach(field => {
                         field.classList.remove('success', 'error');
@@ -133,44 +144,51 @@ function initFormValidation() {
     });
 }
 
+// Valida un único campo y muestra/oculta mensajes de error.
+// Devuelve true si el campo es válido, false en caso contrario.
 function validateField(field) {
     const fieldContainer = field.closest('.form-field');
     const value = field.value.trim();
     
-    // Remover clases de error/success anteriores
+    // Limpiar estados previos para evitar duplicidades.
     fieldContainer.classList.remove('error', 'success');
     
-    // Validaciones específicas
+    // Requerido: no debe estar vacío.
     if (field.hasAttribute('required') && !value) {
         showFieldError(fieldContainer, 'Este campo es obligatorio');
         return false;
     }
     
+    // Validación sencilla de email usando el atributo type.
     if (field.type === 'email' && value && !isValidEmail(value)) {
         showFieldError(fieldContainer, 'Ingresa un email válido');
         return false;
     }
     
+    // Soporte para pattern HTML: si existe, validar con RegExp.
     if (field.pattern && value && !new RegExp(field.pattern).test(value)) {
         showFieldError(fieldContainer, 'Formato inválido');
         return false;
     }
     
-    // Si llegamos aquí, el campo es válido
+    // Si todas las comprobaciones se pasan, marcar como success.
     fieldContainer.classList.add('success');
     return true;
 }
 
+// Muestra un mensaje de error dentro del contenedor del campo.
+// Se asegura de eliminar mensajes previos para no duplicar.
 function showFieldError(fieldContainer, message) {
     fieldContainer.classList.add('error');
     
-    // Remover mensaje de error anterior
+    // Eliminar mensaje existente (si lo hay).
     const existingError = fieldContainer.querySelector('.error-message');
     if (existingError) {
         existingError.remove();
     }
     
-    // Agregar nuevo mensaje de error
+    // Crear y anexar el nuevo elemento de error con estilos inline
+    // para evitar dependencia de clases adicionales en CSS.
     const errorMessage = document.createElement('span');
     errorMessage.className = 'error-message';
     errorMessage.textContent = message;
@@ -178,6 +196,7 @@ function showFieldError(fieldContainer, message) {
     fieldContainer.appendChild(errorMessage);
 }
 
+// Elimina el estado de error y el mensaje asociado para un campo.
 function clearFieldError(field) {
     const fieldContainer = field.closest('.form-field');
     fieldContainer.classList.remove('error');
@@ -188,31 +207,36 @@ function clearFieldError(field) {
 }
 
 // Funciones de validación
+// Comprueba que un string tenga formato de correo básico válido.
+// No es infalible (no cubre todos los casos RFC) pero es suficiente para UX.
 function isValidEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
 }
 
 // Funcionalidad del FAQ
+// Inicializa comportamiento del FAQ:
+// - Toggle de items al hacer click (cierra otros abiertos)
+// - Filtro en tiempo real conforme se escribe en el input de búsqueda
 function initFAQ() {
     const faqItems = document.querySelectorAll('.faq-item');
     const searchInput = document.querySelector('.search-input');
     
-    // Toggle FAQ items
+    // Toggle: cuando se pulsa una pregunta, se expande y se cierran las demás.
     faqItems.forEach(item => {
         const question = item.querySelector('.faq-question');
         question.addEventListener('click', function() {
-            // Cerrar otros items abiertos
+            // Cerrar otros items abiertos para mantener una vista limpia.
             faqItems.forEach(otherItem => {
                 if (otherItem !== item) {
                     otherItem.classList.remove('active');
                 }
             });
             
-            // Toggle current item
+            // Alternar el estado del item actual.
             item.classList.toggle('active');
             
-            // Efecto visual
+            // Pequeña animación de feedback.
             this.style.transform = 'scale(0.98)';
             setTimeout(() => {
                 this.style.transform = '';
@@ -220,7 +244,7 @@ function initFAQ() {
         });
     });
     
-    // Búsqueda en FAQ
+    // Búsqueda: filtra por texto en pregunta o respuesta.
     if (searchInput) {
         searchInput.addEventListener('input', function() {
             const searchTerm = this.value.toLowerCase();
@@ -241,12 +265,15 @@ function initFAQ() {
 }
 
 // Funcionalidad de botones de contacto
+// Inicializa los botones de contacto presentes en la página.
+// Incluye acciones de método (llamada, email, chat), ubicación y scroll
+// directo al formulario.
 function initContactButtons() {
-    // Botones de métodos de contacto
+    // Botones con métodos de contacto (Llamar, Enviar email, Iniciar chat).
     const methodBtns = document.querySelectorAll('.method-btn');
     methodBtns.forEach(btn => {
         btn.addEventListener('click', function() {
-            // Efecto visual
+            // Feedback visual al pulsar.
             this.style.transform = 'translateY(-2px) scale(1.05)';
             setTimeout(() => {
                 this.style.transform = '';
@@ -255,43 +282,45 @@ function initContactButtons() {
             const method = this.textContent.trim();
             switch(method) {
                 case 'Llamar ahora':
+                    // Placeholder: aquí se podría integrar WebRTC o esquema tel: en móviles.
                     alert('Funcionalidad de llamada próximamente disponible');
                     break;
                 case 'Enviar email':
+                    // Abrir cliente de correo con la dirección del contacto.
                     window.location.href = 'mailto:contacto@greenity.com';
                     break;
                 case 'Iniciar chat':
+                    // Placeholder para integrar chat en vivo o chatbot.
                     alert('Chat en vivo próximamente disponible');
                     break;
             }
         });
     });
     
-    // Botón de ubicación
+    // Botón para mostrar ubicación (por ahora muestra alerta).
     const locationBtn = document.querySelector('.location-btn');
     if (locationBtn) {
         locationBtn.addEventListener('click', function() {
-            // Efecto visual
             this.style.transform = 'translateY(-2px) scale(1.05)';
             setTimeout(() => {
                 this.style.transform = '';
             }, 200);
             
+            // En el futuro: abrir Google Maps o mostrar mapa embebido.
             alert('Funcionalidad de Google Maps próximamente disponible');
         });
     }
     
-    // Botón de contacto directo
+    // Botón que desplaza la vista hasta la sección del formulario.
     const contactBtn = document.querySelector('.contact-btn');
     if (contactBtn) {
         contactBtn.addEventListener('click', function() {
-            // Efecto visual
             this.style.transform = 'translateY(-2px) scale(1.05)';
             setTimeout(() => {
                 this.style.transform = '';
             }, 200);
             
-            // Scroll al formulario
+            // Scroll suave hacia el formulario para mejorar accesibilidad.
             const form = document.querySelector('.form-section');
             form.scrollIntoView({ behavior: 'smooth' });
         });
@@ -299,8 +328,11 @@ function initContactButtons() {
 }
 
 // Animaciones
+// Inicializa observadores y animaciones para mejorar la experiencia.
+// Usa IntersectionObserver para animaciones cuando los elementos entran
+// en el viewport, reduciendo trabajo y mejorando performance.
 function initAnimations() {
-    // Animación de entrada para las tarjetas informativas
+    // Tarjetas informativas: entrada con opacidad y traslación.
     const infoCards = document.querySelectorAll('.info-card');
     const cardObserver = new IntersectionObserver(function(entries) {
         entries.forEach(entry => {
@@ -312,6 +344,7 @@ function initAnimations() {
     }, { threshold: 0.1 });
     
     infoCards.forEach((card, index) => {
+        // Estado inicial: invisible y ligeramente desplazado.
         card.style.opacity = '0';
         card.style.transform = 'translateY(30px)';
         card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
@@ -319,7 +352,7 @@ function initAnimations() {
         cardObserver.observe(card);
     });
     
-    // Animación de entrada para los items del FAQ
+    // Animación para items del FAQ (similar a las tarjetas).
     const faqItems = document.querySelectorAll('.faq-item');
     const faqObserver = new IntersectionObserver(function(entries) {
         entries.forEach(entry => {
@@ -338,7 +371,7 @@ function initAnimations() {
         faqObserver.observe(item);
     });
     
-    // Efecto de hover en botones
+    // Efecto hover básico para botones: elevar ligeramente.
     const buttons = document.querySelectorAll('button');
     buttons.forEach(button => {
         button.addEventListener('mouseenter', function() {
@@ -352,7 +385,7 @@ function initAnimations() {
         });
     });
     
-    // Efecto de focus en inputs
+    // Efecto focus en inputs: subir visualmente el contenedor del input.
     const inputs = document.querySelectorAll('.form-input, .form-textarea, .form-select');
     inputs.forEach(input => {
         input.addEventListener('focus', function() {

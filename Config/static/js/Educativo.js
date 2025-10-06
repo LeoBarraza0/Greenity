@@ -679,16 +679,20 @@ function showResults() {
 
 // Generar y descargar certificado
 function downloadCertificate(score, percentage) {
+    // 1) Pedir al usuario su nombre. Si no lo proporciona, abortamos.
     const userName = prompt("Por favor, ingresa tu nombre para el certificado:");
-    if (!userName) return;
-    
+    if (!userName) return; // El usuario canceló o dejó el campo vacío.
+
+    // 2) Obtener fecha actual en formato localizado (es-ES) para mostrarla
+    //    en el certificado y usarla en el nombre del archivo.
     const currentDate = new Date().toLocaleDateString('es-ES', {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
     });
-    
-    // Crear contenido del certificado
+
+    // 3) Construir el contenido HTML del certificado.
+    //    NOTA: el bloque siguiente contiene HTML+CSS embebido (diseño).
     const certificateContent = `
         <!DOCTYPE html>
         <html lang="es">
@@ -835,18 +839,23 @@ function downloadCertificate(score, percentage) {
         </html>
     `;
     
-    // Crear y descargar archivo
+    // 4) Crear un Blob con el HTML y forzar la descarga en el navegador.
+    //    - Se crea una URL temporal con URL.createObjectURL
+    //    - Se genera un enlace <a> dinámico con el atributo download
+    //    - Se simula el click para iniciar la descarga
     const blob = new Blob([certificateContent], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
+    // Normalizar el nombre de archivo: reemplazar espacios y añadir fecha.
     a.download = `Certificado_Reciclaje_${userName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.html`;
     document.body.appendChild(a);
     a.click();
+    // 5) Limpieza: quitar el enlace y liberar la URL para evitar fugas de memoria.
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    
-    // Mostrar mensaje de éxito
+
+    // 6) Feedback sencillo al usuario indicando que la descarga fue iniciada.
     alert('¡Certificado descargado exitosamente! Revisa tu carpeta de descargas.');
 }
 

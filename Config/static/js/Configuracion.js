@@ -1,38 +1,43 @@
-// JavaScript para funcionalidad de la página configuración
+// JavaScript para la página de configuración
 
 document.addEventListener('DOMContentLoaded', function() {
+    // Punto de entrada: todo lo que requiere elementos del DOM debe ir aquí
     console.log('Página Configuración cargada');
-    
-    // Funcionalidad del botón de Iniciar Sesión
+    /*
+      1) Botón de Iniciar Sesión
+         - Busca el botón con la clase .login-btn y le añade un efecto visual al hacer click.
+         - Finalmente redirige a la página de login.
+    */
     const loginBtn = document.querySelector('.login-btn');
     if (loginBtn) {
         loginBtn.addEventListener('click', function() {
-            // Efecto visual de click
+            // Efecto visual breve para dar feedback
             this.style.transform = 'translateY(-1px) scale(1.02)';
-            setTimeout(() => {
-                this.style.transform = '';
-            }, 150);
-            
-            // Redirigir a la página de login
+            setTimeout(() => { this.style.transform = ''; }, 150);
+
+            // Redirección
             window.location.href = '/pages/Login.html';
         });
     }
-    
-    // Funcionalidad de navegación
+
+    /*
+      2) Navegación interna (barra lateral o menú)
+         - Intercepta clicks en elementos .nav-item que no tengan un href externo.
+         - Gestiona la clase "active" visualmente y en algunos casos
+           redirige a otras páginas o muestra notificaciones.
+    */
     const navItems = document.querySelectorAll('.nav-item');
     navItems.forEach(item => {
         item.addEventListener('click', function(e) {
-            // Solo interceptar si no tiene href o es un enlace interno
+            // Si es un enlace vacío o ancla, manejamos la navegación por JS
             if (!this.href || this.href.includes('#')) {
                 e.preventDefault();
-                
-                // Remover clase active de todos los elementos
+
+                // Remover active en todos y añadir en el que se clickeó
                 navItems.forEach(nav => nav.classList.remove('active'));
-                
-                // Añadir clase active al elemento clickeado
                 this.classList.add('active');
-                
-                // Mostrar mensaje según la sección
+
+                // Dependiendo del texto del enlace ejecutamos una acción
                 const text = this.textContent.trim();
                 switch(text) {
                     case 'Inicio':
@@ -51,91 +56,97 @@ document.addEventListener('DOMContentLoaded', function() {
                         showNotification('Sección Contacto - Próximamente disponible', 'info');
                         break;
                     case 'Configuración':
-                        // Ya estamos en la página configuración
+                        // Ya estamos en esta página, no hacemos nada
                         break;
                 }
             }
-            // Si tiene href válido, permitir navegación normal
+            // Si el enlace tenía un href válido, se permite la navegación por defecto
         });
     });
 
-    // Funcionalidad del slider de radio de búsqueda
+    /*
+      3) Slider de radio de búsqueda
+         - Actualiza el texto que muestra el valor seleccionado y aplica
+           una pequeña animación para llamar la atención.
+    */
     const searchRadiusSlider = document.getElementById('search-radius');
     const sliderValue = document.querySelector('.slider-value');
-    
     if (searchRadiusSlider && sliderValue) {
         searchRadiusSlider.addEventListener('input', function() {
             const value = this.value;
             sliderValue.textContent = value + ' km';
-            
-            // Animación del valor
+
+            // Animación de feedback cuando cambia el valor
             sliderValue.style.transform = 'scale(1.1)';
             sliderValue.style.color = '#22c55e';
-            
-            setTimeout(() => {
-                sliderValue.style.transform = 'scale(1)';
-            }, 200);
+            setTimeout(() => { sliderValue.style.transform = 'scale(1)'; }, 200);
         });
     }
 
-    // Funcionalidad de los toggle switches
+    /*
+      4) Toggle switches (checkboxes estilizados)
+         - Detecta cambios, aplica una animación visual y muestra una notificación
+           indicando si la opción fue activada o desactivada.
+    */
     const toggleSwitches = document.querySelectorAll('.toggle-switch input[type="checkbox"]');
     toggleSwitches.forEach(toggle => {
         toggle.addEventListener('change', function() {
             const toggleItem = this.closest('.toggle-item');
             if (toggleItem) {
-                // Animación de feedback visual
+                // Feedback visual: escala y cambio de fondo según estado
                 toggleItem.style.transform = 'scale(1.02)';
                 toggleItem.style.backgroundColor = this.checked ? '#f0fdf4' : '#f8fafc';
-                
-                setTimeout(() => {
-                    toggleItem.style.transform = 'scale(1)';
-                }, 200);
+                setTimeout(() => { toggleItem.style.transform = 'scale(1)'; }, 200);
             }
-            
-            // Mostrar notificación de cambio
+
+            // Mostrar notificación con etiqueta y estado
             const label = toggleItem ? toggleItem.querySelector('span').textContent : 'Configuración';
             const status = this.checked ? 'activada' : 'desactivada';
             showNotification(`${label} ${status}`, 'success');
         });
     });
 
-    // Funcionalidad de los selects personalizados
+    /*
+      5) Selects personalizados
+         - Cuando cambia el valor de un select, se aplica un estilo de confirmación
+           y se muestra una notificación.
+    */
     const customSelects = document.querySelectorAll('.custom-select');
     customSelects.forEach(select => {
         select.addEventListener('change', function() {
             if (this.value) {
                 this.style.borderColor = '#22c55e';
                 this.style.backgroundColor = '#f0fdf4';
-                
-                // Animación de confirmación
                 this.style.transform = 'scale(1.02)';
-                setTimeout(() => {
-                    this.style.transform = 'scale(1)';
-                }, 200);
-                
+                setTimeout(() => { this.style.transform = 'scale(1)'; }, 200);
+
                 const label = this.previousElementSibling ? this.previousElementSibling.textContent : 'Configuración';
                 showNotification(`${label} actualizada`, 'success');
             }
         });
     });
 
-    // Funcionalidad del botón Guardar cambios
+    /*
+      6) Botón "Guardar cambios"
+         - Simula el guardado mostrando una animación en el botón y
+           una notificación de éxito después de un retraso.
+    */
     const saveBtn = document.querySelector('.save-btn');
     if (saveBtn) {
         saveBtn.addEventListener('click', function() {
-            // Animación del botón
+            // Animación de "loading" en el botón
             this.style.transform = 'scale(0.95)';
             this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
-            
+
             setTimeout(() => {
+                // Simular guardado completado
                 this.style.transform = 'scale(1)';
                 this.innerHTML = '<i class="fas fa-check"></i> ¡Guardado!';
                 this.style.background = 'linear-gradient(135deg, #16a34a, #15803d)';
-                
+
                 showNotification('Configuración guardada exitosamente', 'success');
-                
-                // Resetear botón después de 2 segundos
+
+                // Resetear el botón a su estado original
                 setTimeout(() => {
                     this.innerHTML = '<i class="fas fa-save"></i> Guardar cambios';
                     this.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
@@ -144,12 +155,15 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Funcionalidad de los botones de seguridad
+    /*
+      7) Botones de seguridad (Eliminar cuenta, Exportar datos, Cambiar contraseña)
+         - Muestran confirmaciones o notificaciones según la acción.
+    */
     const securityBtns = document.querySelectorAll('.security-btn');
     securityBtns.forEach(btn => {
         btn.addEventListener('click', function() {
             const action = this.textContent.trim();
-            
+
             if (action.includes('Eliminar cuenta')) {
                 if (confirm('¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.')) {
                     showNotification('Funcionalidad de eliminación de cuenta próximamente disponible', 'warning');
@@ -162,7 +176,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Funcionalidad del botón Editar Perfil
+    /*
+      8) Botón Editar Perfil
+         - Muestra una notificación (simulado).
+    */
     const editProfileBtn = document.querySelector('.edit-profile-btn');
     if (editProfileBtn) {
         editProfileBtn.addEventListener('click', function() {
@@ -170,7 +187,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Funcionalidad de los enlaces de privacidad
+    /*
+      9) Enlaces de privacidad
+         - Previenen la navegación y muestran un mensaje informativo.
+    */
     const privacyLinks = document.querySelectorAll('.privacy-link');
     privacyLinks.forEach(link => {
         link.addEventListener('click', function(e) {
@@ -180,55 +200,60 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Animaciones de entrada para las secciones
+    /*
+      10) Animaciones de entrada para secciones usando IntersectionObserver
+          - Observa las secciones con clase .config-section y aplica una animación
+            cuando entran en el viewport.
+    */
     const sections = document.querySelectorAll('.config-section');
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-
+    const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
+                // Asigna una animación CSS definida en estilos (slideInUp)
                 entry.target.style.animation = 'slideInUp 0.6s ease-out forwards';
                 observer.unobserve(entry.target);
             }
         });
     }, observerOptions);
+    sections.forEach(section => observer.observe(section));
 
-    sections.forEach(section => {
-        observer.observe(section);
-    });
-
-    // Efectos hover mejorados para elementos interactivos
+    /*
+      11) Efectos hover mejorados para ciertos elementos interactivos
+          - Aplica sombra y desplazamiento al hacer hover para mejorar la sensación
+            de interactividad.
+    */
     const interactiveElements = document.querySelectorAll('.toggle-item, .feature-item, .stat-item, .security-btn');
     interactiveElements.forEach(element => {
         element.addEventListener('mouseenter', function() {
             this.style.transform = 'translateY(-3px)';
             this.style.boxShadow = '0 10px 30px rgba(0,0,0,0.15)';
         });
-        
         element.addEventListener('mouseleave', function() {
             this.style.transform = 'translateY(0)';
             this.style.boxShadow = '';
         });
     });
 
-    // Cargar configuraciones guardadas (simulado)
+    // Cargar configuraciones guardadas (en este ejemplo se simula la carga)
     loadSavedSettings();
 });
 
-// Función para mostrar notificaciones
+/* --------------------------------------------------------------- */
+/* Helpers: notificaciones y carga de settings                          */
+/* --------------------------------------------------------------- */
+
+// Muestra notificaciones temporales en la esquina superior derecha
 function showNotification(message, type = 'info') {
-    // Crear elemento de notificación
+    // Crear el contenedor de notificación
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
     notification.innerHTML = `
         <i class="fas fa-${getNotificationIcon(type)}"></i>
         <span>${message}</span>
     `;
-    
-    // Estilos de la notificación
+
+    // Estilos inline para asegurar comportamiento sin depender de CSS externo
     notification.style.cssText = `
         position: fixed;
         top: 20px;
@@ -247,35 +272,23 @@ function showNotification(message, type = 'info') {
         transition: transform 0.3s ease;
         max-width: 300px;
     `;
-    
+
+    // Añadir al body y animar entrada/salida
     document.body.appendChild(notification);
-    
-    // Animación de entrada
-    setTimeout(() => {
-        notification.style.transform = 'translateX(0)';
-    }, 100);
-    
-    // Remover después de 3 segundos
+    setTimeout(() => { notification.style.transform = 'translateX(0)'; }, 100);
     setTimeout(() => {
         notification.style.transform = 'translateX(400px)';
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.parentNode.removeChild(notification);
-            }
-        }, 300);
+        setTimeout(() => { if (notification.parentNode) notification.parentNode.removeChild(notification); }, 300);
     }, 3000);
 }
 
+// Devuelve el icono FontAwesome según tipo de notificación
 function getNotificationIcon(type) {
-    const icons = {
-        'success': 'check-circle',
-        'error': 'exclamation-circle',
-        'warning': 'exclamation-triangle',
-        'info': 'info-circle'
-    };
+    const icons = { 'success': 'check-circle', 'error': 'exclamation-circle', 'warning': 'exclamation-triangle', 'info': 'info-circle' };
     return icons[type] || 'info-circle';
 }
 
+// Devuelve un gradiente apropiado según tipo (se usa como background)
 function getNotificationColor(type) {
     const colors = {
         'success': 'linear-gradient(135deg, #22c55e, #16a34a)',
@@ -286,9 +299,9 @@ function getNotificationColor(type) {
     return colors[type] || colors['info'];
 }
 
-// Función para cargar configuraciones guardadas (simulado)
+// Simula la carga de configuraciones guardadas (por ejemplo desde localStorage o API)
 function loadSavedSettings() {
-    // Simular carga de configuraciones desde localStorage
+    // Aquí se define un objeto con valores por defecto (simulado)
     const savedSettings = {
         defaultLocation: 'Palermo, Buenos Aires',
         searchRadius: 5,
@@ -306,27 +319,20 @@ function loadSavedSettings() {
         locationData: false,
         functionalCookies: false
     };
-    
-    // Aplicar configuraciones guardadas
+
+    // Aplicar valores simulados a los elementos del DOM si existen
     const defaultLocationInput = document.getElementById('default-location');
-    if (defaultLocationInput) {
-        defaultLocationInput.value = savedSettings.defaultLocation;
-    }
-    
+    if (defaultLocationInput) defaultLocationInput.value = savedSettings.defaultLocation;
+
     const searchRadiusSlider = document.getElementById('search-radius');
     const sliderValue = document.querySelector('.slider-value');
     if (searchRadiusSlider && sliderValue) {
         searchRadiusSlider.value = savedSettings.searchRadius;
         sliderValue.textContent = savedSettings.searchRadius + ' km';
     }
-    
-    // Aplicar estados de toggles
-    const toggleIds = [
-        'auto-location', 'remember-favorites', 'push-notifications', 
-        'email-notifications', 'compact-view', 'show-tips', 'auto-update',
-        'usage-analysis', 'location-data', 'functional-cookies'
-    ];
-    
+
+    // Aplicar el estado de toggles por id
+    const toggleIds = ['auto-location', 'remember-favorites', 'push-notifications', 'email-notifications', 'compact-view', 'show-tips', 'auto-update', 'usage-analysis', 'location-data', 'functional-cookies'];
     toggleIds.forEach(id => {
         const toggle = document.getElementById(id);
         if (toggle) {
@@ -334,8 +340,8 @@ function loadSavedSettings() {
             toggle.checked = savedSettings[settingKey] || false;
         }
     });
-    
-    // Aplicar selects
+
+    // Aplicar selects por id
     const selectIds = ['app-theme', 'language', 'map-style'];
     selectIds.forEach(id => {
         const select = document.getElementById(id);
