@@ -1,41 +1,51 @@
+<!-- Extiende la plantilla base para incluir navbar y footer -->
 {% extends "main/layout.html" %}
+
+<!-- Bloque de header con meta datos específicos -->
 {% block header %}
 <title>Configuración - Grennity</title>
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/LogoGnormal.png') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/Configuracion.css') }}">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<link rel="icon" type="image/png" href="{{ url_for('static', filename='img/LogoGnormal.png') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/Configuracion.css') }}">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 {% endblock %}
+
+<!-- Contenido principal de la página -->
 {% block content %}
-    <!-- Main Content -->
+    <!-- Contenido principal de configuración -->
     <main class="main-content">
         <div class="container">
+            <!-- Encabezado de la página -->
             <div class="config-header">
                 <h1>Configuración</h1>
-                <p>Personaliza tu experiencia con EcoFinder</p>
+                <p>Personaliza tu experiencia con Greenity</p>
             </div>
 
-            <!-- Configuración de Ubicación -->
+            <!-- SECCIÓN 1: Configuración de Ubicación -->
             <section class="config-section">
                 <div class="section-header">
                     <i class="fas fa-map-marker-alt"></i>
                     <h2>Configuración de Ubicación</h2>
                 </div>
                 
+                <!-- Campo para ubicación predeterminada -->
                 <div class="form-group">
                     <label for="default-location">Ubicación predeterminada</label>
-                    <input type="text" id="default-location" placeholder="Ej: Palermo, Buenos Aires">
+                    <input type="text" id="default-location" placeholder="Ej: Barranquilla, Colombia">
                     <small>Se usará cuando no detectemos tu ubicación automáticamente.</small>
                 </div>
 
+                <!-- Slider para radio de búsqueda -->
                 <div class="form-group">
                     <label for="search-radius">Radio de búsqueda predeterminado</label>
                     <div class="slider-container">
                         <input type="range" id="search-radius" min="1" max="50" value="10" class="slider">
-                        <span class="slider-value">5 km</span>
+                        <span class="slider-value">10 km</span>
                     </div>
                 </div>
 
+                <!-- Toggles para opciones de ubicación -->
                 <div class="toggle-group">
+                    <!-- Auto-detección de ubicación -->
                     <div class="toggle-item">
                         <span>Detectar ubicación automáticamente</span>
                         <small>Usar GPS para encontrar puntos cercanos.</small>
@@ -45,6 +55,7 @@
                         </label>
                     </div>
 
+                    <!-- Recordar favoritos -->
                     <div class="toggle-item">
                         <span>Recordar puntos favoritos</span>
                         <small>Guardar tus puntos de reciclaje preferidos.</small>
@@ -55,12 +66,14 @@
                     </div>
                 </div>
 
+                <!-- Subsección de notificaciones -->
                 <div class="notifications-group">
                     <div class="section-subheader">
                         <i class="fas fa-bell"></i>
                         <h3>Notificaciones</h3>
                     </div>
                     <div class="toggle-group">
+                        <!-- Notificaciones push -->
                         <div class="toggle-item">
                             <span>Push</span>
                             <label class="toggle-switch">
@@ -68,6 +81,7 @@
                                 <span class="slider-toggle"></span>
                             </label>
                         </div>
+                        <!-- Notificaciones por email -->
                         <div class="toggle-item">
                             <span>Email</span>
                             <label class="toggle-switch">
@@ -78,19 +92,21 @@
                     </div>
                 </div>
 
+                <!-- Botón para guardar configuración de ubicación -->
                 <button class="save-btn">
                     <i class="fas fa-save"></i>
                     Guardar cambios
                 </button>
             </section>
 
-            <!-- Preferencias de la Aplicación -->
+            <!-- SECCIÓN 2: Preferencias de la Aplicación -->
             <section class="config-section">
                 <div class="section-header">
                     <i class="fas fa-cog"></i>
                     <h2>Preferencias de la Aplicación</h2>
                 </div>
 
+                <!-- Selector de tema -->
                 <div class="form-group">
                     <label for="app-theme">Tema de la aplicación</label>
                     <select id="app-theme" class="custom-select">
@@ -101,7 +117,9 @@
                     </select>
                 </div>
 
+                <!-- Opciones de interfaz -->
                 <div class="toggle-group">
+                    <!-- Vista compacta -->
                     <div class="toggle-item">
                         <span>Vista compacta</span>
                         <small>Mostrar más información en menos espacio.</small>
@@ -111,6 +129,7 @@
                         </label>
                     </div>
 
+                    <!-- Mostrar consejos -->
                     <div class="toggle-item">
                         <span>Mostrar consejos</span>
                         <small>Mostrar tips útiles mientras navegas.</small>
@@ -120,6 +139,7 @@
                         </label>
                     </div>
 
+                    <!-- Actualización automática -->
                     <div class="toggle-item">
                         <span>Actualización automática</span>
                         <small>Actualizar datos cada 5 minutos.</small>
@@ -130,6 +150,7 @@
                     </div>
                 </div>
 
+                <!-- Selector de idioma -->
                 <div class="form-group">
                     <label for="language">Idioma</label>
                     <select id="language" class="custom-select">
@@ -140,6 +161,7 @@
                     </select>
                 </div>
 
+                <!-- Selector de estilo de mapa -->
                 <div class="form-group">
                     <label for="map-style">Estilo del mapa</label>
                     <select id="map-style" class="custom-select">
@@ -150,11 +172,13 @@
                     </select>
                 </div>
 
+                <!-- Configuración específica para móviles -->
                 <div class="mobile-config">
                     <div class="section-subheader">
                         <i class="fas fa-mobile-alt"></i>
                         <h3>Configuración móvil</h3>
                     </div>
+                    <!-- Grid con características móviles -->
                     <div class="feature-grid">
                         <div class="feature-item">
                             <i class="fas fa-eye"></i>
@@ -180,27 +204,30 @@
                 </div>
             </section>
 
-            <!-- Cuenta de Usuario -->
+            <!-- SECCIÓN 3: Cuenta de Usuario -->
             <section class="config-section">
                 <div class="section-header">
                     <i class="fas fa-user"></i>
                     <h2>Cuenta de Usuario</h2>
                 </div>
 
+                <!-- Información del usuario actual -->
                 <div class="user-info">
                     <div class="user-details">
-                        <div class="user-name">Usuario EcoFinder</div>
+                        <div class="user-name">Usuario Greenity</div>
                         <div class="user-email">
                             <i class="fas fa-envelope"></i>
                             email@gmail.com
                         </div>
                     </div>
+                    <!-- Botón para editar perfil -->
                     <button class="edit-profile-btn">
                         <i class="fas fa-edit"></i>
                         Editar Perfil
                     </button>
                 </div>
 
+                <!-- Estadísticas de uso del usuario -->
                 <div class="usage-stats">
                     <h3>Estadísticas de uso</h3>
                     <div class="stats-grid">
@@ -221,6 +248,7 @@
                             <span class="stat-label">Días activo</span>
                         </div>
                     </div>
+                    <!-- Información adicional del usuario -->
                     <div class="user-meta">
                         <p>Miembro desde: <strong>Enero 2024</strong></p>
                         <p>Última actividad: <strong>Hoy</strong></p>
@@ -228,41 +256,48 @@
                 </div>
             </section>
 
-            <!-- Seguridad y Datos -->
+            <!-- SECCIÓN 4: Seguridad y Datos -->
             <section class="config-section">
                 <div class="section-header">
                     <i class="fas fa-shield-alt"></i>
                     <h2>Seguridad y Datos</h2>
                 </div>
 
+                <!-- Botones de acciones de seguridad -->
                 <div class="security-buttons">
+                    <!-- Exportar datos del usuario -->
                     <button class="security-btn">
                         <i class="fas fa-download"></i>
                         Exportar datos
                     </button>
+                    <!-- Cambiar contraseña -->
                     <button class="security-btn">
                         <i class="fas fa-key"></i>
                         Cambiar contraseña
                     </button>
+                    <!-- Eliminar cuenta (acción peligrosa) -->
                     <button class="security-btn danger">
                         <i class="fas fa-trash"></i>
                         Eliminar cuenta
                     </button>
                 </div>
 
+                <!-- Información sobre protección de datos -->
                 <p class="security-info">
-                    Tu información personal está protegida y solo se usa para mejorar tu experiencia con EcoFinder. No compartimos datos con terceros.
+                    Tu información personal está protegida y solo se usa para mejorar tu experiencia con Greenity. No compartimos datos con terceros.
                 </p>
             </section>
 
-            <!-- Privacidad y Datos -->
+            <!-- SECCIÓN 5: Privacidad y Datos -->
             <section class="config-section">
                 <div class="section-header">
                     <i class="fas fa-lock"></i>
                     <h2>Privacidad y Datos</h2>
                 </div>
 
+                <!-- Opciones de privacidad con toggles -->
                 <div class="toggle-group">
+                    <!-- Análisis de uso anónimo -->
                     <div class="toggle-item">
                         <span>Análisis de uso</span>
                         <small>Ayúdanos a mejorar la app compartiendo datos anónimos de uso.</small>
@@ -272,6 +307,7 @@
                         </label>
                     </div>
 
+                    <!-- Permisos de ubicación -->
                     <div class="toggle-item">
                         <span>Datos de ubicación</span>
                         <small>Permitir el uso de tu ubicación para encontrar puntos cercanos.</small>
@@ -281,6 +317,7 @@
                         </label>
                     </div>
 
+                    <!-- Cookies funcionales -->
                     <div class="toggle-item">
                         <span>Cookies funcionales</span>
                         <small>Guardar preferencias y configuraciones en tu dispositivo.</small>
@@ -291,6 +328,7 @@
                     </div>
                 </div>
 
+                <!-- Información detallada sobre privacidad -->
                 <div class="privacy-info">
                     <h3>Información sobre privacidad</h3>
                     <ul>
@@ -301,6 +339,7 @@
                     </ul>
                 </div>
 
+                <!-- Enlaces a políticas de privacidad -->
                 <div class="privacy-links">
                     <a href="#" class="privacy-link">Ver políticas de privacidad</a>
                     <a href="#" class="privacy-link">Términos de servicio</a>
@@ -309,6 +348,7 @@
         </div>
     </main>
 
+    <!-- Script para chatbot de Voiceflow -->
     <script type="text/javascript">
         (function(d, t) {
             var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
@@ -326,7 +366,8 @@
             v.type = "text/javascript"; 
             s.parentNode.insertBefore(v, s);
         })(document, 'script');
-      </script>
+    </script>
 
+    <!-- JavaScript específico para la página de configuración -->
     <script src="{{ url_for('static', filename='js/Configuracion.js') }}"></script>
 {% endblock %}

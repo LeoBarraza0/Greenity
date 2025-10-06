@@ -1,40 +1,52 @@
+<!-- Extiende la plantilla base para incluir navbar y footer -->
 {% extends "main/layout.html" %}
+
+<!-- Bloque de header con meta datos específicos -->
 {% block header %}
 <title>Sugerir Punto de Reciclaje - Grennity</title>
 <link rel="icon" type="image/png" href="/Img/LogoGnormal.png">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/SugerirPunto.css') }}">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 {% endblock %}
+
+<!-- Contenido principal de la página -->
 {% block content %}
-<!-- Main Content -->
+<!-- Contenido principal -->
     <main class="main-content">
         <div class="container">
-            <!-- Hero Section -->
+            <!-- SECCIÓN HERO: Título y descripción principal -->
             <section class="hero-section">
                 <div class="hero-content">
+                    <!-- Icono principal de agregar -->
                     <div class="hero-icon">
                         <i class="fas fa-plus-circle"></i>
                     </div>
+                    <!-- Título principal -->
                     <h1 class="hero-title">Sugerir Nuevo Punto de Reciclaje</h1>
+                    <!-- Descripción motivacional -->
                     <p class="hero-subtitle">Ayúdanos a expandir nuestra red de puntos de reciclaje compartiendo
                         información sobre nuevos lugares en tu comunidad</p>
                 </div>
             </section>
 
-            <!-- Main Content Grid -->
+            <!-- Grid principal: formulario + sidebar informativo -->
             <div class="main-grid">
-                <!-- Form Section -->
+                <!-- SECCIÓN IZQUIERDA: Formulario de sugerencia -->
                 <section class="form-section">
                     <div class="form-container">
+                        <!-- Formulario principal con 6 secciones -->
                         <form class="suggestion-form" id="suggestionForm">
-                            <!-- Información Básica -->
+                            
+                            <!-- SECCIÓN 1: Información Básica -->
                             <div class="form-group">
                                 <h2 class="form-section-title">
                                     <i class="fas fa-info-circle"></i>
                                     Información Básica
                                 </h2>
 
+                                <!-- Fila 1: Nombre y tipo de punto -->
                                 <div class="form-row">
+                                    <!-- Campo: Nombre del punto -->
                                     <div class="form-field">
                                         <label for="pointName" class="field-label">Nombre del Punto *</label>
                                         <input type="text" id="pointName" name="pointName" class="form-input"
@@ -44,6 +56,7 @@
                                         </div>
                                     </div>
 
+                                    <!-- Campo: Tipo de punto (dropdown) -->
                                     <div class="form-field">
                                         <label for="pointType" class="field-label">Tipo de Punto *</label>
                                         <div class="select-container">
@@ -65,6 +78,7 @@
                                     </div>
                                 </div>
 
+                                <!-- Campo: Descripción (ancho completo) -->
                                 <div class="form-field full-width">
                                     <label for="description" class="field-label">Descripción del Punto</label>
                                     <textarea id="description" name="description" class="form-textarea"
@@ -76,14 +90,16 @@
                                 </div>
                             </div>
 
-                            <!-- Ubicación -->
+                            <!-- SECCIÓN 2: Ubicación -->
                             <div class="form-group">
                                 <h2 class="form-section-title">
                                     <i class="fas fa-map"></i>
                                     Ubicación
                                 </h2>
 
+                                <!-- Fila 1: Dirección y ciudad -->
                                 <div class="form-row">
+                                    <!-- Campo: Dirección -->
                                     <div class="form-field">
                                         <label for="address" class="field-label">Dirección *</label>
                                         <input type="text" id="address" name="address" class="form-input"
@@ -93,6 +109,7 @@
                                         </div>
                                     </div>
 
+                                    <!-- Campo: Ciudad -->
                                     <div class="form-field">
                                         <label for="city" class="field-label">Ciudad *</label>
                                         <input type="text" id="city" name="city" class="form-input" placeholder="Ciudad"
@@ -103,12 +120,15 @@
                                     </div>
                                 </div>
 
+                                <!-- Fila 2: Estado y código postal -->
                                 <div class="form-row">
+                                    <!-- Campo: Estado (dropdown con estados de México) -->
                                     <div class="form-field">
                                         <label for="state" class="field-label">Estado *</label>
                                         <div class="select-container">
                                             <select id="state" name="state" class="form-select" required>
                                                 <option value="">Selecciona el estado</option>
+                                                <!-- Estados de México -->
                                                 <option value="aguascalientes">Aguascalientes</option>
                                                 <option value="baja-california">Baja California</option>
                                                 <option value="baja-california-sur">Baja California Sur</option>
@@ -150,6 +170,7 @@
                                         </div>
                                     </div>
 
+                                    <!-- Campo: Código postal -->
                                     <div class="form-field">
                                         <label for="postalCode" class="field-label">Código Postal</label>
                                         <input type="text" id="postalCode" name="postalCode" class="form-input"
@@ -160,11 +181,14 @@
                                     </div>
                                 </div>
 
+                                <!-- Botones de ubicación -->
                                 <div class="location-actions">
+                                    <!-- Usar GPS -->
                                     <button type="button" class="btn-secondary" id="useCurrentLocation">
                                         <i class="fas fa-location-arrow"></i>
                                         Usar mi ubicación actual
                                     </button>
+                                    <!-- Abrir mapa interactivo -->
                                     <button type="button" class="btn-outline" id="openMap">
                                         <i class="fas fa-map-marked-alt"></i>
                                         Seleccionar en mapa
@@ -172,7 +196,7 @@
                                 </div>
                             </div>
 
-                            <!-- Materiales Aceptados -->
+                            <!-- SECCIÓN 3: Materiales Aceptados (la más extensa) -->
                             <div class="form-group">
                                 <h2 class="form-section-title">
                                     <i class="fas fa-recycle"></i>
@@ -181,25 +205,31 @@
                                 <p class="form-description">Selecciona todos los materiales que acepta este punto de
                                     reciclaje</p>
 
+                                <!-- Grid con 6 categorías de materiales -->
                                 <div class="materials-grid">
+                                    <!-- CATEGORÍA 1: Plásticos -->
                                     <div class="material-category">
                                         <h3 class="category-title">Plásticos</h3>
                                         <div class="checkbox-group">
+                                            <!-- PET: botellas de bebidas -->
                                             <label class="checkbox-item">
                                                 <input type="checkbox" name="materials" value="pet">
                                                 <span class="checkmark"></span>
                                                 <span class="checkbox-label">PET (Botellas)</span>
                                             </label>
+                                            <!-- HDPE: envases de leche, detergente -->
                                             <label class="checkbox-item">
                                                 <input type="checkbox" name="materials" value="hdpe">
                                                 <span class="checkmark"></span>
                                                 <span class="checkbox-label">HDPE (Envases)</span>
                                             </label>
+                                            <!-- PVC: tuberías, empaques -->
                                             <label class="checkbox-item">
                                                 <input type="checkbox" name="materials" value="pvc">
                                                 <span class="checkmark"></span>
                                                 <span class="checkbox-label">PVC</span>
                                             </label>
+                                            <!-- LDPE: bolsas plásticas -->
                                             <label class="checkbox-item">
                                                 <input type="checkbox" name="materials" value="ldpe">
                                                 <span class="checkmark"></span>
@@ -208,24 +238,29 @@
                                         </div>
                                     </div>
 
+                                    <!-- CATEGORÍA 2: Papel y Cartón -->
                                     <div class="material-category">
                                         <h3 class="category-title">Papel y Cartón</h3>
                                         <div class="checkbox-group">
+                                            <!-- Periódicos -->
                                             <label class="checkbox-item">
                                                 <input type="checkbox" name="materials" value="newspaper">
                                                 <span class="checkmark"></span>
                                                 <span class="checkbox-label">Periódicos</span>
                                             </label>
+                                            <!-- Revistas -->
                                             <label class="checkbox-item">
                                                 <input type="checkbox" name="materials" value="magazines">
                                                 <span class="checkmark"></span>
                                                 <span class="checkbox-label">Revistas</span>
                                             </label>
+                                            <!-- Cartón corrugado -->
                                             <label class="checkbox-item">
                                                 <input type="checkbox" name="materials" value="cardboard">
                                                 <span class="checkmark"></span>
                                                 <span class="checkbox-label">Cartón</span>
                                             </label>
+                                            <!-- Papel de oficina -->
                                             <label class="checkbox-item">
                                                 <input type="checkbox" name="materials" value="office-paper">
                                                 <span class="checkmark"></span>
@@ -234,24 +269,29 @@
                                         </div>
                                     </div>
 
+                                    <!-- CATEGORÍA 3: Vidrio -->
                                     <div class="material-category">
                                         <h3 class="category-title">Vidrio</h3>
                                         <div class="checkbox-group">
+                                            <!-- Botellas de bebidas -->
                                             <label class="checkbox-item">
                                                 <input type="checkbox" name="materials" value="glass-bottles">
                                                 <span class="checkmark"></span>
                                                 <span class="checkbox-label">Botellas</span>
                                             </label>
+                                            <!-- Frascos de conservas -->
                                             <label class="checkbox-item">
                                                 <input type="checkbox" name="materials" value="glass-jars">
                                                 <span class="checkmark"></span>
                                                 <span class="checkbox-label">Frascos</span>
                                             </label>
+                                            <!-- Vidrio sin color -->
                                             <label class="checkbox-item">
                                                 <input type="checkbox" name="materials" value="glass-clear">
                                                 <span class="checkmark"></span>
                                                 <span class="checkbox-label">Vidrio Transparente</span>
                                             </label>
+                                            <!-- Vidrio con color -->
                                             <label class="checkbox-item">
                                                 <input type="checkbox" name="materials" value="glass-colored">
                                                 <span class="checkmark"></span>
@@ -260,24 +300,29 @@
                                         </div>
                                     </div>
 
+                                    <!-- CATEGORÍA 4: Metales -->
                                     <div class="material-category">
                                         <h3 class="category-title">Metales</h3>
                                         <div class="checkbox-group">
+                                            <!-- Latas de refresco -->
                                             <label class="checkbox-item">
                                                 <input type="checkbox" name="materials" value="aluminum">
                                                 <span class="checkmark"></span>
                                                 <span class="checkbox-label">Aluminio</span>
                                             </label>
+                                            <!-- Estructuras metálicas -->
                                             <label class="checkbox-item">
                                                 <input type="checkbox" name="materials" value="steel">
                                                 <span class="checkmark"></span>
                                                 <span class="checkbox-label">Acero</span>
                                             </label>
+                                            <!-- Latas de comida -->
                                             <label class="checkbox-item">
                                                 <input type="checkbox" name="materials" value="tin-cans">
                                                 <span class="checkmark"></span>
                                                 <span class="checkbox-label">Latas de Conserva</span>
                                             </label>
+                                            <!-- Cables y tuberías -->
                                             <label class="checkbox-item">
                                                 <input type="checkbox" name="materials" value="copper">
                                                 <span class="checkmark"></span>
@@ -286,24 +331,29 @@
                                         </div>
                                     </div>
 
+                                    <!-- CATEGORÍA 5: Electrónicos -->
                                     <div class="material-category">
                                         <h3 class="category-title">Electrónicos</h3>
                                         <div class="checkbox-group">
+                                            <!-- Pilas y baterías -->
                                             <label class="checkbox-item">
                                                 <input type="checkbox" name="materials" value="batteries">
                                                 <span class="checkmark"></span>
                                                 <span class="checkbox-label">Baterías</span>
                                             </label>
+                                            <!-- Teléfonos móviles -->
                                             <label class="checkbox-item">
                                                 <input type="checkbox" name="materials" value="cellphones">
                                                 <span class="checkmark"></span>
                                                 <span class="checkbox-label">Celulares</span>
                                             </label>
+                                            <!-- PCs y laptops -->
                                             <label class="checkbox-item">
                                                 <input type="checkbox" name="materials" value="computers">
                                                 <span class="checkmark"></span>
                                                 <span class="checkbox-label">Computadoras</span>
                                             </label>
+                                            <!-- Cables eléctricos -->
                                             <label class="checkbox-item">
                                                 <input type="checkbox" name="materials" value="cables">
                                                 <span class="checkmark"></span>
@@ -312,24 +362,29 @@
                                         </div>
                                     </div>
 
+                                    <!-- CATEGORÍA 6: Otros materiales -->
                                     <div class="material-category">
                                         <h3 class="category-title">Otros</h3>
                                         <div class="checkbox-group">
+                                            <!-- Ropa y telas -->
                                             <label class="checkbox-item">
                                                 <input type="checkbox" name="materials" value="textiles">
                                                 <span class="checkmark"></span>
                                                 <span class="checkbox-label">Textiles</span>
                                             </label>
+                                            <!-- Muebles usados -->
                                             <label class="checkbox-item">
                                                 <input type="checkbox" name="materials" value="furniture">
                                                 <span class="checkmark"></span>
                                                 <span class="checkbox-label">Muebles</span>
                                             </label>
+                                            <!-- Neumáticos usados -->
                                             <label class="checkbox-item">
                                                 <input type="checkbox" name="materials" value="tires">
                                                 <span class="checkmark"></span>
                                                 <span class="checkbox-label">Llantas</span>
                                             </label>
+                                            <!-- Químicos y tóxicos -->
                                             <label class="checkbox-item">
                                                 <input type="checkbox" name="materials" value="hazardous">
                                                 <span class="checkmark"></span>
@@ -340,14 +395,16 @@
                                 </div>
                             </div>
 
-                            <!-- Horarios y Contacto -->
+                            <!-- SECCIÓN 4: Horarios y Contacto -->
                             <div class="form-group">
                                 <h2 class="form-section-title">
                                     <i class="fas fa-clock"></i>
                                     Horarios y Contacto
                                 </h2>
 
+                                <!-- Fila 1: Horarios y teléfono -->
                                 <div class="form-row">
+                                    <!-- Campo: Horarios de funcionamiento -->
                                     <div class="form-field">
                                         <label for="schedule" class="field-label">Horarios de Atención</label>
                                         <input type="text" id="schedule" name="schedule" class="form-input"
@@ -357,6 +414,7 @@
                                         </div>
                                     </div>
 
+                                    <!-- Campo: Número de contacto -->
                                     <div class="form-field">
                                         <label for="phone" class="field-label">Teléfono de Contacto</label>
                                         <input type="tel" id="phone" name="phone" class="form-input"
@@ -367,6 +425,7 @@
                                     </div>
                                 </div>
 
+                                <!-- Campo: Sitio web (ancho completo) -->
                                 <div class="form-field full-width">
                                     <label for="website" class="field-label">Sitio Web</label>
                                     <input type="url" id="website" name="website" class="form-input"
@@ -377,13 +436,14 @@
                                 </div>
                             </div>
 
-                            <!-- Información Adicional -->
+                            <!-- SECCIÓN 5: Información Adicional -->
                             <div class="form-group">
                                 <h2 class="form-section-title">
                                     <i class="fas fa-plus-circle"></i>
                                     Información Adicional
                                 </h2>
 
+                                <!-- Campo: Comentarios adicionales -->
                                 <div class="form-field full-width">
                                     <label for="additionalInfo" class="field-label">Información Adicional</label>
                                     <textarea id="additionalInfo" name="additionalInfo" class="form-textarea"
@@ -394,9 +454,11 @@
                                     </div>
                                 </div>
 
+                                <!-- Campo: Subida de fotos -->
                                 <div class="form-field full-width">
                                     <label for="photos" class="field-label">Fotos del Punto (Opcional)</label>
                                     <div class="file-upload">
+                                        <!-- Input para múltiples imágenes -->
                                         <input type="file" id="photos" name="photos" class="file-input" multiple
                                             accept="image/*">
                                         <label for="photos" class="file-upload-label">
@@ -407,8 +469,9 @@
                                 </div>
                             </div>
 
-                            <!-- Términos y Condiciones -->
+                            <!-- SECCIÓN 6: Términos y Condiciones -->
                             <div class="form-group">
+                                <!-- Checkbox obligatorio para términos -->
                                 <div class="checkbox-item terms">
                                     <input type="checkbox" id="terms" name="terms" required>
                                     <span class="checkmark"></span>
@@ -419,12 +482,14 @@
                                 </div>
                             </div>
 
-                            <!-- Submit Buttons -->
+                            <!-- Botones de acción del formulario -->
                             <div class="form-actions">
+                                <!-- Guardar como borrador -->
                                 <button type="button" class="btn-secondary" id="saveDraft">
                                     <i class="fas fa-save"></i>
                                     Guardar Borrador
                                 </button>
+                                <!-- Enviar sugerencia definitiva -->
                                 <button type="submit" class="btn-primary" id="submitForm">
                                     <i class="fas fa-paper-plane"></i>
                                     Enviar Sugerencia
@@ -434,14 +499,15 @@
                     </div>
                 </section>
 
-                <!-- Information Sidebar -->
+                <!-- SECCIÓN DERECHA: Sidebar informativo -->
                 <aside class="info-sidebar">
-                    <!-- Community Impact Card -->
+                    <!-- TARJETA 1: Impacto de la comunidad -->
                     <div class="info-card impact-card">
                         <h3 class="card-title">
                             <i class="fas fa-chart-line"></i>
                             Impacto de la Comunidad
                         </h3>
+                        <!-- Estadísticas de participación -->
                         <div class="stats-grid">
                             <div class="stat-item">
                                 <div class="stat-number">1,247</div>
@@ -458,12 +524,13 @@
                         </div>
                     </div>
 
-                    <!-- Why Collaborate Card -->
+                    <!-- TARJETA 2: Beneficios de colaborar -->
                     <div class="info-card benefits-card">
                         <h3 class="card-title">
                             <i class="fas fa-heart"></i>
                             ¿Por qué colaborar?
                         </h3>
+                        <!-- Lista de motivaciones -->
                         <ul class="benefits-list">
                             <li class="benefit-item">
                                 <i class="fas fa-check-circle"></i>
@@ -484,13 +551,15 @@
                         </ul>
                     </div>
 
-                    <!-- Verification Process Card -->
+                    <!-- TARJETA 3: Proceso de verificación -->
                     <div class="info-card process-card">
                         <h3 class="card-title">
                             <i class="fas fa-clock"></i>
                             Proceso de Verificación
                         </h3>
+                        <!-- 3 pasos del proceso -->
                         <div class="process-steps">
+                            <!-- PASO 1: Envío -->
                             <div class="process-step">
                                 <div class="step-number">1</div>
                                 <div class="step-content">
@@ -498,6 +567,7 @@
                                     <p>Completas el formulario con la información del punto.</p>
                                 </div>
                             </div>
+                            <!-- PASO 2: Verificación -->
                             <div class="process-step">
                                 <div class="step-number">2</div>
                                 <div class="step-content">
@@ -505,6 +575,7 @@
                                     <p>Nuestro equipo confirma la información en 24-48 horas.</p>
                                 </div>
                             </div>
+                            <!-- PASO 3: Publicación -->
                             <div class="process-step">
                                 <div class="step-number">3</div>
                                 <div class="step-content">
@@ -515,12 +586,13 @@
                         </div>
                     </div>
 
-                    <!-- Tips Card -->
+                    <!-- TARJETA 4: Consejos útiles -->
                     <div class="info-card tips-card">
                         <h3 class="card-title">
                             <i class="fas fa-lightbulb"></i>
                             Consejos para tu sugerencia
                         </h3>
+                        <!-- Lista de recomendaciones -->
                         <ul class="tips-list">
                             <li class="tip-item">
                                 <i class="fas fa-arrow-right"></i>
@@ -545,6 +617,7 @@
         </div>
     </main>
 
+    <!-- Script para chatbot de Voiceflow -->
     <script type="text/javascript">
         (function (d, t) {
             var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
@@ -564,5 +637,6 @@
         })(document, 'script');
     </script>
 
+    <!-- JavaScript específico para la funcionalidad del formulario -->
     <script src="{{ url_for('static', filename='js/SugerirPunto.js') }}"></script>
 {% endblock %}

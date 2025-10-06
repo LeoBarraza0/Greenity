@@ -1,119 +1,159 @@
+<!-- Extiende el layout específico de login (sin navbar ni footer) -->
 {% extends "/main/layoutLogin.html" %}
+
 {% block content %}
+<!-- Contenedor principal del formulario de login -->
 <div class="login-container">
-        <!-- Botón de regreso -->
-        <div class="back-button">
-            <a href="{{ url_for('main') }}" class="back-link">
-                <i class="fas fa-arrow-left"></i>
-                Volver al inicio
-            </a>
+    <!-- Botón de regreso al inicio -->
+    <div class="back-button">
+        <a href="{{ url_for('main') }}" class="back-link">
+            <i class="fas fa-arrow-left"></i>
+            Volver al inicio
+        </a>
+    </div>
+    
+    <!-- Logo y título principal -->
+    <div class="header">
+        <!-- Logo de Greenity -->
+        <div class="logo">
+            <img src="{{ url_for('static', filename='img/LogoGnormal.png') }}" alt="Grennity Logo">
         </div>
-        
-        <!-- Logo y título principal -->
-        <div class="header">
-            <div class="logo">
-                <img src="{{ url_for('static', filename='img/LogoGnormal.png') }}" alt="Grennity Logo">
-            </div>
-            <h1 class="title">Bienvenido a Greenity</h1>
-            <p class="subtitle">Únete a nuestra comunidad ecológica</p>
+        <!-- Título de bienvenida -->
+        <h1 class="title">Bienvenido a Greenity</h1>
+        <!-- Subtítulo motivacional -->
+        <p class="subtitle">Únete a nuestra comunidad ecológica</p>
+    </div>
+
+    <!-- Card principal que contiene los formularios -->
+    <div class="form-card">
+        <!-- Pestañas para cambiar entre Login y Registro -->
+        <div class="tabs">
+            <!-- Pestaña activa: Iniciar Sesión -->
+            <button class="tab-btn active" data-tab="login">
+                Iniciar Sesión
+            </button>
+            <!-- Pestaña: Registrarse -->
+            <button class="tab-btn" data-tab="register">
+                Registrarse
+            </button>
         </div>
 
-        <!-- Card del formulario -->
-        <div class="form-card">
-            <!-- Tabs -->
-            <div class="tabs">
-                <button class="tab-btn active" data-tab="login">
-                    Iniciar Sesión
-                </button>
-                <button class="tab-btn" data-tab="register">
-                    Registrarse
-                </button>
+        <!-- FORMULARIO DE LOGIN -->
+        <div class="form-content" id="login-form">
+            <!-- Encabezado del formulario de login -->
+            <div class="form-header">
+                <h2>Iniciar Sesión</h2>
+                <p>Ingresa tus credenciales para acceder a tu cuenta</p>
             </div>
 
-            <!-- Formulario de Login -->
-            <div class="form-content" id="login-form">
-                <div class="form-header">
-                    <h2>Iniciar Sesión</h2>
-                    <p>Ingresa tus credenciales para acceder a tu cuenta</p>
+            <!-- Formulario principal de login -->
+            <form class="form" id="loginForm">
+                <!-- Token CSRF para seguridad -->
+                <input type="hidden" id="login-csrf-token" name="csrf_token" value="{{ csrf_token }}">
+                
+                <!-- Campo: Email -->
+                <div class="input-group">
+                    <label for="login-email">Correo Electrónico</label>
+                    <div class="input-wrapper">
+                        <!-- Icono de email -->
+                        <i class="fas fa-envelope input-icon"></i>
+                        <!-- Campo de entrada para email -->
+                        <input type="email" id="login-email" name="email" placeholder="tu@email.com" required>
+                    </div>
                 </div>
 
-                <form class="form" id="loginForm">
-                    <input type="hidden" id="login-csrf-token" name="csrf_token" value="{{ csrf_token }}">
-                    <div class="input-group">
-                        <label for="login-email">Correo Electrónico</label>
-                        <div class="input-wrapper">
-                            <i class="fas fa-envelope input-icon"></i>
-                            <input type="email" id="login-email" name="email" placeholder="tu@email.com" required>
-                        </div>
+                <!-- Campo: Contraseña -->
+                <div class="input-group">
+                    <label for="login-password">Contraseña</label>
+                    <div class="input-wrapper">
+                        <!-- Icono de candado -->
+                        <i class="fas fa-lock input-icon"></i>
+                        <!-- Campo de entrada para contraseña -->
+                        <input type="password" id="login-password" name="password" placeholder="••••••••" required>
+                        <!-- Botón para mostrar/ocultar contraseña -->
+                        <i class="fas fa-eye toggle-password" id="toggle-login-password"></i>
                     </div>
-
-                    <div class="input-group">
-                        <label for="login-password">Contraseña</label>
-                        <div class="input-wrapper">
-                            <i class="fas fa-lock input-icon"></i>
-                            <input type="password" id="login-password" name="password" placeholder="••••••••" required>
-                            <i class="fas fa-eye toggle-password" id="toggle-login-password"></i>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="submit-btn">
-                        <span>Iniciar Sesión</span>
-                        <i class="fas fa-arrow-right"></i>
-                    </button>
-
-                    <a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
-                </form>
-            </div>
-
-            <!-- Formulario de Registro -->
-            <div class="form-content hidden" id="register-form">
-                <div class="form-header">
-                    <h2>Registrarse</h2>
-                    <p>Crea tu cuenta y únete a nuestra comunidad</p>
                 </div>
 
-                <form class="form" id="registerForm">
-                    <input type="hidden" id="register-csrf-token" name="csrf_token" value="{{ csrf_token }}">
-                    <div class="input-group">
-                        <label for="register-name">Nombre Completo</label>
-                        <div class="input-wrapper">
-                            <i class="fas fa-user input-icon"></i>
-                            <input type="text" id="register-name" name="name" placeholder="Tu nombre completo" required>
-                        </div>
-                    </div>
+                <!-- Botón de envío del formulario -->
+                <button type="submit" class="submit-btn">
+                    <span>Iniciar Sesión</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
 
-                    <div class="input-group">
-                        <label for="register-email">Correo Electrónico</label>
-                        <div class="input-wrapper">
-                            <i class="fas fa-envelope input-icon"></i>
-                            <input type="email" id="register-email" name="email" placeholder="tu@email.com" required>
-                        </div>
-                    </div>
+                <!-- Enlace para recuperar contraseña -->
+                <a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
+            </form>
+        </div>
 
-                    <div class="input-group">
-                        <label for="register-password">Contraseña</label>
-                        <div class="input-wrapper">
-                            <i class="fas fa-lock input-icon"></i>
-                            <input type="password" id="register-password" name="password" placeholder="••••••••" required>
-                            <i class="fas fa-eye toggle-password" id="toggle-register-password"></i>
-                        </div>
-                    </div>
-
-                    <div class="input-group">
-                        <label for="register-confirm-password">Confirmar Contraseña</label>
-                        <div class="input-wrapper">
-                            <i class="fas fa-lock input-icon"></i>
-                            <input type="password" id="register-confirm-password" name="confirm_password" placeholder="••••••••" required>
-                            <i class="fas fa-eye toggle-password" id="toggle-register-confirm-password"></i>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="submit-btn">
-                        <span>Registrarse</span>
-                        <i class="fas fa-user-plus"></i>
-                    </button>
-                </form>
+        <!-- FORMULARIO DE REGISTRO -->
+        <div class="form-content hidden" id="register-form">
+            <!-- Encabezado del formulario de registro -->
+            <div class="form-header">
+                <h2>Registrarse</h2>
+                <p>Crea tu cuenta y únete a nuestra comunidad</p>
             </div>
+
+            <!-- Formulario principal de registro -->
+            <form class="form" id="registerForm">
+                <!-- Token CSRF para seguridad -->
+                <input type="hidden" id="register-csrf-token" name="csrf_token" value="{{ csrf_token }}">
+                
+                <!-- Campo: Nombre completo -->
+                <div class="input-group">
+                    <label for="register-name">Nombre Completo</label>
+                    <div class="input-wrapper">
+                        <!-- Icono de usuario -->
+                        <i class="fas fa-user input-icon"></i>
+                        <!-- Campo de entrada para nombre -->
+                        <input type="text" id="register-name" name="name" placeholder="Tu nombre completo" required>
+                    </div>
+                </div>
+
+                <!-- Campo: Email del registro -->
+                <div class="input-group">
+                    <label for="register-email">Correo Electrónico</label>
+                    <div class="input-wrapper">
+                        <!-- Icono de email -->
+                        <i class="fas fa-envelope input-icon"></i>
+                        <!-- Campo de entrada para email -->
+                        <input type="email" id="register-email" name="email" placeholder="tu@email.com" required>
+                    </div>
+                </div>
+
+                <!-- Campo: Contraseña del registro -->
+                <div class="input-group">
+                    <label for="register-password">Contraseña</label>
+                    <div class="input-wrapper">
+                        <!-- Icono de candado -->
+                        <i class="fas fa-lock input-icon"></i>
+                        <!-- Campo de entrada para contraseña -->
+                        <input type="password" id="register-password" name="password" placeholder="••••••••" required>
+                        <!-- Botón para mostrar/ocultar contraseña -->
+                        <i class="fas fa-eye toggle-password" id="toggle-register-password"></i>
+                    </div>
+                </div>
+
+                <!-- Campo: Confirmar contraseña -->
+                <div class="input-group">
+                    <label for="register-confirm-password">Confirmar Contraseña</label>
+                    <div class="input-wrapper">
+                        <!-- Icono de candado -->
+                        <i class="fas fa-lock input-icon"></i>
+                        <!-- Campo de entrada para confirmar contraseña -->
+                        <input type="password" id="register-confirm-password" name="confirm_password" placeholder="••••••••" required>
+                        <!-- Botón para mostrar/ocultar contraseña -->
+                        <i class="fas fa-eye toggle-password" id="toggle-register-confirm-password"></i>
+                    </div>
+                </div>
+
+                <!-- Botón de envío del registro -->
+                <button type="submit" class="submit-btn">
+                    <span>Registrarse</span>
+                    <i class="fas fa-user-plus"></i>
+                </button>
+            </form>
         </div>
     </div>
+</div>
 {% endblock %}

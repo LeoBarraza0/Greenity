@@ -1,36 +1,47 @@
+<!-- Extiende la plantilla base para incluir navbar y footer -->
 {% extends "main/layout.html" %}
+
+<!-- Bloque de header con meta datos específicos -->
 {% block header %}
 <title>Contacto - Grennity</title>
 <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/LogoGnormal.png') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/Contacto.css') }}">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 {% endblock %}
+
+<!-- Contenido principal de la página -->
 {% block content %}
-<!-- Main Content -->
+    <!-- Contenido principal de contacto -->
     <main class="main-content">
         <div class="container">
-            <!-- Hero Section -->
+            <!-- Sección hero con título y descripción -->
             <section class="hero-section">
                 <div class="hero-content">
+                    <!-- Icono principal de contacto -->
                     <div class="hero-icon">
                         <i class="fas fa-phone-alt"></i>
                     </div>
+                    <!-- Título de la página -->
                     <h1 class="hero-title">Contacto y Ayuda</h1>
+                    <!-- Subtítulo descriptivo -->
                     <p class="hero-subtitle">¿Tienes preguntas o necesitas ayuda? Estamos aquí para apoyarte</p>
                 </div>
             </section>
 
-            <!-- Main Grid Layout -->
+            <!-- Layout principal dividido en 2 columnas -->
             <div class="main-grid">
-                <!-- Contact Form Section -->
+                <!-- COLUMNA IZQUIERDA: Formulario de contacto -->
                 <section class="form-section">
                     <div class="form-container">
+                        <!-- Título del formulario -->
                         <h2 class="form-title">
                             <i class="fas fa-envelope"></i>
                             Envíanos un mensaje
                         </h2>
                         
+                        <!-- Formulario principal de contacto -->
                         <form class="contact-form" id="contactForm">
+                            <!-- Campo: Nombre completo -->
                             <div class="form-field">
                                 <label for="fullName" class="field-label">Nombre completo *</label>
                                 <input type="text" id="fullName" name="fullName" class="form-input" placeholder="Tu nombre" required>
@@ -39,6 +50,7 @@
                                 </div>
                             </div>
 
+                            <!-- Campo: Email -->
                             <div class="form-field">
                                 <label for="email" class="field-label">Email *</label>
                                 <input type="email" id="email" name="email" class="form-input" placeholder="email@gmail.com" required>
@@ -47,6 +59,7 @@
                                 </div>
                             </div>
 
+                            <!-- Campo: Categoría de consulta -->
                             <div class="form-field">
                                 <label for="category" class="field-label">Categoría *</label>
                                 <div class="select-container">
@@ -67,6 +80,7 @@
                                 </div>
                             </div>
 
+                            <!-- Campo: Asunto del mensaje -->
                             <div class="form-field">
                                 <label for="subject" class="field-label">Asunto *</label>
                                 <input type="text" id="subject" name="subject" class="form-input" placeholder="Resumen breve" required>
@@ -75,6 +89,7 @@
                                 </div>
                             </div>
 
+                            <!-- Campo: Mensaje principal -->
                             <div class="form-field">
                                 <label for="message" class="field-label">Mensaje *</label>
                                 <textarea id="message" name="message" class="form-textarea" placeholder="Ingrese el mensaje" rows="5" required></textarea>
@@ -83,11 +98,13 @@
                                 </div>
                             </div>
 
+                            <!-- Información sobre tiempo de respuesta -->
                             <div class="form-info">
                                 <i class="fas fa-info-circle"></i>
                                 <p>Responderemos a tu consulta en un plazo máximo de 24 horas. Para consultas urgentes, puedes contactarnos por teléfono.</p>
                             </div>
 
+                            <!-- Botón para enviar el formulario -->
                             <button type="submit" class="submit-btn">
                                 <i class="fas fa-paper-plane"></i>
                                 Enviar mensaje
@@ -96,15 +113,16 @@
                     </div>
                 </section>
 
-                <!-- Information Sidebar -->
+                <!-- COLUMNA DERECHA: Información de contacto -->
                 <aside class="info-sidebar">
-                    <!-- Contact Methods Card -->
+                    <!-- Tarjeta: Métodos de contacto -->
                     <div class="info-card contact-methods">
                         <h3 class="card-title">
                             <i class="fas fa-phone"></i>
                             Formas de Contacto
                         </h3>
                         
+                        <!-- Método 1: Teléfono -->
                         <div class="contact-method">
                             <div class="method-icon">
                                 <i class="fas fa-phone"></i>
@@ -120,6 +138,7 @@
                             </div>
                         </div>
 
+                        <!-- Método 2: Email directo -->
                         <div class="contact-method">
                             <div class="method-icon">
                                 <i class="fas fa-envelope"></i>
@@ -135,6 +154,7 @@
                             </div>
                         </div>
 
+                        <!-- Método 3: Chat en vivo -->
                         <div class="contact-method">
                             <div class="method-icon">
                                 <i class="fas fa-comments"></i>
@@ -151,21 +171,24 @@
                         </div>
                     </div>
 
-                    <!-- Office Hours Card -->
+                    <!-- Tarjeta: Horarios de atención -->
                     <div class="info-card office-hours">
                         <h3 class="card-title">
                             <i class="fas fa-clock"></i>
                             Horarios de Atención
                         </h3>
                         <div class="hours-list">
+                            <!-- Horarios de días laborables -->
                             <div class="hour-item">
                                 <span class="day">Lunes - Viernes</span>
                                 <span class="time">9:00 - 18:00</span>
                             </div>
+                            <!-- Horarios de sábado -->
                             <div class="hour-item">
                                 <span class="day">Sábados</span>
                                 <span class="time">10:00 - 14:00</span>
                             </div>
+                            <!-- Domingo cerrado -->
                             <div class="hour-item">
                                 <span class="day">Domingos</span>
                                 <span class="time closed">Cerrado</span>
@@ -173,17 +196,19 @@
                         </div>
                     </div>
 
-                    <!-- Office Location Card -->
+                    <!-- Tarjeta: Ubicación de oficina -->
                     <div class="info-card office-location">
                         <h3 class="card-title">
                             <i class="fas fa-map-marker-alt"></i>
                             Nuestra Oficina
                         </h3>
                         <div class="location-content">
+                            <!-- Dirección física de la oficina -->
                             <p class="address">Greenity Headquarters<br>
                             Av. Corrientes 1234, Piso 5<br>
                             Buenos Aires, Argentina<br>
                             C1043AAZ</p>
+                            <!-- Botón para ver ubicación en mapa -->
                             <button class="location-btn">
                                 <i class="fas fa-map"></i>
                                 Ver en Google Maps
@@ -191,7 +216,7 @@
                         </div>
                     </div>
 
-                    <!-- Urgent Contact Card -->
+                    <!-- Tarjeta: Contacto urgente -->
                     <div class="info-card urgent-contact">
                         <h3 class="card-title">
                             <i class="fas fa-exclamation-triangle"></i>
@@ -202,14 +227,16 @@
                 </aside>
             </div>
 
-            <!-- FAQ Section -->
+            <!-- SECCIÓN: Preguntas frecuentes -->
             <section class="faq-section">
                 <div class="faq-container">
+                    <!-- Título de la sección FAQ -->
                     <h2 class="faq-title">
                         <i class="fas fa-question-circle"></i>
                         Preguntas Frecuentes
                     </h2>
                     
+                    <!-- Buscador de preguntas -->
                     <div class="faq-search">
                         <div class="search-container">
                             <i class="fas fa-search"></i>
@@ -217,11 +244,13 @@
                         </div>
                     </div>
 
+                    <!-- Categorías de preguntas frecuentes -->
                     <div class="faq-categories">
-                        <!-- General Category -->
+                        <!-- CATEGORÍA: General -->
                         <div class="faq-category">
                             <h3 class="category-title">General</h3>
                             <div class="faq-items">
+                                <!-- Pregunta: ¿Cómo funciona Greenity? -->
                                 <div class="faq-item">
                                     <div class="faq-question">
                                         <span>¿Cómo funciona Greenity?</span>
@@ -231,6 +260,7 @@
                                         <p>Greenity es una plataforma que te ayuda a encontrar puntos de reciclaje cercanos a tu ubicación. Simplemente abre el mapa, busca tu área y descubre los centros de reciclaje disponibles.</p>
                                     </div>
                                 </div>
+                                <!-- Pregunta: ¿Es gratuito? -->
                                 <div class="faq-item">
                                     <div class="faq-question">
                                         <span>¿Es gratuito usar Greenity?</span>
@@ -243,10 +273,11 @@
                             </div>
                         </div>
 
-                        <!-- Puntos de Reciclaje Category -->
+                        <!-- CATEGORÍA: Puntos de Reciclaje -->
                         <div class="faq-category">
                             <h3 class="category-title">Puntos de Reciclaje</h3>
                             <div class="faq-items">
+                                <!-- Pregunta: Sugerir nuevo punto -->
                                 <div class="faq-item">
                                     <div class="faq-question">
                                         <span>¿Cómo puedo sugerir un nuevo punto de reciclaje?</span>
@@ -256,6 +287,7 @@
                                         <p>Puedes sugerir un nuevo punto usando el formulario "Sugerir Punto" en nuestro sitio web. Completa la información del lugar y nuestro equipo lo verificará antes de publicarlo.</p>
                                     </div>
                                 </div>
+                                <!-- Pregunta: Reportar problema -->
                                 <div class="faq-item">
                                     <div class="faq-question">
                                         <span>¿Qué hago si un punto de reciclaje está cerrado o la información es incorrecta?</span>
@@ -268,10 +300,11 @@
                             </div>
                         </div>
 
-                        <!-- Reciclaje Category -->
+                        <!-- CATEGORÍA: Reciclaje -->
                         <div class="faq-category">
                             <h3 class="category-title">Reciclaje</h3>
                             <div class="faq-items">
+                                <!-- Pregunta: Qué materiales reciclar -->
                                 <div class="faq-item">
                                     <div class="faq-question">
                                         <span>¿Qué materiales se pueden reciclar?</span>
@@ -281,6 +314,7 @@
                                         <p>Se pueden reciclar plásticos, papel, cartón, vidrio, metales, electrónicos, pilas, aceite usado, textiles y materiales orgánicos. Cada punto acepta diferentes tipos de materiales.</p>
                                     </div>
                                 </div>
+                                <!-- Pregunta: Limpiar envases -->
                                 <div class="faq-item">
                                     <div class="faq-question">
                                         <span>¿Necesito limpiar los envases antes de reciclarlos?</span>
@@ -293,10 +327,11 @@
                             </div>
                         </div>
 
-                        <!-- Técnico Category -->
+                        <!-- CATEGORÍA: Técnico -->
                         <div class="faq-category">
                             <h3 class="category-title">Técnico</h3>
                             <div class="faq-items">
+                                <!-- Pregunta: Problemas de ubicación -->
                                 <div class="faq-item">
                                     <div class="faq-question">
                                         <span>¿Por qué no puedo ver mi ubicación en el mapa?</span>
@@ -306,6 +341,7 @@
                                         <p>Verifica que tengas habilitada la geolocalización en tu navegador. También asegúrate de tener una conexión a internet estable.</p>
                                     </div>
                                 </div>
+                                <!-- Pregunta: Problemas de carga -->
                                 <div class="faq-item">
                                     <div class="faq-question">
                                         <span>La aplicación no carga correctamente</span>
@@ -319,6 +355,7 @@
                         </div>
                     </div>
 
+                    <!-- Footer de la sección FAQ -->
                     <div class="faq-footer">
                         <p>¿No encontraste lo que buscabas?</p>
                         <button class="contact-btn">
@@ -331,6 +368,7 @@
         </div>
     </main>
 
+    <!-- Script para chatbot de Voiceflow -->
     <script type="text/javascript">
         (function(d, t) {
             var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
@@ -348,7 +386,8 @@
             v.type = "text/javascript"; 
             s.parentNode.insertBefore(v, s);
         })(document, 'script');
-      </script>
+    </script>
 
+    <!-- JavaScript específico para la página de contacto -->
     <script src="{{ url_for('static', filename='js/Contacto.js') }}"></script>
 {% endblock %}

@@ -1,27 +1,38 @@
+<!-- Extiende la plantilla base para incluir navbar y footer -->
 {% extends "main/layout.html" %}
+
+<!-- Bloque de header con meta datos específicos -->
 {% block header %}
 <title>Sección Educativa - Grennity</title>
 <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/LogoGnormal.png') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/Educativo.css') }}">
 {% endblock %}
+
+<!-- Contenido principal de la página -->
 {% block content %}
-<!-- Main Content -->
+<!-- Contenido principal -->
 <main class="main-content">
     <div class="container">
-        <!-- Hero Section -->
+        <!-- Sección hero con título principal y botones de acción -->
         <section class="hero-section">
             <div class="hero-content">
+                <!-- Icono principal de educación -->
                 <div class="hero-icon">
                     <i class="fas fa-book-open"></i>
                 </div>
+                <!-- Título principal de la página -->
                 <h1 class="hero-title">Aprende a Reciclar Correctamente</h1>
+                <!-- Subtítulo descriptivo -->
                 <p class="hero-subtitle">Descubre cómo preparar tus materiales, dónde llevarlos y por qué cada acción
                     cuenta para el medio ambiente</p>
+                <!-- Botones de acción principales -->
                 <div class="hero-buttons">
+                    <!-- Botón para ver guía en video -->
                     <button class="btn-primary">
                         <i class="fas fa-play"></i>
                         Ver guía en video
                     </button>
+                    <!-- Botón para descargar guía PDF -->
                     <button class="btn-secondary">
                         <i class="fas fa-download"></i>
                         Descargar guía PDF
@@ -30,24 +41,28 @@
             </div>
         </section>
 
-        <!-- 4 Steps Section -->
+        <!-- Sección de 4 pasos básicos del reciclaje -->
         <section class="steps-section">
             <div class="section-header">
                 <h2 class="section-title">Cómo Reciclar en 4 Pasos</h2>
                 <p class="section-subtitle">Sigue esta guía simple para asegurar que tus materiales sean reciclados
                     correctamente</p>
             </div>
+            <!-- Grid con los 4 pasos -->
             <div class="steps-grid">
+                <!-- PASO 1: Separar en casa -->
                 <div class="step-card">
                     <div class="step-number">1</div>
                     <h3 class="step-title">Separa en casa</h3>
                     <p class="step-description">Clasifica tus residuos en diferentes contenedores según el material</p>
+                    <!-- Lista de consejos para este paso -->
                     <ul class="step-list">
                         <li><i class="fas fa-check"></i> Usa contenedores separados</li>
                         <li><i class="fas fa-check"></i> Etiqueta cada contenedor</li>
                         <li><i class="fas fa-check"></i> Mantén los materiales secos</li>
                     </ul>
                 </div>
+                <!-- PASO 2: Limpiar y preparar -->
                 <div class="step-card">
                     <div class="step-number">2</div>
                     <h3 class="step-title">Limpia y prepara</h3>
@@ -58,6 +73,7 @@
                         <li><i class="fas fa-check"></i> Deja secar completamente</li>
                     </ul>
                 </div>
+                <!-- PASO 3: Encontrar el punto de reciclaje -->
                 <div class="step-card">
                     <div class="step-number">3</div>
                     <h3 class="step-title">Encuentra el punto</h3>
@@ -68,6 +84,7 @@
                         <li><i class="fas fa-check"></i> Planifica tu ruta</li>
                     </ul>
                 </div>
+                <!-- PASO 4: Depositar correctamente -->
                 <div class="step-card">
                     <div class="step-number">4</div>
                     <h3 class="step-title">Deposita correctamente</h3>
@@ -82,20 +99,22 @@
             </div>
         </section>
 
-        <!-- Material Guides Section -->
+        <!-- Sección de guías específicas por material -->
         <section class="material-guides-section">
             <div class="section-header">
                 <h2 class="section-title">Guías por Material</h2>
                 <p class="section-subtitle">Aprende cómo preparar cada tipo de material para maximizar su reciclaje</p>
             </div>
+            <!-- Pestañas para cambiar entre materiales -->
             <div class="material-tabs">
                 <button class="material-tab active" data-material="plastico">Plástico</button>
                 <button class="material-tab" data-material="papel">Papel y Cartón</button>
                 <button class="material-tab" data-material="vidrio">Vidrio</button>
                 <button class="material-tab" data-material="metal">Metal</button>
             </div>
+            <!-- Contenido de las guías (cambia según la pestaña activa) -->
             <div class="material-content">
-                <!-- Plástico -->
+                <!-- GUÍA: Plástico -->
                 <div class="material-guide active" id="plastico">
                     <div class="guide-header">
                         <h3 class="guide-title">
@@ -104,7 +123,9 @@
                         </h3>
                         <p class="guide-subtitle">Guía completa de reciclaje</p>
                     </div>
+                    <!-- Tabla con información organizada en columnas -->
                     <div class="guide-table">
+                        <!-- Materiales aceptados -->
                         <div class="table-column accepted">
                             <h4 class="column-title">Aceptados</h4>
                             <div class="table-item">
@@ -116,6 +137,7 @@
                                 <span>Bolsas plásticas</span>
                             </div>
                         </div>
+                        <!-- Materiales NO aceptados -->
                         <div class="table-column rejected">
                             <h4 class="column-title">No Aceptados</h4>
                             <div class="table-item">
@@ -127,6 +149,7 @@
                                 <span>Tapas de botellas</span>
                             </div>
                         </div>
+                        <!-- Cómo preparar el material -->
                         <div class="table-column preparation">
                             <h4 class="column-title">Preparación</h4>
                             <div class="table-item">
@@ -138,6 +161,7 @@
                                 <span>Retirar etiquetas</span>
                             </div>
                         </div>
+                        <!-- Consejos adicionales -->
                         <div class="table-column tips">
                             <h4 class="column-title">Consejos</h4>
                             <div class="table-item">
@@ -152,7 +176,7 @@
                     </div>
                 </div>
 
-                <!-- Papel y Cartón -->
+                <!-- GUÍA: Papel y Cartón -->
                 <div class="material-guide" id="papel">
                     <div class="guide-header">
                         <h3 class="guide-title">
@@ -209,7 +233,7 @@
                     </div>
                 </div>
 
-                <!-- Vidrio -->
+                <!-- GUÍA: Vidrio -->
                 <div class="material-guide" id="vidrio">
                     <div class="guide-header">
                         <h3 class="guide-title">
@@ -266,7 +290,7 @@
                     </div>
                 </div>
 
-                <!-- Metal -->
+                <!-- GUÍA: Metal -->
                 <div class="material-guide" id="metal">
                     <div class="guide-header">
                         <h3 class="guide-title">
@@ -325,21 +349,25 @@
             </div>
         </section>
 
-        <!-- Myths vs Reality Section -->
+        <!-- Sección que desmiente mitos comunes sobre reciclaje -->
         <section class="myths-section">
             <div class="section-header">
                 <h2 class="section-title">Mitos vs Realidades</h2>
                 <p class="section-subtitle">Desmontamos los mitos más comunes sobre el reciclaje para que puedas hacerlo
                     correctamente</p>
             </div>
+            <!-- Grid con tarjetas de mitos vs realidades -->
             <div class="myths-grid">
+                <!-- MITO 1: Todo el plástico se recicla -->
                 <div class="myth-card">
                     <h3 class="myth-title">Todo el plástico se puede reciclar</h3>
                     <div class="myth-content">
+                        <!-- El mito (incorrecto) -->
                         <div class="myth-item myth">
                             <i class="fas fa-times"></i>
                             <span>Todo el plástico se puede reciclar</span>
                         </div>
+                        <!-- La realidad (correcto) -->
                         <div class="myth-item reality">
                             <i class="fas fa-check"></i>
                             <span>Solo ciertos tipos de plástico son reciclables. Verifica los números en el fondo del
@@ -347,6 +375,7 @@
                         </div>
                     </div>
                 </div>
+                <!-- MITO 2: Envases sucios -->
                 <div class="myth-card">
                     <h3 class="myth-title">No importa si los envases están sucios</h3>
                     <div class="myth-content">
@@ -361,6 +390,7 @@
                         </div>
                     </div>
                 </div>
+                <!-- MITO 3: Papel encerado -->
                 <div class="myth-card">
                     <h3 class="myth-title">El papel encerado es reciclable</h3>
                     <div class="myth-content">
@@ -375,6 +405,7 @@
                         </div>
                     </div>
                 </div>
+                <!-- MITO 4: Bolsas plásticas -->
                 <div class="myth-card">
                     <h3 class="myth-title">Las bolsas plásticas van en el contenedor de reciclaje</h3>
                     <div class="myth-content">
@@ -389,6 +420,7 @@
                         </div>
                     </div>
                 </div>
+                <!-- MITO 5: El reciclaje no sirve -->
                 <div class="myth-card">
                     <h3 class="myth-title">Reciclar no hace diferencia real</h3>
                     <div class="myth-content">
@@ -403,6 +435,7 @@
                         </div>
                     </div>
                 </div>
+                <!-- MITO 6: Vidrio roto -->
                 <div class="myth-card">
                     <h3 class="myth-title">El vidrio roto se puede reciclar normalmente</h3>
                     <div class="myth-content">
@@ -420,13 +453,15 @@
             </div>
         </section>
 
-        <!-- Eco Tips Section -->
+        <!-- Sección de consejos adicionales para cuidar el medio ambiente -->
         <section class="eco-tips-section">
             <div class="section-header">
                 <h2 class="section-title">Consejos Eco-Amigables</h2>
                 <p class="section-subtitle">Pequeñas acciones que generan un gran impacto en el medio ambiente</p>
             </div>
+            <!-- Grid con consejos ecológicos -->
             <div class="tips-grid">
+                <!-- CONSEJO 1: Reducir consumo -->
                 <div class="tip-card">
                     <div class="tip-icon">
                         <i class="fas fa-arrow-down"></i>
@@ -434,8 +469,10 @@
                     <h3 class="tip-title">Reduce antes de reciclar</h3>
                     <p class="tip-description">La mejor forma de ayudar al ambiente es consumir menos. Piensa si
                         realmente necesitas algo antes de comprar.</p>
+                    <!-- Impacto estimado del consejo -->
                     <div class="tip-impact">Impacto estimado: <strong>Hasta 50% menos residuos</strong></div>
                 </div>
+                <!-- CONSEJO 2: Reutilizar -->
                 <div class="tip-card">
                     <div class="tip-icon">
                         <i class="fas fa-recycle"></i>
@@ -445,6 +482,7 @@
                         almacenar o como macetas.</p>
                     <div class="tip-impact">Impacto estimado: <strong>Extiende vida útil 3x</strong></div>
                 </div>
+                <!-- CONSEJO 3: Compostaje -->
                 <div class="tip-card">
                     <div class="tip-icon">
                         <i class="fas fa-leaf"></i>
@@ -454,6 +492,7 @@
                         hasta 30% de tu basura.</p>
                     <div class="tip-impact">Impacto estimado: <strong>30% menos basura</strong></div>
                 </div>
+                <!-- CONSEJO 4: Ahorro energético -->
                 <div class="tip-card">
                     <div class="tip-icon">
                         <i class="fas fa-bolt"></i>
@@ -466,7 +505,7 @@
             </div>
         </section>
 
-        <!-- Certification Section -->
+        <!-- Sección de certificación en reciclaje -->
         <section class="certification-section">
             <div class="section-header">
                 <h2 class="section-title">⭐ Obtén tu Certificación en Reciclaje ⭐</h2>
@@ -475,6 +514,7 @@
             </div>
             <div class="certification-content">
                 <div class="certification-card">
+                    <!-- Icono de certificado -->
                     <div class="cert-icon">
                         <i class="fas fa-certificate"></i>
                     </div>
@@ -482,6 +522,7 @@
                     <p class="cert-description">Completa nuestro examen de 10 preguntas y demuestra que conoces las
                         mejores prácticas de reciclaje. Al aprobar con 9-10 puntos, obtendrás un certificado oficial
                         descargable.</p>
+                    <!-- Características del certificado -->
                     <div class="cert-features">
                         <div class="feature-item">
                             <i class="fas fa-check"></i>
@@ -496,6 +537,7 @@
                             <span>Validación de conocimientos</span>
                         </div>
                     </div>
+                    <!-- Botón para iniciar el examen -->
                     <button class="btn-primary cert-start-btn">
                         <i class="fas fa-play"></i>
                         Iniciar Examen
@@ -504,11 +546,12 @@
             </div>
         </section>
 
-        <!-- Fun Facts Section -->
+        <!-- Sección de datos curiosos sobre reciclaje -->
         <section class="fun-facts-section">
             <div class="section-header">
                 <h2 class="section-title">¿Sabías que...?</h2>
             </div>
+            <!-- Lista de hechos interesantes -->
             <div class="facts-list">
                 <div class="fact-item">
                     <i class="fas fa-check"></i>
@@ -529,15 +572,17 @@
             </div>
         </section>
 
-        <!-- Share Section -->
+        <!-- Sección para compartir conocimiento -->
         <section class="share-section">
             <div class="share-content">
+                <!-- Icono de compartir -->
                 <div class="share-icon">
                     <i class="fas fa-heart"></i>
                 </div>
                 <h2 class="share-title">¡Comparte el conocimiento!</h2>
                 <p class="share-subtitle">Ayuda a crear una comunidad más consciente compartiendo estos consejos con tus
                     amigos y familiares</p>
+                <!-- Botones para compartir -->
                 <div class="share-buttons">
                     <button class="btn-outline">
                         <i class="fas fa-share"></i>
@@ -553,19 +598,22 @@
     </div>
 </main>
 
-<!-- Pop-up de invitación a certificación -->
+<!-- Pop-up para invitar a realizar la certificación -->
 <div id="certification-popup" class="popup-overlay">
     <div class="popup-content">
         <div class="popup-header">
+            <!-- Icono de graduación -->
             <div class="popup-icon">
                 <i class="fas fa-graduation-cap"></i>
             </div>
             <h3 class="popup-title">⭐ ¡Obtén tu Certificación! ⭐</h3>
         </div>
         <div class="popup-body">
+            <!-- Mensaje promocional -->
             <p class="popup-message">¿Sabías que puedes certificar tus conocimientos en reciclaje? Completa nuestro
                 examen de 10 preguntas y obtén un certificado oficial que valide tu compromiso con el medio ambiente.
             </p>
+            <!-- Características del examen -->
             <div class="popup-features">
                 <div class="popup-feature">
                     <i class="fas fa-star"></i>
@@ -581,11 +629,14 @@
                 </div>
             </div>
         </div>
+        <!-- Botones de acción del popup -->
         <div class="popup-actions">
+            <!-- Posponer el examen -->
             <button class="btn-secondary popup-later-btn">
                 <i class="fas fa-clock"></i>
                 Hacer Luego
             </button>
+            <!-- Iniciar el examen -->
             <button class="btn-primary popup-start-btn">
                 <i class="fas fa-play"></i>
                 Realizar el Examen
@@ -594,34 +645,40 @@
     </div>
 </div>
 
-<!-- Modal de Trivia -->
+<!-- Modal para el examen de certificación -->
 <div id="trivia-modal" class="modal-overlay">
     <div class="modal-content">
         <div class="modal-header">
             <h3 class="modal-title">Examen de Certificación en Reciclaje</h3>
+            <!-- Botón para cerrar el modal -->
             <button class="modal-close" id="close-trivia">
                 <i class="fas fa-times"></i>
             </button>
         </div>
         <div class="modal-body">
+            <!-- Barra de progreso del examen -->
             <div class="trivia-progress">
                 <div class="progress-bar">
                     <div class="progress-fill" id="progress-fill"></div>
                 </div>
                 <span class="progress-text" id="progress-text">Pregunta 1 de 10</span>
             </div>
+            <!-- Área donde aparecen las preguntas -->
             <div class="trivia-question" id="trivia-question">
-                <!-- Las preguntas se cargarán dinámicamente -->
+                <!-- Las preguntas se cargarán dinámicamente con JavaScript -->
             </div>
+            <!-- Área donde aparecen las opciones de respuesta -->
             <div class="trivia-options" id="trivia-options">
-                <!-- Las opciones se cargarán dinámicamente -->
+                <!-- Las opciones se cargarán dinámicamente con JavaScript -->
             </div>
         </div>
         <div class="modal-footer">
+            <!-- Botón para saltar pregunta (oculto por defecto) -->
             <button class="btn-outline" id="trivia-skip" style="display: none;">
                 <i class="fas fa-forward"></i>
                 Saltar
             </button>
+            <!-- Botón para siguiente pregunta (oculto por defecto) -->
             <button class="btn-primary" id="trivia-next" style="display: none;">
                 <i class="fas fa-arrow-right"></i>
                 Siguiente
@@ -630,26 +687,30 @@
     </div>
 </div>
 
-<!-- Modal de Resultados -->
+<!-- Modal para mostrar los resultados del examen -->
 <div id="results-modal" class="modal-overlay">
     <div class="modal-content results-modal">
         <div class="modal-header">
             <h3 class="modal-title">Resultados del Examen</h3>
         </div>
         <div class="modal-body">
+            <!-- Área donde se muestran los resultados -->
             <div class="results-content" id="results-content">
-                <!-- Los resultados se cargarán dinámicamente -->
+                <!-- Los resultados se cargarán dinámicamente con JavaScript -->
             </div>
         </div>
         <div class="modal-footer">
+            <!-- Botón para repetir el examen -->
             <button class="btn-outline" id="retake-exam">
                 <i class="fas fa-redo"></i>
                 Repetir Examen
             </button>
+            <!-- Botón para descargar certificado (solo si aprobó) -->
             <button class="btn-primary" id="download-certificate" style="display: none;">
                 <i class="fas fa-download"></i>
                 Descargar Certificado
             </button>
+            <!-- Botón para cerrar los resultados -->
             <button class="btn-secondary" id="close-results">
                 <i class="fas fa-check"></i>
                 Cerrar
@@ -658,6 +719,7 @@
     </div>
 </div>
 
+<!-- Script para chatbot de Voiceflow -->
 <script type="text/javascript">
     (function (d, t) {
         var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
@@ -677,5 +739,6 @@
     })(document, 'script');
 </script>
 
+<!-- JavaScript específico para la página educativa -->
 <script src="{{ url_for('static', filename='js/Educativo.js') }}"></script>
 {% endblock %}

@@ -1,97 +1,125 @@
+<!-- Extiende la plantilla base para incluir navbar y footer -->
 {% extends "main/layout.html" %}
+
+<!-- Bloque de header con meta datos específicos de la página principal -->
 {% block header %}
 <title>Grennity - Encuentra Puntos de Reciclaje</title>
 <link rel="icon" type="image/png" href="{{ url_for('static', filename='Img/LogoGnormal.png') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 {% endblock %}
+
+<!-- Contenido principal de la página -->
 {% block content %}
-<!-- Hero Section -->
+    <!-- SECCIÓN HERO: Presentación principal de Greenity -->
     <section class="hero">
         <div class="container">
             <div class="hero-content">
-
+                <!-- Logo principal de Greenity -->
                 <div class="LogoPrincipal">
                     <img src="{{ url_for('static', filename='Img/LogoGnormal.png') }}" alt="Grennity Logo">
                 </div>
 
+                <!-- Título principal de la página -->
                 <h1 class="hero-title">
                     Encuentra Puntos de <span class="highlight">Reciclaje</span> Cercanos
                 </h1>
+                
+                <!-- Subtítulo descriptivo con emoji -->
                 <p class="hero-subtitle">
                     Descubre dónde y cómo reciclar correctamente en tu ciudad. Únete a la comunidad que cuida el medio
                     ambiente.🌱
                 </p>
+                
+                <!-- Barra de búsqueda principal -->
                 <div class="search-container">
                     <div class="search-bar">
+                        <!-- Icono de búsqueda -->
                         <i class="fas fa-search"></i>
+                        <!-- Campo de entrada para dirección -->
                         <input type="text" placeholder="Ingresa tu dirección o código postal">
+                        <!-- Botón para ejecutar la búsqueda -->
                         <button class="search-btn">
                             <i class="fas fa-map-marker-alt"></i>
                             Buscar
                         </button>
                     </div>
                 </div>
+                
+                <!-- Acciones adicionales del hero -->
                 <div class="hero-actions">
+                    <!-- Botón para detectar ubicación automáticamente -->
                     <button class="location-btn">
                         <i class="fas fa-location-arrow"></i>
                         Usar mi ubicación actual
                     </button>
+                    <!-- Enlace directo al mapa completo -->
                     <a href="{{ url_for('mapa') }}" class="map-link">Ver mapa completo</a>
                 </div>
             </div>
-
         </div>
     </section>
 
-    <!-- Statistics Section -->
+    <!-- SECCIÓN ESTADÍSTICAS: Números importantes de Greenity -->
     <section class="stats">
         <div class="container">
             <div class="stats-grid">
+                <!-- Estadística 1: Puntos de reciclaje disponibles -->
                 <div class="stat-card">
                     <div class="stat-number">150+</div>
                     <div class="stat-label">Puntos de Reciclaje</div>
                 </div>
+                
+                <!-- Estadística 2: Usuarios registrados -->
                 <div class="stat-card">
                     <div class="stat-number">25K+</div>
                     <div class="stat-label">Usuarios Activos</div>
                 </div>
+                
+                <!-- Estadística 3: Material procesado -->
                 <div class="stat-card">
                     <div class="stat-number">500T</div>
                     <div class="stat-label">Material Reciclado</div>
                 </div>
+                
+                <!-- Estadística 4: Cobertura geográfica -->
                 <div class="stat-card">
                     <div class="stat-number">12</div>
                     <div class="stat-label">Ciudades Cubiertas</div>
                 </div>
             </div>
-            
         </div>
     </section>
 
-    <!-- Features Section -->
+    <!-- SECCIÓN CARACTERÍSTICAS: Funcionalidades principales -->
     <section class="features">
         <div class="container">
+            <!-- Título de la sección -->
             <h2 class="features-title">Todo lo que necesitas para reciclar mejor</h2>
-            <p class="features-subtitle">Herramientas y recursos diseñados para hacer el reciclaje más fácil y efectivo
-            </p>
+            <!-- Subtítulo descriptivo -->
+            <p class="features-subtitle">Herramientas y recursos diseñados para hacer el reciclaje más fácil y efectivo</p>
+            
+            <!-- Grid con las 4 características principales -->
             <div class="features-grid">
+                <!-- CARACTERÍSTICA 1: Mapa interactivo -->
                 <div class="feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-map"></i>
                     </div>
                     <h3 class="feature-title">Mapa Interactivo</h3>
-                    <p class="feature-description">Encuentra puntos de reciclaje cercanos con nuestro mapa fácil de
-                        usar.</p>
+                    <p class="feature-description">Encuentra puntos de reciclaje cercanos con nuestro mapa fácil de usar.</p>
                 </div>
+                
+                <!-- CARACTERÍSTICA 2: Sistema de filtros -->
                 <div class="feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-filter"></i>
                     </div>
                     <h3 class="feature-title">Filtros Avanzados</h3>
-                    <p class="feature-description">Filtra por tipo de material: plástico, papel, vidrio, electrónicos y
-                        más.</p>
+                    <p class="feature-description">Filtra por tipo de material: plástico, papel, vidrio, electrónicos y más.</p>
                 </div>
+                
+                <!-- CARACTERÍSTICA 3: Contenido educativo -->
                 <div class="feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-book"></i>
@@ -99,6 +127,8 @@
                     <h3 class="feature-title">Guías Educativas</h3>
                     <p class="feature-description">Aprende cómo preparar y clasificar tus materiales reciclables.</p>
                 </div>
+                
+                <!-- CARACTERÍSTICA 4: Participación comunitaria -->
                 <div class="feature-card">
                     <div class="feature-icon">
                         <i class="fas fa-users"></i>
@@ -110,24 +140,35 @@
         </div>
     </section>
 
-    <!-- Call to Action Section -->
+    <!-- SECCIÓN LLAMADA A LA ACCIÓN: Invitación final -->
     <section class="cta">
         <div class="container">
+            <!-- Icono ecológico -->
             <div class="cta-icon">
                 <i class="fas fa-leaf"></i>
             </div>
+            
+            <!-- Título motivacional -->
             <h2 class="cta-title">¡Comienza a reciclar hoy mismo!</h2>
+            
+            <!-- Mensaje de comunidad -->
             <p class="cta-subtitle">Únete a miles de personas que ya están haciendo la diferencia en sus comunidades</p>
+            
+            <!-- Botones de acción principales -->
             <div class="cta-buttons">
+                <!-- Botón primario: Ir al mapa -->
                 <a href="{{ url_for('mapa') }}" class="cta-btn primary">
                     Explorar Mapa
                     <i class="fas fa-arrow-right"></i>
                 </a>
+                
+                <!-- Botón secundario: Ir a educativo -->
                 <a href="{{ url_for('edu') }}" class="cta-btn secondary">Aprender Más</a>
             </div>
         </div>
     </section>
 
+    <!-- Script para chatbot de Voiceflow -->
     <script type="text/javascript">
         (function(d, t) {
             var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
@@ -145,6 +186,8 @@
             v.type = "text/javascript"; 
             s.parentNode.insertBefore(v, s);
         })(document, 'script');
-      </script>
+    </script>
+    
+    <!-- JavaScript específico para la página principal -->
     <script src="{{ url_for('static', filename='js/index.js') }}"></script>
 {% endblock %}
