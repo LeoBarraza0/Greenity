@@ -190,6 +190,29 @@ body {
     margin: 0 auto;
 }
 
+/* Aviso de requisito para certificación */
+.cert-requirement {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    background: linear-gradient(135deg, #fffbeb, #fef3c7);
+    border: 1px solid #f59e0b;
+    color: #92400e;
+    padding: 18px 20px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+}
+
+.cert-requirement i {
+    font-size: 1.8rem;
+    color: #f59e0b;
+}
+
+.cert-requirement strong {
+    display: block;
+    margin-bottom: 4px;
+}
+
 /* Hero Section */
 .hero-section {
     background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
@@ -416,6 +439,197 @@ body {
 .step-list i {
     color: #22c55e;
     font-size: 0.9rem;
+}
+
+/* --- Stylized Step Cards (aesthetic upgrade) --- */
+.step-card {
+    background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(250,255,250,0.95));
+    border: 1px solid rgba(34,197,94,0.08);
+    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.06), inset 0 -6px 20px rgba(34,197,94,0.02);
+    padding: 30px;
+    border-radius: 18px;
+    transition: transform 0.35s cubic-bezier(.2,.9,.2,1), box-shadow 0.35s ease, background 0.35s ease;
+}
+
+.step-card::after {
+    content: '';
+    position: absolute;
+    right: -40px;
+    bottom: -40px;
+    width: 160px;
+    height: 160px;
+    background: radial-gradient(circle at center, rgba(34,197,94,0.06), transparent 40%);
+    border-radius: 50%;
+    pointer-events: none;
+}
+
+.step-card:hover {
+    transform: translateY(-12px) scale(1.02);
+    box-shadow: 0 18px 50px rgba(15, 23, 42, 0.12), inset 0 -8px 30px rgba(34,197,94,0.03);
+}
+
+.step-number {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: white;
+    margin: 0 auto 18px; /* centered horizontally */
+    background: linear-gradient(135deg, #06b6d4, #0891b2);
+    box-shadow: 0 8px 20px rgba(6,182,212,0.18);
+    position: relative;
+}
+
+.step-number::before {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    border: 2px solid rgba(34,197,94,0.08);
+}
+
+.step-card:nth-child(2) .step-number { background: linear-gradient(135deg, #22c55e, #16a34a); }
+.step-card:nth-child(3) .step-number { background: linear-gradient(135deg, #f59e0b, #d97706); }
+.step-card:nth-child(4) .step-number { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+
+.step-title {
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 8px;
+}
+
+.step-title::after {
+    content: '';
+    display: block;
+    width: 48px;
+    height: 4px;
+    margin-top: 8px;
+    border-radius: 4px;
+    background: linear-gradient(90deg, rgba(34,197,94,0.9), rgba(34,197,94,0.6));
+}
+
+.step-description {
+    color: #475569;
+    margin-bottom: 14px;
+    font-size: 0.98rem;
+}
+
+.step-list {
+    display: grid;
+    gap: 10px;
+}
+
+.step-list li {
+    background: rgba(255,255,255,0.8);
+    border: 1px solid rgba(0,0,0,0.03);
+    padding: 10px 12px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.step-list li:hover {
+    transform: translateX(6px);
+    box-shadow: 0 8px 20px rgba(15,23,42,0.06);
+}
+
+.step-list i {
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(34,197,94,0.95), rgba(34,197,94,0.75));
+    color: white;
+    font-size: 0.85rem;
+}
+
+/* Progress pill */
+.step-progress .progress-text {
+    min-width: 52px;
+    text-align: center;
+    font-weight: 700;
+    color: #0f172a;
+    background: rgba(255,255,255,0.9);
+    border-radius: 999px;
+    padding: 6px 10px;
+    border: 1px solid rgba(0,0,0,0.04);
+}
+
+.step-progress .progress-fill {
+    background: linear-gradient(90deg, rgba(34,197,94,0.95), rgba(16,185,129,0.9));
+    box-shadow: 0 6px 16px rgba(34,197,94,0.12) inset;
+}
+
+/* Progress inside each step card */
+.step-progress {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.step-progress .progress-bar {
+    flex: 1;
+    height: 10px;
+    background: #e5e7eb;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.step-progress .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #22c55e, #16a34a);
+    width: 0%;
+    transition: width 0.5s ease;
+}
+
+.step-progress .progress-text {
+    min-width: 40px;
+    text-align: right;
+    font-weight: 700;
+    color: #374151;
+}
+
+/* Modal checklist for steps */
+.step-modal-checklist {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.step-modal-checklist .check-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #f8fafc;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    cursor: pointer;
+}
+
+.step-modal-checklist .check-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+}
+
+/* Disabled state for cert button */
+.cert-start-btn.disabled,
+.cert-start-btn[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
 }
 
 /* Material Guides Section */

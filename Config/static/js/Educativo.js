@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initScrollEffects();
     initShareButtons();
     initCertificationSystem();
+    initStepProgressSystem();
     
     // Funcionalidad del botón de Iniciar Sesión
     const loginBtn = document.querySelector('.login-btn');
@@ -349,8 +350,17 @@ function initCertificationButtons() {
     
     if (popupStartBtn) {
         popupStartBtn.addEventListener('click', function() {
-            hideCertificationPopup();
-            startTrivia();
+            // Antes de iniciar, verificar que el usuario completó los 4 pasos al 100%
+            const progressStore = getProgressStore();
+            const missing = canStartExam(progressStore);
+            if (missing.length === 0) {
+                hideCertificationPopup();
+                startTrivia();
+            } else {
+                // Mostrar mensaje sobre pasos incompletos
+                const friendly = missing.map(n => `Paso ${n} (${progressStore[n] || 0}%)`).join(', ');
+                alert(`Aún faltan pasos por completar al 100%: ${friendly}. Completa todos para habilitar el examen.`);
+            }
         });
     }
     
@@ -881,3 +891,136 @@ document.addEventListener('click', function(e) {
 });
 
 console.log('Grennity - Página Educativa cargada correctamente con todas las funcionalidades');
+
+/* ---------------------- Step Progress System ---------------------- */
+function initStepProgressSystem() {
+    // Load progress from localStorage or initialize
+    const stored = localStorage.getItem('greennity_step_progress');
+    let progress = stored ? JSON.parse(stored) : {1:0,2:0,3:0,4:0};
+
+    // Apply initial progress values to UI
+    document.querySelectorAll('.step-card').forEach(card => {
+        const step = card.getAttribute('data-step');
+        const fill = card.querySelector('.step-progress .progress-fill');
+        const text = card.querySelector('.step-progress .progress-text');
+        const value = progress[step] || 0;
+        if (fill) fill.style.width = value + '%';
+        if (text) text.textContent = value + '%';
+    });
+
+    // Disable cert start button unless all are 100%
+    updateCertButtonState(progress);
+
+    // Click handler to open modal when a step-card is clicked
+    document.querySelectorAll('.step-card').forEach(card => {
+        card.style.cursor = 'pointer';
+        card.addEventListener('click', function(e) {
+            openStepModal(this, progress);
+        });
+    });
+}
+
+function openStepModal(card, progress) {
+    const step = card.getAttribute('data-step');
+    const title = card.querySelector('.step-title') ? card.querySelector('.step-title').textContent : `Paso ${step}`;
+    const description = card.querySelector('.step-description') ? card.querySelector('.step-description').textContent : '';
+    const listItems = Array.from(card.querySelectorAll('.step-list li')).map(li => li.textContent.trim());
+
+    const modal = document.getElementById('step-modal');
+    const modalTitle = modal.querySelector('.modal-step-title');
+    const modalBody = modal.querySelector('.modal-step-body');
+    const saveBtn = document.getElementById('step-modal-save');
+    const cancelBtn = document.getElementById('step-modal-cancel');
+
+    modalTitle.textContent = title;
+    // Build checklist HTML
+    modalBody.innerHTML = `
+        <p class="step-modal-desc">${description}</p>
+        <div class="step-modal-checklist">
+            ${listItems.map((txt, idx) => `
+                <label class="check-item"><input type="checkbox" data-idx="${idx}"> ${txt}</label>
+            `).join('')}
+        </div>
+        <div style="margin-top:16px; font-size:0.95rem; color:#666;">Marca las acciones que completes para aumentar el progreso del paso.</div>
+    `;
+
+    // Restore checked state from progress store (we persist only percentage, but assume checklist length => compute checked by percentage)
+    const stored = localStorage.getItem('greennity_step_progress_details');
+    let details = stored ? JSON.parse(stored) : {};
+    const key = `step_${step}`;
+    const savedChecked = details[key] || [];
+    modal.querySelectorAll('.check-item input[type="checkbox"]').forEach((cb, i) => {
+        cb.checked = savedChecked.includes(i);
+    });
+
+    // Show modal
+    modal.classList.add('show');
+
+    // Save handler
+    saveBtn.onclick = function() {
+        const checked = Array.from(modal.querySelectorAll('.check-item input[type="checkbox"]')).map((c, i) => c.checked ? i : -1).filter(i => i >= 0);
+        details[key] = checked;
+        // persist details
+        localStorage.setItem('greennity_step_progress_details', JSON.stringify(details));
+
+        // compute percentage: (checked / total) * 100
+        const total = modal.querySelectorAll('.check-item').length || 1;
+        const percent = Math.round((checked.length / total) * 100);
+
+        // update progress store
+        const store = localStorage.getItem('greennity_step_progress');
+        let progressStore = store ? JSON.parse(store) : {1:0,2:0,3:0,4:0};
+        progressStore[step] = percent;
+        localStorage.setItem('greennity_step_progress', JSON.stringify(progressStore));
+
+        // update UI
+        const fill = card.querySelector('.step-progress .progress-fill');
+        const text = card.querySelector('.step-progress .progress-text');
+        if (fill) fill.style.width = percent + '%';
+        if (text) text.textContent = percent + '%';
+
+        // close modal
+        modal.classList.remove('show');
+
+        // Update exam button state
+        updateCertButtonState(progressStore);
+    };
+
+    cancelBtn.onclick = function() {
+        modal.classList.remove('show');
+    };
+}
+
+function updateCertButtonState(progressStore) {
+    const certBtn = document.querySelector('.cert-start-btn');
+    if (!certBtn) return;
+
+    // All steps 100%?
+    const allComplete = [1,2,3,4].every(n => (progressStore[n] || 0) === 100);
+    if (allComplete) {
+        certBtn.disabled = false;
+        certBtn.classList.remove('disabled');
+        certBtn.title = 'Puedes iniciar el examen';
+    } else {
+        certBtn.disabled = true;
+        certBtn.classList.add('disabled');
+        certBtn.title = 'Completa todos los pasos al 100% para habilitar el examen';
+    }
+}
+
+// Helpers para progreso
+function getProgressStore() {
+    const store = localStorage.getItem('greennity_step_progress');
+    return store ? JSON.parse(store) : {1:0,2:0,3:0,4:0};
+}
+
+// Devuelve un array con los números de paso que no están al 100%
+function canStartExam(progressStore) {
+    const store = progressStore || getProgressStore();
+    const missing = [];
+    [1,2,3,4].forEach(n => {
+        if ((store[n] || 0) < 100) missing.push(n);
+    });
+    return missing;
+}
+
