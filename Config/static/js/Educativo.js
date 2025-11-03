@@ -3,6 +3,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Página Educativa cargada');
     
+    
     // Inicializar todas las funcionalidades
     initNavigation();
     initHeroButtons();
@@ -12,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initShareButtons();
     initCertificationSystem();
     initStepProgressSystem();
-    
+    initLearningSystem();
     // Funcionalidad del botón de Iniciar Sesión
     const loginBtn = document.querySelector('.login-btn');
     if (loginBtn) {
@@ -28,7 +29,653 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+// Sistema de Módulos de Aprendizaje Mejorado
 
+// Datos de los módulos
+const modulesData = {
+    1: {
+        title: "Fundamentos del Reciclaje",
+        icon: "book-open",
+        lessons: [
+            {
+                id: 1,
+                title: "¿Qué es el reciclaje?",
+                type: "video",
+                duration: "8 min",
+                videoId: "LoWRxBdDJmE",
+                content: `
+                    <h3>Introducción al Reciclaje</h3>
+                    <p>El reciclaje es el proceso de transformar materiales usados en nuevos productos, reduciendo así la necesidad de materias primas y el impacto ambiental.</p>
+                `,
+                completed: false
+            },
+            {
+                id: 2,
+                title: "Impacto Ambiental",
+                type: "reading",
+                duration: "10 min",
+                content: `
+                    <h3>El Impacto del Reciclaje en el Medio Ambiente</h3>
+                    <div class="reading-content">
+                        <h4>🌍 Beneficios Clave del Reciclaje</h4>
+                        <div class="benefit-card">
+                            <h5>1. Reducción de Residuos</h5>
+                            <p>Cada año, millones de toneladas de residuos terminan en vertederos. El reciclaje reduce significativamente esta cantidad:</p>
+                            <ul>
+                                <li>Una tonelada de papel reciclado salva 17 árboles</li>
+                                <li>Reciclar 1 kg de plástico ahorra 1.5 kg de CO2</li>
+                                <li>El vidrio puede reciclarse infinitas veces sin perder calidad</li>
+                            </ul>
+                        </div>
+                        <div class="stats-box">
+                            <h4>📊 Datos Impactantes</h4>
+                            <ul>
+                                <li>Reciclar una lata de aluminio ahorra suficiente energía para hacer funcionar una TV durante 3 horas</li>
+                                <li>Una botella de plástico tarda 450 años en degradarse</li>
+                                <li>El papel reciclado usa 60% menos agua que el papel nuevo</li>
+                            </ul>
+                        </div>
+                    </div>
+                `,
+                completed: false
+            },
+            {
+                id: 3,
+                title: "Las 3 R's",
+                type: "video",
+                duration: "6 min",
+                videoId: "rRCZzrMjiY0",
+                content: `<h3>El Principio de las 3 R's</h3><p>Aprende cómo aplicar reducir, reutilizar y reciclar en tu vida diaria.</p>`,
+                completed: false
+            }
+        ]
+    },
+    2: {
+        title: "Clasificación de Materiales",
+        icon: "recycle",
+        lessons: [
+            {
+                id: 1,
+                title: "Tipos de Plástico",
+                type: "video",
+                duration: "10 min",
+                videoId: "-z_BuzQGB4g",
+                content: `<h3>Identificación de Plásticos</h3><p>Aprende a identificar los diferentes tipos de plástico y cuáles son reciclables.</p>`,
+                completed: false
+            },
+            {
+                id: 2,
+                title: "Guía de Plásticos",
+                type: "reading",
+                duration: "12 min",
+                content: `
+                    <h3>Los 7 Tipos de Plástico</h3>
+                    <div class="reading-content">
+                        <div class="plastic-grid">
+                            <div class="plastic-card recyclable">
+                                <div class="plastic-number">1</div>
+                                <h4>PET</h4>
+                                <p><strong>✅ Fácilmente Reciclable</strong></p>
+                                <p>Botellas de agua, refrescos, aceite. Se convierte en fibras para ropa y nuevas botellas.</p>
+                            </div>
+                            <div class="plastic-card recyclable">
+                                <div class="plastic-number">2</div>
+                                <h4>HDPE</h4>
+                                <p><strong>✅ Fácilmente Reciclable</strong></p>
+                                <p>Botellas de leche, champú. Se convierte en nuevas botellas y tuberías.</p>
+                            </div>
+                            <div class="plastic-card difficult">
+                                <div class="plastic-number">3</div>
+                                <h4>PVC</h4>
+                                <p><strong>⚠️ Difícil</strong></p>
+                                <p>Tuberías, tarjetas. Contiene cloro, evitar cuando sea posible.</p>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                completed: false
+            }
+        ]
+    },
+    3: {
+        title: "Preparación y Limpieza",
+        icon: "hands-wash",
+        lessons: [
+            {
+                id: 1,
+                title: "Técnicas de Limpieza",
+                type: "video",
+                duration: "8 min",
+                videoId: "aR2017TUQNM",
+                content: `<h3>Cómo Limpiar Envases</h3><p>Técnicas profesionales para preparar materiales reciclables.</p>`,
+                completed: false
+            },
+            {
+                id: 2,
+                title: "Preparación por Material",
+                type: "reading",
+                duration: "15 min",
+                content: `
+                    <h3>Guía de Preparación</h3>
+                    <div class="reading-content">
+                        <h4>🔵 Plásticos</h4>
+                        <ol>
+                            <li>Vaciar completamente</li>
+                            <li>Enjuagar con agua fría</li>
+                            <li>Secar al aire</li>
+                            <li>Quitar tapas y etiquetas grandes</li>
+                            <li>Aplastar para ahorrar espacio</li>
+                        </ol>
+                        <h4>📄 Papel y Cartón</h4>
+                        <ol>
+                            <li>Mantener seco</li>
+                            <li>Quitar grapas y clips</li>
+                            <li>Aplanar cajas</li>
+                            <li>No reciclar papel con comida o grasa</li>
+                        </ol>
+                    </div>
+                `,
+                completed: false
+            }
+        ]
+    },
+    4: {
+        title: "Puntos de Reciclaje",
+        icon: "map-marked-alt",
+        lessons: [
+            {
+                id: 1,
+                title: "Cómo Encontrar Puntos",
+                type: "video",
+                duration: "6 min",
+                videoId: "1Blv0dVPkgE",
+                content: `<h3>Localiza Centros de Reciclaje</h3><p>Aprende a usar mapas y apps para encontrar puntos cercanos.</p>`,
+                completed: false
+            },
+            {
+                id: 2,
+                title: "Qué Llevar y Cómo",
+                type: "reading",
+                duration: "8 min",
+                content: `
+                    <h3>Guía para Visitar Puntos de Reciclaje</h3>
+                    <div class="reading-content">
+                        <h4>Antes de Ir</h4>
+                        <ul>
+                            <li>✅ Verifica horarios de atención</li>
+                            <li>✅ Confirma qué materiales aceptan</li>
+                            <li>✅ Prepara tus materiales en bolsas separadas</li>
+                            <li>✅ Lleva identificación si es requerida</li>
+                        </ul>
+                        <h4>En el Centro</h4>
+                        <ul>
+                            <li>🔹 Sigue las señalizaciones</li>
+                            <li>🔹 Deposita en los contenedores correctos</li>
+                            <li>🔹 Pregunta al personal si tienes dudas</li>
+                            <li>🔹 Respeta las normas del lugar</li>
+                        </ul>
+                    </div>
+                `,
+                completed: false
+            }
+        ]
+    }
+};
+
+// Estado global del sistema
+let currentModule = null;
+let currentLesson = 0;
+let moduleProgress = {};
+
+// Inicializar sistema de aprendizaje
+function initLearningSystem() {
+    // Cargar progreso guardado
+    loadModuleProgress();
+    
+    // Inicializar botones de módulos
+    const moduleCards = document.querySelectorAll('.module-card');
+    moduleCards.forEach(card => {
+        const moduleBtn = card.querySelector('.module-start-btn');
+        const moduleNum = parseInt(card.getAttribute('data-module'));
+        
+        if (moduleBtn) {
+            moduleBtn.addEventListener('click', () => openModule(moduleNum));
+        }
+        
+        // Actualizar progreso visual
+        updateModuleCardProgress(moduleNum);
+    });
+    
+    // Inicializar controles del modal
+    initModuleModal();
+    
+    // Verificar si debe mostrar popup de certificación
+    checkCertificationEligibility();
+}
+
+// Cargar progreso desde localStorage
+function loadModuleProgress() {
+    const saved = localStorage.getItem('moduleProgress');
+    if (saved) {
+        moduleProgress = JSON.parse(saved);
+    } else {
+        // Inicializar estructura de progreso
+        for (let moduleNum in modulesData) {
+            moduleProgress[moduleNum] = {
+                lessons: {},
+                completed: false,
+                percentage: 0
+            };
+        }
+    }
+}
+
+// Guardar progreso
+function saveModuleProgress() {
+    localStorage.setItem('moduleProgress', JSON.stringify(moduleProgress));
+    checkCertificationEligibility();
+}
+
+// Abrir modal de módulo
+function openModule(moduleNum) {
+    currentModule = moduleNum;
+    currentLesson = 0;
+    
+    const modal = document.getElementById('module-modal');
+    if (modal) {
+        modal.classList.add('show');
+        loadModuleContent();
+    }
+}
+
+// Cargar contenido del módulo
+function loadModuleContent() {
+    const module = modulesData[currentModule];
+    if (!module) return;
+    
+    // Actualizar título
+    const titleEl = document.getElementById('module-modal-title');
+    if (titleEl) {
+        titleEl.innerHTML = `<i class="fas fa-${module.icon}"></i> Módulo ${currentModule}: ${module.title}`;
+    }
+    
+    // Cargar navegación lateral
+    loadModuleNavigation();
+    
+    // Cargar primera lección
+    loadLesson(currentLesson);
+    
+    // Actualizar badge de progreso
+    updateProgressBadge();
+}
+
+// Cargar navegación del módulo
+function loadModuleNavigation() {
+    const navItems = document.getElementById('module-nav-items');
+    if (!navItems) return;
+    
+    const module = modulesData[currentModule];
+    navItems.innerHTML = '';
+    
+    module.lessons.forEach((lesson, index) => {
+        const isCompleted = moduleProgress[currentModule]?.lessons[lesson.id] || false;
+        const isCurrent = index === currentLesson;
+        
+        const navItem = document.createElement('div');
+        navItem.className = `module-nav-item ${isCurrent ? 'active' : ''} ${isCompleted ? 'completed' : ''}`;
+        navItem.innerHTML = `
+            <div class="nav-item-icon">
+                ${isCompleted ? '<i class="fas fa-check-circle"></i>' : 
+                  lesson.type === 'video' ? '<i class="fas fa-play-circle"></i>' :
+                  lesson.type === 'reading' ? '<i class="fas fa-book"></i>' :
+                  '<i class="fas fa-question-circle"></i>'}
+            </div>
+            <div class="nav-item-content">
+                <div class="nav-item-title">${lesson.title}</div>
+                <div class="nav-item-meta">
+                    <span>${lesson.type === 'video' ? '📹' : lesson.type === 'reading' ? '📖' : '❓'} ${lesson.duration}</span>
+                </div>
+            </div>
+        `;
+        
+        navItem.addEventListener('click', () => {
+            currentLesson = index;
+            loadLesson(currentLesson);
+            loadModuleNavigation();
+        });
+        
+        navItems.appendChild(navItem);
+    });
+}
+
+// Cargar lección específica
+function loadLesson(lessonIndex) {
+    const module = modulesData[currentModule];
+    const lesson = module.lessons[lessonIndex];
+    if (!lesson) return;
+    
+    const contentEl = document.getElementById('lesson-content');
+    if (!contentEl) return;
+    
+    // Limpiar contenido anterior
+    contentEl.innerHTML = '';
+    
+    // Cargar según tipo de lección
+    if (lesson.type === 'video') {
+        contentEl.innerHTML = `
+            <div class="lesson-video">
+                <div class="video-header">
+                    <h3>${lesson.title}</h3>
+                    <span class="video-duration"><i class="fas fa-clock"></i> ${lesson.duration}</span>
+                </div>
+                <div class="video-container">
+                    <iframe 
+                        src="https://www.youtube.com/embed/${lesson.videoId}" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                ${lesson.content}
+                <div class="lesson-actions">
+                    <button class="btn-primary mark-complete-btn">
+                        <i class="fas fa-check"></i> Marcar como Completado
+                    </button>
+                </div>
+            </div>
+        `;
+    } else if (lesson.type === 'reading') {
+        contentEl.innerHTML = `
+            <div class="lesson-reading">
+                <div class="reading-header">
+                    <h3>${lesson.title}</h3>
+                    <span class="reading-duration"><i class="fas fa-clock"></i> ${lesson.duration}</span>
+                </div>
+                ${lesson.content}
+                <div class="lesson-actions">
+                    <button class="btn-primary mark-complete-btn">
+                        <i class="fas fa-check"></i> Marcar como Completado
+                    </button>
+                </div>
+            </div>
+        `;
+    } else if (lesson.type === 'quiz') {
+        loadQuiz(lesson);
+    }
+    
+    // Botón marcar como completado
+    const completeBtn = contentEl.querySelector('.mark-complete-btn');
+    if (completeBtn) {
+        const isCompleted = moduleProgress[currentModule]?.lessons[lesson.id];
+        if (isCompleted) {
+            completeBtn.innerHTML = '<i class="fas fa-check-circle"></i> Completado';
+            completeBtn.classList.add('completed');
+        }
+        
+        completeBtn.addEventListener('click', () => {
+            markLessonComplete(lesson.id);
+        });
+    }
+    
+    // Actualizar botones de navegación
+    updateNavigationButtons();
+}
+
+// Cargar quiz
+function loadQuiz(lesson) {
+    const contentEl = document.getElementById('lesson-content');
+    let currentQuestion = 0;
+    let answers = [];
+    
+    function showQuestion() {
+        const q = lesson.questions[currentQuestion];
+        contentEl.innerHTML = `
+            <div class="lesson-quiz">
+                <div class="quiz-header">
+                    <h3>${lesson.title}</h3>
+                    <div class="quiz-progress">Pregunta ${currentQuestion + 1} de ${lesson.questions.length}</div>
+                </div>
+                <div class="quiz-question">
+                    <h4>${q.question}</h4>
+                    <div class="quiz-options">
+                        ${q.options.map((opt, i) => `
+                            <button class="quiz-option" data-index="${i}">${opt}</button>
+                        `).join('')}
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        const options = contentEl.querySelectorAll('.quiz-option');
+        options.forEach(opt => {
+            opt.addEventListener('click', function() {
+                const selectedIndex = parseInt(this.getAttribute('data-index'));
+                answers[currentQuestion] = selectedIndex;
+                
+                options.forEach(o => o.classList.remove('selected'));
+                this.classList.add('selected');
+                
+                setTimeout(() => {
+                    if (currentQuestion < lesson.questions.length - 1) {
+                        currentQuestion++;
+                        showQuestion();
+                    } else {
+                        showQuizResults();
+                    }
+                }, 800);
+            });
+        });
+    }
+    
+    function showQuizResults() {
+        const correct = answers.filter((ans, i) => ans === lesson.questions[i].correct).length;
+        const percentage = Math.round((correct / lesson.questions.length) * 100);
+        const passed = percentage >= 70;
+        
+        contentEl.innerHTML = `
+            <div class="quiz-results">
+                <div class="results-icon ${passed ? 'success' : 'warning'}">
+                    <i class="fas fa-${passed ? 'check-circle' : 'exclamation-triangle'}"></i>
+                </div>
+                <h3>${passed ? '¡Felicitaciones!' : 'Sigue Intentando'}</h3>
+                <div class="results-score">
+                    <div class="score-number">${correct}/${lesson.questions.length}</div>
+                    <div class="score-percentage">${percentage}%</div>
+                </div>
+                <p>${passed ? '¡Has aprobado el quiz!' : 'Necesitas al menos 70% para aprobar.'}</p>
+                <div class="lesson-actions">
+                    ${passed ? `
+                        <button class="btn-primary mark-complete-btn">
+                            <i class="fas fa-check"></i> Continuar
+                        </button>
+                    ` : `
+                        <button class="btn-secondary retry-quiz-btn">
+                            <i class="fas fa-redo"></i> Intentar de Nuevo
+                        </button>
+                    `}
+                </div>
+            </div>
+        `;
+        
+        if (passed) {
+            const completeBtn = contentEl.querySelector('.mark-complete-btn');
+            completeBtn.addEventListener('click', () => {
+                markLessonComplete(lesson.id);
+            });
+        } else {
+            const retryBtn = contentEl.querySelector('.retry-quiz-btn');
+            retryBtn.addEventListener('click', () => {
+                currentQuestion = 0;
+                answers = [];
+                showQuestion();
+            });
+        }
+    }
+    
+    showQuestion();
+}
+
+// Marcar lección como completada
+function markLessonComplete(lessonId) {
+    if (!moduleProgress[currentModule]) {
+        moduleProgress[currentModule] = { lessons: {}, completed: false, percentage: 0 };
+    }
+    
+    moduleProgress[currentModule].lessons[lessonId] = true;
+    
+    // Calcular progreso del módulo
+    const module = modulesData[currentModule];
+    const totalLessons = module.lessons.length;
+    const completedLessons = Object.keys(moduleProgress[currentModule].lessons).length;
+    const percentage = Math.round((completedLessons / totalLessons) * 100);
+    
+    moduleProgress[currentModule].percentage = percentage;
+    moduleProgress[currentModule].completed = percentage === 100;
+    
+    saveModuleProgress();
+    updateProgressBadge();
+    updateModuleCardProgress(currentModule);
+    loadModuleNavigation();
+    
+    // Ir a siguiente lección
+    if (currentLesson < module.lessons.length - 1) {
+        currentLesson++;
+        loadLesson(currentLesson);
+    } else {
+        // Módulo completado
+        showModuleCompletedMessage();
+    }
+}
+
+// Mostrar mensaje de módulo completado
+function showModuleCompletedMessage() {
+    const contentEl = document.getElementById('lesson-content');
+    contentEl.innerHTML = `
+        <div class="module-completed">
+            <div class="completed-icon">
+                <i class="fas fa-trophy"></i>
+            </div>
+            <h2>¡Módulo Completado!</h2>
+            <p>Has terminado exitosamente el Módulo ${currentModule}: ${modulesData[currentModule].title}</p>
+            <div class="lesson-actions">
+                <button class="btn-primary close-module-btn">
+                    <i class="fas fa-check"></i> Volver a Módulos
+                </button>
+            </div>
+        </div>
+    `;
+    
+    const closeBtn = contentEl.querySelector('.close-module-btn');
+    closeBtn.addEventListener('click', () => {
+        document.getElementById('module-modal').classList.remove('show');
+    });
+}
+
+// Actualizar badge de progreso
+function updateProgressBadge() {
+    const badge = document.getElementById('module-progress-badge');
+    if (badge && moduleProgress[currentModule]) {
+        const percentage = moduleProgress[currentModule].percentage || 0;
+        badge.textContent = `${percentage}% completado`;
+        badge.className = `module-progress-badge ${percentage === 100 ? 'completed' : ''}`;
+    }
+}
+
+// Actualizar progreso en tarjeta de módulo
+function updateModuleCardProgress(moduleNum) {
+    const card = document.querySelector(`.module-card[data-module="${moduleNum}"]`);
+    if (!card) return;
+    
+    const progressFill = card.querySelector('.progress-fill');
+    const progressText = card.querySelector('.progress-text');
+    const startBtn = card.querySelector('.module-start-btn');
+    
+    const percentage = moduleProgress[moduleNum]?.percentage || 0;
+    
+    if (progressFill) progressFill.style.width = `${percentage}%`;
+    if (progressText) progressText.textContent = `${percentage}% completado`;
+    
+    if (startBtn && percentage === 100) {
+        startBtn.innerHTML = '<i class="fas fa-check-circle"></i> Revisar Módulo';
+        startBtn.classList.add('completed');
+    }
+}
+
+// Actualizar botones de navegación
+function updateNavigationButtons() {
+    const prevBtn = document.getElementById('prev-lesson');
+    const nextBtn = document.getElementById('next-lesson');
+    const module = modulesData[currentModule];
+    
+    if (prevBtn) {
+        prevBtn.disabled = currentLesson === 0;
+    }
+    
+    if (nextBtn) {
+        if (currentLesson >= module.lessons.length - 1) {
+            nextBtn.style.display = 'none';
+        } else {
+            nextBtn.style.display = 'block';
+        }
+    }
+}
+
+// Inicializar controles del modal
+function initModuleModal() {
+    const closeBtn = document.getElementById('close-module-modal');
+    const prevBtn = document.getElementById('prev-lesson');
+    const nextBtn = document.getElementById('next-lesson');
+    const downloadBtn = document.querySelector('.download-materials-btn');
+    
+    if (closeBtn) {
+        closeBtn.addEventListener('click', () => {
+            document.getElementById('module-modal').classList.remove('show');
+        });
+    }
+    
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            if (currentLesson > 0) {
+                currentLesson--;
+                loadLesson(currentLesson);
+                loadModuleNavigation();
+            }
+        });
+    }
+    
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            const module = modulesData[currentModule];
+            if (currentLesson < module.lessons.length - 1) {
+                currentLesson++;
+                loadLesson(currentLesson);
+                loadModuleNavigation();
+            }
+        });
+    }
+    
+    if (downloadBtn) {
+        downloadBtn.addEventListener('click', () => {
+            alert('Descargando materiales del módulo... (Función en desarrollo)');
+        });
+    }
+}
+
+// Verificar elegibilidad para certificación
+function checkCertificationEligibility() {
+    const allCompleted = Object.values(moduleProgress).every(m => m.percentage === 100);
+    
+    if (allCompleted) {
+        setTimeout(() => {
+            showCertificationPopup();
+        }, 1000);
+    }
+}
+
+// Inicializar cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', function() {
+    initLearningSystem();
+});
 // Funcionalidad de navegación
 function initNavigation() {
     const navItems = document.querySelectorAll('.nav-item');
@@ -347,7 +994,19 @@ function initCertificationButtons() {
     
     if (popupStartBtn) {
         popupStartBtn.addEventListener('click', function() {
-            // Antes de iniciar, verificar que el usuario completó los 4 pasos al 100%
+            // Primero: verificar que los módulos de aprendizaje están completados al 100%
+            if (!modulesAllComplete()) {
+                // Construir mensaje con módulos incompletos
+                const incomplete = [];
+                for (const m in moduleProgress) {
+                    const pct = moduleProgress[m]?.percentage || 0;
+                    if (pct < 100) incomplete.push(`Módulo ${m} (${pct}%)`);
+                }
+                alert(`Para acceder al examen de certificación debes completar todos los Módulos al 100%. Módulos incompletos: ${incomplete.join(', ')}.`);
+                return;
+            }
+
+            // Luego: verificar el progreso por pasos (si aplica)
             const progressStore = getProgressStore();
             const missing = canStartExam(progressStore);
             if (missing.length === 0) {
@@ -369,8 +1028,45 @@ function initCertificationButtons() {
     
     if (certStartBtn) {
         certStartBtn.addEventListener('click', function() {
-            startTrivia();
+            // Verificar módulos completos antes de permitir iniciar el examen
+            if (!modulesAllComplete()) {
+                const incomplete = [];
+                for (const m in moduleProgress) {
+                    const pct = moduleProgress[m]?.percentage || 0;
+                    if (pct < 100) incomplete.push(`Módulo ${m} (${pct}%)`);
+                }
+                alert(`No puedes iniciar el examen. Completa todos los Módulos al 100%. Módulos incompletos: ${incomplete.join(', ')}.`);
+                return;
+            }
+
+            // También mantener la verificación por pasos si aplica
+            const progressStore = getProgressStore();
+            const missing = canStartExam(progressStore);
+            if (missing.length === 0) {
+                startTrivia();
+            } else {
+                const friendly = missing.map(n => `Paso ${n} (${progressStore[n] || 0}%)`).join(', ');
+                alert(`Aún faltan pasos por completar al 100%: ${friendly}. Completa todos para habilitar el examen.`);
+            }
         });
+    }
+}
+
+// Helper: verificar si todos los módulos están al 100%
+function modulesAllComplete() {
+    try {
+        // moduleProgress se mantiene en memoria y se guarda en localStorage por initLearningSystem
+        if (!moduleProgress || Object.keys(moduleProgress).length === 0) {
+            // intentar cargar desde localStorage por seguridad
+            const saved = localStorage.getItem('moduleProgress');
+            if (saved) moduleProgress = JSON.parse(saved);
+            else return false;
+        }
+
+        return Object.values(moduleProgress).every(m => (m.percentage || 0) === 100);
+    } catch (err) {
+        console.error('Error verificando módulos completos', err);
+        return false;
     }
 }
 
