@@ -876,17 +876,41 @@ document.addEventListener('click', function(e) {
         e.target.classList.remove('show');
     }
     
-    // Cerrar modal de trivia con el botón X
+    // Cerrar modal al hacer clic en el overlay
+    if (e.target.classList.contains('modal-overlay')) {
+        e.target.classList.remove('show');
+        return;
+    }
+
+    // Manejar botones con clase .modal-close (cierre genérico)
+    if (e.target.classList.contains('modal-close') || e.target.closest('.modal-close')) {
+        // Buscar el overlay padre más cercano y quitar la clase 'show'
+        const closeBtn = e.target.classList.contains('modal-close') ? e.target : e.target.closest('.modal-close');
+        const overlay = closeBtn.closest('.modal-overlay') || document.querySelector('.modal-overlay.show');
+        if (overlay) overlay.classList.remove('show');
+        return;
+    }
+
+    // Cerrar modal de trivia con el botón X (caso específico por compatibilidad)
     if (e.target.id === 'close-trivia' || e.target.closest('#close-trivia')) {
         const triviaModal = document.getElementById('trivia-modal');
         if (triviaModal) {
             triviaModal.classList.remove('show');
         }
+        return;
     }
-    
+
+    // Cerrar modal de paso (botón X específico)
+    if (e.target.id === 'close-step-modal' || e.target.closest('#close-step-modal')) {
+        const stepModal = document.getElementById('step-modal');
+        if (stepModal) stepModal.classList.remove('show');
+        return;
+    }
+
     // Cerrar pop-up de certificación al hacer clic en el overlay
     if (e.target.id === 'certification-popup') {
         hideCertificationPopup();
+        return;
     }
 });
 
