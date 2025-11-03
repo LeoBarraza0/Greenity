@@ -306,11 +306,8 @@ function initAnimations() {
 
 // Sistema de Certificación
 function initCertificationSystem() {
-    // Mostrar pop-up después de 10 segundos
-    setTimeout(() => {
-        showCertificationPopup();
-    }, 10000);
-    
+    // Nota: ya no mostramos el pop-up automáticamente por tiempo.
+    // El pop-up se mostrará únicamente cuando todas las secciones estén al 100%.
     // Inicializar botones de certificación
     initCertificationButtons();
 }
@@ -1025,10 +1022,26 @@ function updateCertButtonState(progressStore) {
         certBtn.disabled = false;
         certBtn.classList.remove('disabled');
         certBtn.title = 'Puedes iniciar el examen';
+        // Mostrar el pop-up de certificación cuando se complete todo al 100%.
+        // Solo mostrar una vez por usuario/instancia salvo que se resetee la bandera.
+        try {
+            const shown = localStorage.getItem('greennity_cert_popup_shown');
+            if (!shown) {
+                showCertificationPopup();
+                localStorage.setItem('greennity_cert_popup_shown', '1');
+            }
+        } catch (err) {
+            // Si localStorage no está disponible, mostramos el popup una sola vez en la sesión
+            if (!window.__greennity_cert_shown) {
+                showCertificationPopup();
+                window.__greennity_cert_shown = true;
+            }
+        }
     } else {
         certBtn.disabled = true;
         certBtn.classList.add('disabled');
         certBtn.title = 'Completa todos los pasos al 100% para habilitar el examen';
+        // Si el usuario vuelve a estar incompleto, no hacemos nada (no reabrimos popup automáticamente)
     }
 }
 
