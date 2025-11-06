@@ -10,25 +10,25 @@
         <!-- Menú de navegación principal -->
         <nav class="nav">
             <!-- Enlace a página de inicio -->
-            <a href="{{ url_for('main') }}" class="nav-item {% if request.path == url_for('main') %}active{% endif %}">
+            <a href="{{ url_for('routes_Web.main') }}" class="nav-item {% if request.path == url_for('routes_Web.main') %}active{% endif %}">
                 <i class="fas fa-home"></i>
                 Inicio
             </a>
             
             <!-- Enlace al mapa de puntos de reciclaje -->
-            <a href="{{ url_for('mapa') }}" class="nav-item {% if request.path == url_for('mapa') %}active{% endif %}">
+            <a href="{{ url_for('routes_Web.mapa') }}" class="nav-item {% if request.path == url_for('routes_Web.mapa') %}active{% endif %}">
                 <i class="fas fa-map"></i>
                 Mapa
             </a>
             
             <!-- Enlace a sección educativa -->
-            <a href="{{ url_for('edu') }}" class="nav-item {% if request.path == url_for('edu') %}active{% endif %}">
+            <a href="{{ url_for('routes_Web.edu') }}" class="nav-item {% if request.path == url_for('routes_Web.edu') %}active{% endif %}">
                 <i class="fas fa-book"></i>
                 Educativo
             </a>
             
             <!-- Enlace para sugerir nuevos puntos de reciclaje -->
-            <a href="{{ url_for('rec') }}" class="nav-item {% if request.path == url_for('rec') %}active{% endif %}">
+            <a href="{{ url_for('routes_Web.rec') }}" class="nav-item {% if request.path == url_for('routes_Web.rec') %}active{% endif %}">
                 <i class="fas fa-plus"></i>
                 Sugerir Punto
                 <!-- Badge que indica función nueva -->
@@ -36,13 +36,13 @@
             </a>
             
             <!-- Enlace a página de contacto -->
-            <a href="{{ url_for('contacto') }}" class="nav-item {% if request.path == url_for('contacto') %}active{% endif %}">
+            <a href="{{ url_for('routes_Web.contacto') }}" class="nav-item {% if request.path == url_for('routes_Web.contacto') %}active{% endif %}">
                 <i class="fas fa-phone"></i>
                 Contacto
             </a>
             
             <!-- Enlace a configuración de usuario -->
-            <a href="{{ url_for('config') }}" class="nav-item {% if request.path == url_for('config') %}active{% endif %}">
+            <a href="{{ url_for('routes_Web.config') }}" class="nav-item {% if request.path == url_for('routes_Web.config') %}active{% endif %}">
                 <i class="fas fa-cog"></i>
                 Configuración
             </a>
@@ -60,13 +60,13 @@
                 <!-- Menú desplegable del usuario -->
                 <div class="user-dropdown">
                     <!-- Enlace al perfil -->
-                    <a href="{{ url_for('config') }}" class="dropdown-item">
+                    <a href="{{ url_for('routes_Web.config') }}" class="dropdown-item">
                         <i class="fas fa-cog"></i>
                         Mi Perfil
                     </a>
                     
                     <!-- Enlace para cerrar sesión -->
-                    <a href="{{ url_for('logout') }}" class="dropdown-item">
+                    <a href="{{ url_for('routes_Auth.logout') }}" class="dropdown-item">
                         <i class="fas fa-sign-out-alt"></i>
                         Cerrar Sesión
                     </a>
@@ -75,7 +75,7 @@
             
             <!-- Botón de login - Solo si NO está autenticado -->
             {% else %}
-            <a href="{{ url_for('index') }}" class="login-btn">
+            <a href="{{ url_for('routes_Web.index') }}" class="login-btn">
                 <i class="fas fa-user"></i>
                 Iniciar Sesión
             </a>

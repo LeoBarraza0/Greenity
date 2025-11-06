@@ -54,7 +54,7 @@
                         Usar mi ubicación actual
                     </button>
                     <!-- Enlace directo al mapa completo -->
-                    <a href="{{ url_for('mapa') }}" class="map-link">Ver mapa completo</a>
+                    <a href="{{ url_for('routes_Web.mapa') }}" class="map-link">Ver mapa completo</a>
                 </div>
             </div>
         </div>
@@ -157,13 +157,13 @@
             <!-- Botones de acción principales -->
             <div class="cta-buttons">
                 <!-- Botón primario: Ir al mapa -->
-                <a href="{{ url_for('mapa') }}" class="cta-btn primary">
+                <a href="{{ url_for('routes_Web.mapa') }}" class="cta-btn primary">
                     Explorar Mapa
                     <i class="fas fa-arrow-right"></i>
                 </a>
                 
                 <!-- Botón secundario: Ir a educativo -->
-                <a href="{{ url_for('edu') }}" class="cta-btn secondary">Aprender Más</a>
+                <a href="{{ url_for('routes_Web.edu') }}" class="cta-btn secondary">Aprender Más</a>
             </div>
         </div>
     </section>
