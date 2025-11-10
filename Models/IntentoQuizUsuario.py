@@ -31,6 +31,3 @@ class IntentoQuizUsuarioSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = IntentoQuizUsuario
         load_instance = True
-
-with app.app_context():
-    db.create_all()  # Crear tablas si no existen

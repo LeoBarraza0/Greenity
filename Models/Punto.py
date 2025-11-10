@@ -44,6 +44,3 @@ class PuntoSchema(ma.SQLAlchemyAutoSchema):
         model = Punto
         load_instance = True
         include_relationships = True
-
-with app.app_context():
-    db.create_all()  # Crear tablas si no existen   
