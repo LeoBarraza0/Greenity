@@ -7,7 +7,7 @@ routes_Web = Blueprint("routes_Web", __name__)
 @routes_Web.route("/")
 def index():
     """Ruta principal que muestra el formulario de login"""
-    from Config.Controller.AuthController import generate_csrf_token
+    from Config.Controller.UserController import generate_csrf_token
     csrf_token = generate_csrf_token()
     return render_template("views/Login.html", csrf_token=csrf_token)
 

@@ -15,10 +15,10 @@ class Usuario(db.Model):
     actualizado_en = db.Column(db.TIMESTAMP, nullable=True, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     # Relaciones
-    puntos_sugeridos = db.relationship('Punto', backref='usuario_sugerencia', lazy=True)
-    intentos_quiz = db.relationship('IntentoQuizUsuario', backref='usuario', lazy=True)
-    progreso_lecciones = db.relationship('ProgresoUsuario', backref='usuario', lazy=True)
-    certificados = db.relationship('Certificado', backref='usuario', lazy=True)
+    #puntos_sugeridos = db.relationship('Punto', backref='usuario_sugerencia', lazy=True)
+    #intentos_quiz = db.relationship('IntentoQuizUsuario', backref='usuario', lazy=True)
+    #progreso_lecciones = db.relationship('ProgresoUsuario', backref='usuario', lazy=True)
+    #certificados = db.relationship('Certificado', backref='usuario', lazy=True)
 
     def __init__(self, correo, contrasena_hash, nombre=None, rol='usuario'):
         self.correo = correo
