@@ -6,7 +6,7 @@ class Usuario(db.Model):
     __tablename__ = 'tbl_usuario'
     
     # ID como UUID (CHAR(36))
-    id = db.Column(db.Integer , primary_key=True, autoincrement=True)
+    id = db.Column(db.String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     correo = db.Column(db.String(255), nullable=False, unique=True)
     contrasena_hash = db.Column(db.String(255), nullable=False)
     nombre = db.Column(db.String(255), nullable=True)
@@ -31,6 +31,3 @@ class UsuarioSchema(ma.SQLAlchemyAutoSchema):
         model = Usuario
         load_instance = True
         exclude = ('contrasena_hash',)  # No exponer contraseña en JSON
-
-with app.app_context():
-    db.create_all()  # Crear tablas si no existen

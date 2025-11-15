@@ -21,6 +21,3 @@ class CertificadoSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Certificado
         load_instance = True
-
-with app.app_context():
-    db.create_all()  # Crear tablas si no existen

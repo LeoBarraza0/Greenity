@@ -25,6 +25,3 @@ class ModuloSchema(ma.SQLAlchemyAutoSchema):
         model = Modulo
         load_instance = True
         include_relationships = True
-
-with app.app_context():
-    db.create_all()  # Crear tablas si no existen

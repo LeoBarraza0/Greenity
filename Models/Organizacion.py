@@ -24,6 +24,3 @@ class OrganizacionSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Organizacion
         load_instance = True
-
-with app.app_context():
-    db.create_all()  # Crear tablas si no existen

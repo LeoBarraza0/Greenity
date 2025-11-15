@@ -27,6 +27,3 @@ class ProgresoUsuarioSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = ProgresoUsuario
         load_instance = True
-
-with app.app_context():
-    db.create_all()  # Crear tablas si no existen
