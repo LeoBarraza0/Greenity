@@ -6,9 +6,9 @@ import os
 
 DB_USER = os.getenv('DB_USER', 'root')
 DB_PASSWORD = os.getenv('DB_PASSWORD', '12345')
-DB_HOST = os.getenv('DB_HOST', 'mysql')  
+DB_HOST = os.getenv('DB_HOST', 'db')  
 DB_PORT = os.getenv('DB_PORT', '3306')
-DB_NAME = os.getenv('DB_NAME', 'mysql')
+DB_NAME = os.getenv('DB_NAME', 'greenity_db')
 
 app = Flask(__name__)
 
