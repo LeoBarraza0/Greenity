@@ -9,6 +9,9 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     gcc \
     libmariadb-dev \
+    libssl-dev \
+    libffi-dev \
+    cargo \
     && rm -rf /var/lib/apt/lists/*
 
 # Copiar el archivo de requerimientos e instalar dependencias de Python

@@ -1,11 +1,16 @@
 from flask import Blueprint, request, jsonify, session, redirect, abort
-from Config.db import app
+from Config.db import app, db
+from Models.Usuario import Usuario, UsuarioSchema
 import secrets
 
-# Crear el Blueprint para autenticación (siguiendo la lógica del profesor)
-routes_Auth = Blueprint("routes_Auth", __name__)
+# Crear el Blueprint para control de usuarios
+routes_User = Blueprint("routes_User", __name__)
 
-# Funciones helper para CSRF (siguiendo la lógica del profesor)
+user_schema = UsuarioSchema()
+personas_schemas = UsuarioSchema(many=True)
+
+
+# Funciones helper para CSRF
 def generate_csrf_token():
     """Genera un token CSRF y lo almacena en la sesión"""
     if 'csrf_token' not in session:
@@ -17,10 +22,10 @@ def validar_csrf(token_from_request):
     token_session = session.get('csrf_token')
     return token_session and secrets.compare_digest(token_session, token_from_request or "")
 
-@routes_Auth.route("/login", methods=['POST'])
+
+@routes_User.route("/login", methods=['POST'])
 def login():
     """Endpoint para procesar el login del usuario"""
-    # Obtener el token CSRF desde la cabecera o el formulario
     token = request.headers.get('X-CSRF-Token') or request.form.get('csrf_token')
     if not validar_csrf(token):
         print(f"CSRF Token inválido. Token recibido: {token}")
@@ -49,7 +54,8 @@ def login():
             "message": "Credenciales inválidas"
         })
 
-@routes_Auth.route("/register", methods=['POST'])
+
+@routes_User.route("/register", methods=['POST'])
 def register():
     """Endpoint para registrar nuevos usuarios"""
     token = request.headers.get('X-CSRF-Token') or request.form.get('csrf_token')
@@ -75,17 +81,19 @@ def register():
             "message": "La contraseña debe tener al menos 6 caracteres"
         })
     
-    # Aquí puedes agregar tu lógica de registro en base de datos
-    # Por ahora, solo confirmamos el registro
+    new_user = Usuario(correo=email, contrasena_hash=password, nombre=name, rol='usuario')
+    db.session.add(new_user )
+    db.session.commit()
+    
     return jsonify({
         "status": 200,
         "message": "Usuario registrado exitosamente",
         "url": "/Main"
     })
 
-@routes_Auth.route("/logout")
+
+@routes_User.route("/logout")
 def logout():
     """Endpoint para cerrar sesión del usuario"""
     session.clear()
     return redirect("/")
-

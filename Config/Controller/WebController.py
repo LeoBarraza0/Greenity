@@ -14,7 +14,7 @@ def main():
 @routes_Web.route("/login")
 def index():
     """Ruta principal que muestra el formulario de login"""
-    from Config.Controller.AuthController import generate_csrf_token
+    from Config.Controller.UserController import generate_csrf_token
     csrf_token = generate_csrf_token()
     return render_template("views/Login.html", csrf_token=csrf_token)
 

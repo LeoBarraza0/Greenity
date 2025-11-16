@@ -3,12 +3,12 @@ from Config.db import app
 
 # Importar Blueprints (siguiendo la lógica del profesor)
 from Config.Controller.WebController import routes_Web
-from Config.Controller.AuthController import routes_Auth
+from Config.Controller.UserController import routes_User
 from Config.Controller.ApiController import routes_Api
 
 # Registrar Blueprints sin url_prefix para mantener las rutas originales
 app.register_blueprint(routes_Web, url_prefix="")
-app.register_blueprint(routes_Auth, url_prefix="")
+app.register_blueprint(routes_User, url_prefix="")
 app.register_blueprint(routes_Api, url_prefix="")
 
 if __name__ == "__main__":
