@@ -4,14 +4,14 @@ from Config.db import app
 # Crear el Blueprint para rutas web (siguiendo la lógica del profesor)
 routes_Web = Blueprint("routes_Web", __name__)
 
-@routes_Web.route("/")
+@routes_Web.route("/login")
 def index():
     """Ruta principal que muestra el formulario de login"""
     from Config.Controller.UserController import generate_csrf_token
     csrf_token = generate_csrf_token()
     return render_template("views/Login.html", csrf_token=csrf_token)
 
-@routes_Web.route("/Main")
+@routes_Web.route("/")
 def main():
     """Página principal después del login"""
     return render_template("views/index.html", 
