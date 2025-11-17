@@ -12,7 +12,7 @@ class Organizacion(db.Model):
     creado_en = db.Column(db.TIMESTAMP, nullable=True, default=datetime.utcnow)
     
     # Relaciones
-    puntos = db.relationship('Punto', backref='organizacion', lazy=True)
+    #puntos = db.relationship('Punto', backref='organizacion', lazy=True)
 
     def __init__(self, nombre, sitio_web=None, telefono=None, direccion=None):
         self.nombre = nombre
@@ -24,6 +24,3 @@ class OrganizacionSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Organizacion
         load_instance = True
-
-with app.app_context():
-    db.create_all()  # Crear tablas si no existen

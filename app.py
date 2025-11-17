@@ -1,5 +1,5 @@
 from flask import Flask
-from Config.db import app
+from Config.db import app, db
 
 # Importar Blueprints (siguiendo la lógica del profesor)
 from Config.Controller.WebController import routes_Web
@@ -10,6 +10,10 @@ from Config.Controller.ApiController import routes_Api
 app.register_blueprint(routes_Web, url_prefix="")
 app.register_blueprint(routes_User, url_prefix="")
 app.register_blueprint(routes_Api, url_prefix="")
+
+import Models
+with app.app_context():
+        db.create_all()
 
 if __name__ == "__main__":
     # Ejecuta la aplicación Flask en modo debug (no usar en producción).

@@ -17,6 +17,3 @@ class PuntoContactoSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = PuntoContacto
         load_instance = True
-
-with app.app_context():
-    db.create_all()  # Crear tablas si no existen

@@ -11,7 +11,7 @@ class PreguntaQuiz(db.Model):
     creado_en = db.Column(db.TIMESTAMP, nullable=True, default=datetime.utcnow)
     
     # Relaciones
-    opciones = db.relationship('OpcionQuiz', backref='pregunta', lazy=True)
+    #opciones = db.relationship('OpcionQuiz', backref='pregunta', lazy=True)
 
     def __init__(self, leccion_id, texto_pregunta, indice_orden):
         self.leccion_id = leccion_id
@@ -23,6 +23,3 @@ class PreguntaQuizSchema(ma.SQLAlchemyAutoSchema):
         model = PreguntaQuiz
         load_instance = True
         include_relationships = True
-
-with app.app_context():
-    db.create_all()  # Crear tablas si no existen

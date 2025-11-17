@@ -31,6 +31,3 @@ class UsuarioSchema(ma.SQLAlchemyAutoSchema):
         model = Usuario
         load_instance = True
         exclude = ('contrasena_hash',)  # No exponer contraseña en JSON
-
-with app.app_context():
-    db.create_all()  # Crear tablas si no existen

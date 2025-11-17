@@ -1,0 +1,13 @@
+from Models.Usuario import Usuario, UsuarioSchema
+from Models.Organizacion import Organizacion, OrganizacionSchema
+from Models.Punto import Punto, PuntoSchema
+from Models.Material import Material, MaterialSchema
+from Models.Modulo import Modulo, ModuloSchema
+from Models.Leccion import Leccion, LeccionSchema
+from Models.PuntoMaterial import PuntoMaterial, PuntoMaterialSchema
+from Models.PuntoContacto import PuntoContacto, PuntoContactoSchema
+from Models.ProgresoUsuario import ProgresoUsuario, ProgresoUsuarioSchema
+from Models.PreguntaQuiz import PreguntaQuiz, PreguntaQuizSchema
+from Models.OpcionQuiz import OpcionQuiz, OpcionQuizSchema
+from Models.IntentoQuizUsuario import IntentoQuizUsuario, IntentoQuizUsuarioSchema
+from Models.Certificado import Certificado, CertificadoSchema

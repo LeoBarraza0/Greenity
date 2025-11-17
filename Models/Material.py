@@ -11,7 +11,7 @@ class Material(db.Model):
     creado_en = db.Column(db.TIMESTAMP, nullable=True, default=datetime.utcnow)
     
     # Relaciones (muchos a muchos con Punto)
-    puntos = db.relationship('PuntoMaterial', backref='material', lazy=True)
+    #puntos = db.relationship('PuntoMaterial', backref='material', lazy=True)
 
     def __init__(self, nombre, slug=None, clase_icono=None):
         self.nombre = nombre
@@ -22,6 +22,3 @@ class MaterialSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Material
         load_instance = True
-
-with app.app_context():
-    db.create_all()  # Crear tablas si no existen
