@@ -1,6 +1,6 @@
 from Config.db import db, ma, app
 from datetime import datetime
-import uuid
+from sqlalchemy import event
 
 class Usuario(db.Model):
     __tablename__ = 'tbl_usuario'
@@ -25,3 +25,21 @@ class UsuarioSchema(ma.SQLAlchemyAutoSchema):
         model = Usuario
         load_instance = True
         exclude = ('contrasena_hash',)  # No exponer contraseña en JSON
+
+
+# Eventos esenciales: normalizar correo y actualizar `actualizado_en`
+@event.listens_for(Usuario, 'before_insert')
+def _usuario_before_insert(mapper, connection, target):
+    if getattr(target, 'correo', None):
+        target.correo = target.correo.lower()
+
+
+@event.listens_for(Usuario, 'before_update')
+def _usuario_before_update(mapper, connection, target):
+    if getattr(target, 'correo', None):
+        target.correo = target.correo.lower()
+    try:
+        target.actualizado_en = datetime.utcnow()
+    except Exception:
+        # No bloquear actualizaciones si no se puede setear el timestamp
+        pass

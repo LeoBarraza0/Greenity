@@ -1,5 +1,6 @@
 from Config.db import db, ma, app
 from datetime import datetime
+from sqlalchemy import event
 
 class Certificado(db.Model):
     __tablename__ = 'tbl_certificado'
@@ -24,3 +25,20 @@ class CertificadoSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = Certificado
         load_instance = True
+
+
+# Evento esencial: autogenerar `numero_certificado` si viene vacío
+@event.listens_for(Certificado, 'after_insert')
+def _certificado_after_insert(mapper, connection, target):
+    try:
+        num_val = getattr(target, 'numero_certificado', None)
+        if not num_val:
+            num = f"CERT-{datetime.utcnow().strftime('%Y%m%d')}-{target.id}"
+            connection.execute(
+                Certificado.__table__.update()
+                .where(Certificado.__table__.c.id == target.id)
+                .values(numero_certificado=num)
+            )
+    except Exception:
+        # No detener el flujo si no se puede actualizar (no crítico)
+        pass

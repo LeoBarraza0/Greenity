@@ -1,5 +1,6 @@
 from Config.db import db, ma, app
 from datetime import datetime
+from sqlalchemy import event
 
 class Punto(db.Model):
     __tablename__ = 'tbl_punto'
@@ -45,3 +46,12 @@ class PuntoSchema(ma.SQLAlchemyAutoSchema):
         model = Punto
         load_instance = True
         include_relationships = True
+
+
+# Evento esencial: actualizar `actualizado_en` antes de update
+@event.listens_for(Punto, 'before_update')
+def _punto_before_update(mapper, connection, target):
+    try:
+        target.actualizado_en = datetime.utcnow()
+    except Exception:
+        pass
