@@ -11,7 +11,7 @@ class Material(db.Model):
     creado_en = db.Column(db.TIMESTAMP, nullable=True, default=datetime.utcnow)
     
     # Relaciones (muchos a muchos con Punto)
-    #puntos = db.relationship('PuntoMaterial', backref='material', lazy=True)
+    puntos = db.relationship('PuntoMaterial', backref='material', lazy=True, cascade='all, delete-orphan', passive_deletes=True)
 
     def __init__(self, nombre, slug=None, clase_icono=None):
         self.nombre = nombre

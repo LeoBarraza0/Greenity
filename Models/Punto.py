@@ -18,18 +18,19 @@ class Punto(db.Model):
     actualizado_en = db.Column(db.TIMESTAMP, nullable=True, default=datetime.utcnow, onupdate=datetime.utcnow)
     
     # Claves foráneas
-    #organizacion_id = db.Column(db.Integer, db.ForeignKey('tbl_organizacion.id'), nullable=True)
-    #usuario_rel = db.Column(db.String(36), db.ForeignKey('tbl_usuario.id'), nullable=True)
+    organizacion_id = db.Column(db.Integer, db.ForeignKey('tbl_organizacion.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=True)
+    usuario_rel = db.Column(db.Integer, db.ForeignKey('tbl_usuario.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=True)
     
     # Relaciones
-    #materiales = db.relationship('PuntoMaterial', backref='punto', lazy=True)
-    #contactos = db.relationship('PuntoContacto', backref='punto', lazy=True)
+    puntos_sugeridos = db.relationship('Punto', backref='usuario_sugerencia', lazy=True, cascade='all, delete-orphan', passive_deletes=True)
+    materiales = db.relationship('PuntoMaterial', backref='punto', lazy=True, cascade='all, delete-orphan', passive_deletes=True)
+    contactos = db.relationship('PuntoContacto', backref='punto', lazy=True, cascade='all, delete-orphan', passive_deletes=True)
     
     # Índices
-    #__table_args__ = (
-    #    db.Index('tbl_punto_lat_lng_index', 'lat', 'lng'),
-    #    db.Index('tbl_punto_usuario_rel_index', 'usuario_rel'),
-    #)
+    __table_args__ = (
+        db.Index('tbl_punto_lat_lng_index', 'lat', 'lng'),
+        db.Index('tbl_punto_usuario_rel_index', 'usuario_rel'),
+    )
 
     def __init__(self, nombre, direccion=None, lat=None, lng=None, organizacion_id=None, usuario_rel=None):
         self.nombre = nombre

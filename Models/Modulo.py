@@ -12,7 +12,7 @@ class Modulo(db.Model):
     creado_en = db.Column(db.TIMESTAMP, nullable=True, default=datetime.utcnow)
     
     # Relaciones
-    #lecciones = db.relationship('Leccion', backref='modulo', lazy=True)
+    lecciones = db.relationship('Leccion', backref='modulo', lazy=True, cascade='all, delete-orphan', passive_deletes=True)
 
     def __init__(self, titulo, icono, descripcion, indice_orden):
         self.titulo = titulo

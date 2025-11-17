@@ -4,8 +4,8 @@ class PuntoMaterial(db.Model):
     __tablename__ = 'tbl_punto_material'
     
     # Clave primaria compuesta
-    punto_id = db.Column(db.Integer, db.ForeignKey('tbl_punto.id'), primary_key=True)
-    material_id = db.Column(db.Integer, db.ForeignKey('tbl_material.id'), primary_key=True)
+    punto_id = db.Column(db.Integer, db.ForeignKey('tbl_punto.id', ondelete='CASCADE', onupdate='CASCADE'), primary_key=True)
+    material_id = db.Column(db.Integer, db.ForeignKey('tbl_material.id', ondelete='CASCADE', onupdate='CASCADE'), primary_key=True)
     es_principal = db.Column(db.Boolean, nullable=True, default=False)
 
     def __init__(self, punto_id, material_id, es_principal=False):

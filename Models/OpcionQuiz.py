@@ -4,7 +4,7 @@ class OpcionQuiz(db.Model):
     __tablename__ = 'tbl_opcion_quiz'
     
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    pregunta_id = db.Column(db.Integer, db.ForeignKey('tbl_pregunta_quiz.id'), nullable=False)
+    pregunta_id = db.Column(db.Integer, db.ForeignKey('tbl_pregunta_quiz.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
     texto_opcion = db.Column(db.String(500), nullable=False)
     es_correcta = db.Column(db.Boolean, nullable=False, default=False)
     indice_orden = db.Column(db.Integer, nullable=False)
