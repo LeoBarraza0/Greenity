@@ -11,7 +11,9 @@ class ProgresoUsuario(db.Model):
     porcentaje = db.Column(db.Integer, nullable=True)
     actualizado_en = db.Column(db.TIMESTAMP, nullable=True, default=datetime.utcnow, onupdate=datetime.utcnow)
     
-    progreso_lecciones = db.relationship('ProgresoUsuario', backref='usuario', lazy=True, cascade='all, delete-orphan', passive_deletes=True)
+    # Cada progreso pertenece a un Usuario; exponer `usuario` en el progreso
+    # y `progresos` en el usuario.
+    usuario = db.relationship('Usuario', backref=db.backref('progresos', lazy=True, cascade='all, delete-orphan'), lazy=True, passive_deletes=True)
     
     # Índices y constraints únicos
     __table_args__ = (

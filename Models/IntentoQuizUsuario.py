@@ -13,7 +13,9 @@ class IntentoQuizUsuario(db.Model):
     realizado_en = db.Column(db.TIMESTAMP, nullable=True, default=datetime.utcnow)
     
     # Relaciones
-    intentos_quiz = db.relationship('IntentoQuizUsuario', backref='usuario', lazy=True, cascade='all, delete-orphan', passive_deletes=True)
+    # Cada intento pertenece a un Usuario; exponer `usuario` en el intento
+    # y `intentos_quiz` en el usuario.
+    usuario = db.relationship('Usuario', backref=db.backref('intentos_quiz', lazy=True, cascade='all, delete-orphan'), lazy=True, passive_deletes=True)
     certificados = db.relationship('Certificado', backref='intento_quiz', lazy=True, cascade='all, delete-orphan', passive_deletes=True)
     
     # Índices

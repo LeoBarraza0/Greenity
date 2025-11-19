@@ -13,7 +13,7 @@ class Certificado(db.Model):
     ruta_archivo = db.Column(db.String(500), nullable=True)
     
     # Relaciones
-    certificados = db.relationship('Certificado', backref='usuario', lazy=True, cascade='all, delete-orphan', passive_deletes=True)
+    usuario = db.relationship('Usuario', backref=db.backref('certificados', lazy=True, cascade='all, delete-orphan'), lazy=True, passive_deletes=True)
     
     def __init__(self, usuario_id, numero_certificado, intento_id=None, ruta_archivo=None):
         self.usuario_id = usuario_id

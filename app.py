@@ -11,7 +11,13 @@ app.register_blueprint(routes_User, url_prefix="")
 app.register_blueprint(routes_Api, url_prefix="")
 
 with app.app_context():
-        db.create_all()
+    # IMPORTANTE: forzar importación de TODOS los modelos para registrar metadata
+    # antes de crear tablas.
+    import Models as _models
+    assert _models
+
+    # crear tablas UNA sola vez cuando la app se importe/arranque
+    db.create_all()
 
 if __name__ == "__main__":
     # Ejecuta la aplicación Flask en modo debug (no usar en producción).
