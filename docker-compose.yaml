@@ -18,6 +18,12 @@ services:
       - DB_USER=root
       - DB_PASSWORD=12345
       - DB_NAME=greenity_db
+      - MAIL_SERVER=smtp.gmail.com
+      - MAIL_PORT=587
+      - MAIL_USE_TLS=True
+      - MAIL_USERNAME=greenity.contacto@gmail.com
+      - MAIL_PASSWORD=nqmk rznk pgfx nesp
+      - MAIL_DEFAULT_SENDER=greenity.contacto@gmail.com
 
   db:
     container_name: greenity_db

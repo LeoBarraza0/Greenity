@@ -44,7 +44,8 @@
                             <!-- Campo: Nombre completo -->
                             <div class="form-field">
                                 <label for="fullName" class="field-label">Nombre completo *</label>
-                                <input type="text" id="fullName" name="fullName" class="form-input" placeholder="Tu nombre" required>
+                                <input type="text" id="fullName" name="fullName" class="form-input" placeholder="Tu nombre" 
+                                       value="{% if user_data and user_data.nombre %}{{ user_data.nombre }}{% endif %}" required>
                                 <div class="field-icon">
                                     <i class="fas fa-user"></i>
                                 </div>
@@ -53,7 +54,8 @@
                             <!-- Campo: Email -->
                             <div class="form-field">
                                 <label for="email" class="field-label">Email *</label>
-                                <input type="email" id="email" name="email" class="form-input" placeholder="email@gmail.com" required>
+                                <input type="email" id="email" name="email" class="form-input" placeholder="email@gmail.com" 
+                                       value="{% if user_data and user_data.correo %}{{ user_data.correo }}{% endif %}" required>
                                 <div class="field-icon">
                                     <i class="fas fa-envelope"></i>
                                 </div>
@@ -103,6 +105,9 @@
                                 <i class="fas fa-info-circle"></i>
                                 <p>Responderemos a tu consulta en un plazo máximo de 24 horas. Para consultas urgentes, puedes contactarnos por teléfono.</p>
                             </div>
+
+                            <!-- Token CSRF para protección -->
+                            <input type="hidden" name="csrf_token" id="csrf_token" value="{{ csrf_token }}">
 
                             <!-- Botón para enviar el formulario -->
                             <button type="submit" class="submit-btn">

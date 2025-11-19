@@ -4,6 +4,17 @@
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Página Contacto cargada');
     
+    // Verificar si hay campos pre-rellenados (usuario autenticado)
+    const fullNameField = document.getElementById('fullName');
+    const emailField = document.getElementById('email');
+    const hasPrefilledData = (fullNameField && fullNameField.value) || (emailField && emailField.value);
+    
+    if (hasPrefilledData) {
+        console.log('Datos del usuario detectados - campos pre-rellenados automáticamente');
+        // Mostrar notificación sutil de que los datos fueron cargados
+        showPrefilledNotification();
+    }
+    
     // Inicializar modularmente cada responsabilidad de la página.
     initNavigation();       // manejo del menú/nav
     initFormValidation();   // validaciones del formulario de contacto
@@ -81,6 +92,16 @@ function initFormValidation() {
     const form = document.getElementById('contactForm');
     const inputs = form.querySelectorAll('input, textarea, select');
     
+    // Si hay valores pre-rellenados (usuario autenticado), validarlos automáticamente
+    inputs.forEach(input => {
+        if (input.value && input.value.trim() !== '') {
+            // Si el campo ya tiene un valor, validarlo y marcarlo como válido
+            setTimeout(() => {
+                validateField(input);
+            }, 100);
+        }
+    });
+    
     // Validación por campo en eventos comunes para mejor UX.
     inputs.forEach(input => {
         // Validar cuando el usuario sale del campo (blur).
@@ -112,34 +133,70 @@ function initFormValidation() {
         if (isValid) {
             // Feedback visual: botón en modo 'enviando'.
             const submitBtn = form.querySelector('.submit-btn');
+            const originalBtnText = submitBtn.innerHTML;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
             submitBtn.disabled = true;
             
-            // Simulación de envío (sustituir por llamada real al backend).
-            setTimeout(() => {
-                // Estado: envío completado con éxito.
-                submitBtn.innerHTML = '<i class="fas fa-check"></i> ¡Enviado!';
-                submitBtn.style.background = '#22c55e';
-                
-                // Mostrar notificación de éxito al usuario.
-                showSuccessMessage();
-                
-                // Restablecer el formulario después de unos segundos.
-                setTimeout(() => {
-                    form.reset();
-                    submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar mensaje';
-                    submitBtn.style.background = '';
-                    submitBtn.disabled = false;
+            // Recopilar datos del formulario
+            const formData = new FormData(form);
+            const csrfToken = document.getElementById('csrf_token').value;
+            
+            // Convertir FormData a objeto para enviar como JSON
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+            
+            // Enviar datos al backend
+            fetch('/api/contacto', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': csrfToken
+                },
+                body: JSON.stringify({
+                    ...data,
+                    csrf_token: csrfToken
+                })
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    // Estado: envío completado con éxito.
+                    submitBtn.innerHTML = '<i class="fas fa-check"></i> ¡Enviado!';
+                    submitBtn.style.background = '#22c55e';
                     
-                    // Limpiar clases y mensajes de validación existentes.
-                    const fields = form.querySelectorAll('.form-field');
-                    fields.forEach(field => {
-                        field.classList.remove('success', 'error');
-                        const errorMsg = field.querySelector('.error-message');
-                        if (errorMsg) errorMsg.remove();
-                    });
-                }, 3000);
-            }, 2000);
+                    // Mostrar notificación de éxito al usuario.
+                    showSuccessMessage(result.message || 'Mensaje enviado exitosamente');
+                    
+                    // Restablecer el formulario después de unos segundos.
+                    setTimeout(() => {
+                        form.reset();
+                        submitBtn.innerHTML = originalBtnText;
+                        submitBtn.style.background = '';
+                        submitBtn.disabled = false;
+                        
+                        // Limpiar clases y mensajes de validación existentes.
+                        const fields = form.querySelectorAll('.form-field');
+                        fields.forEach(field => {
+                            field.classList.remove('success', 'error');
+                            const errorMsg = field.querySelector('.error-message');
+                            if (errorMsg) errorMsg.remove();
+                        });
+                    }, 3000);
+                } else {
+                    // Error en el envío
+                    submitBtn.innerHTML = originalBtnText;
+                    submitBtn.disabled = false;
+                    showErrorMessage(result.error || 'Error al enviar el mensaje. Por favor, intenta nuevamente.');
+                }
+            })
+            .catch(error => {
+                console.error('Error al enviar formulario:', error);
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+                showErrorMessage('Error de conexión. Por favor, verifica tu conexión a internet e intenta nuevamente.');
+            });
         }
     });
 }
@@ -398,7 +455,7 @@ function initAnimations() {
     });
 }
 
-function showSuccessMessage() {
+function showSuccessMessage(customMessage) {
     const successDiv = document.createElement('div');
     successDiv.style.cssText = `
         position: fixed;
@@ -417,7 +474,7 @@ function showSuccessMessage() {
             <i class="fas fa-check-circle" style="font-size: 1.5rem;"></i>
             <div>
                 <div style="font-weight: 600; font-size: 1.1rem;">¡Mensaje enviado!</div>
-                <div style="font-size: 0.9rem; opacity: 0.9;">Te responderemos en 24 horas</div>
+                <div style="font-size: 0.9rem; opacity: 0.9;">${customMessage || 'Te responderemos en 24 horas'}</div>
             </div>
         </div>
     `;
@@ -427,9 +484,85 @@ function showSuccessMessage() {
     setTimeout(() => {
         successDiv.style.animation = 'slideOutRight 0.5s ease';
         setTimeout(() => {
-            document.body.removeChild(successDiv);
+            if (document.body.contains(successDiv)) {
+                document.body.removeChild(successDiv);
+            }
         }, 500);
     }, 4000);
+}
+
+// Muestra un mensaje de error al usuario
+function showErrorMessage(message) {
+    const errorDiv = document.createElement('div');
+    errorDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        color: white;
+        padding: 20px 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(239, 68, 68, 0.3);
+        z-index: 1000;
+        animation: slideInRight 0.5s ease;
+        max-width: 400px;
+    `;
+    errorDiv.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-exclamation-circle" style="font-size: 1.5rem;"></i>
+            <div>
+                <div style="font-weight: 600; font-size: 1.1rem;">Error al enviar</div>
+                <div style="font-size: 0.9rem; opacity: 0.9;">${message}</div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(errorDiv);
+    
+    setTimeout(() => {
+        errorDiv.style.animation = 'slideOutRight 0.5s ease';
+        setTimeout(() => {
+            if (document.body.contains(errorDiv)) {
+                document.body.removeChild(errorDiv);
+            }
+        }, 500);
+    }, 5000);
+}
+
+// Muestra una notificación sutil cuando los datos del usuario se cargan automáticamente
+function showPrefilledNotification() {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+        z-index: 1000;
+        animation: slideInRight 0.5s ease;
+        font-size: 0.9rem;
+    `;
+    notification.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-user-check" style="font-size: 1.2rem;"></i>
+            <span style="font-weight: 500;">Tus datos han sido cargados automáticamente</span>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Ocultar después de 3 segundos
+    setTimeout(() => {
+        notification.style.animation = 'slideOutRight 0.5s ease';
+        setTimeout(() => {
+            if (document.body.contains(notification)) {
+                document.body.removeChild(notification);
+            }
+        }, 500);
+    }, 3000);
 }
 
 // Agregar estilos CSS para animaciones

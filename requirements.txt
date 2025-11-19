@@ -1,6 +1,7 @@
 flask
 flask_sqlalchemy
 flask_marshmallow
+flask_mail
 marshmallow
 pymysql
 marshmallow-sqlalchemy
