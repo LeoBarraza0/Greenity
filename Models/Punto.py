@@ -20,13 +20,14 @@ class Punto(db.Model):
     
     # Claves foráneas
     organizacion_id = db.Column(db.Integer, db.ForeignKey('tbl_organizacion.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=True)
-    usuario_rel = db.Column(db.Integer, db.ForeignKey('tbl_usuario.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=True)
+    usuario_rel = db.Column(db.String(36), db.ForeignKey('tbl_usuario.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=True)
+    id_material = db.Column(db.BigInteger, db.ForeignKey('tbl_material.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
     
     # Relaciones
     # `usuario_rel` referencia a `Usuario`; exponer `usuario_sugerencia` en el punto
     # y `puntos_sugeridos` en el usuario.
-    usuario_sugerencia = db.relationship('Usuario', backref=db.backref('puntos_sugeridos', lazy=True, cascade='all, delete-orphan'), lazy=True, passive_deletes=True)
-    materiales = db.relationship('PuntoMaterial', backref='punto', lazy=True, cascade='all, delete-orphan', passive_deletes=True)
+    usuario_sugerencia = db.relationship('Usuario', backref=db.backref('puntos_sugeridos', lazy=True), lazy=True, passive_deletes=True, foreign_keys=[usuario_rel])
+    material = db.relationship('Material', backref='puntos', lazy=True, passive_deletes=True, foreign_keys=[id_material])
     contactos = db.relationship('PuntoContacto', backref='punto', lazy=True, cascade='all, delete-orphan', passive_deletes=True)
     
     # Índices

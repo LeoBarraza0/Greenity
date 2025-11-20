@@ -10,8 +10,8 @@ class Material(db.Model):
     clase_icono = db.Column(db.String(100), nullable=True)
     creado_en = db.Column(db.TIMESTAMP, nullable=True, default=datetime.utcnow)
     
-    # Relaciones (muchos a muchos con Punto)
-    puntos = db.relationship('PuntoMaterial', backref='material', lazy=True, cascade='all, delete-orphan', passive_deletes=True)
+    # Relaciones
+    # puntos se define en Punto con backref='puntos'
 
     def __init__(self, nombre, slug=None, clase_icono=None):
         self.nombre = nombre
