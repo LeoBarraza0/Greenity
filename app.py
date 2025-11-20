@@ -4,11 +4,13 @@ from Config.db import app, db
 from Config.Controller.WebController import routes_Web
 from Config.Controller.UserController import routes_User
 from Config.Controller.ApiController import routes_Api
+from Config.Controller.CertificadoController import routes_certificadoC
 
 # Registrar Blueprints sin url_prefix para mantener las rutas originales
 app.register_blueprint(routes_Web, url_prefix="")
 app.register_blueprint(routes_User, url_prefix="")
 app.register_blueprint(routes_Api, url_prefix="")
+app.register_blueprint(routes_certificadoC, url_prefix="/controller")
 
 with app.app_context():
     # IMPORTANTE: forzar importación de TODOS los modelos para registrar metadata

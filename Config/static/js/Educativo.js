@@ -1381,12 +1381,39 @@ function showResults() {
 }
 
 // Generar y descargar certificado
-function downloadCertificate(score, percentage) {
-    // 1) Pedir al usuario su nombre. Si no lo proporciona, abortamos.
+async function downloadCertificate(score, percentage) {
+    // 1) Crear certificado en el backend primero
+    try {
+        const response = await fetch('/controller/certificados', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({})
+        });
+
+        const result = await response.json();
+        
+        if (result.status !== 200) {
+            alert('Error al generar el certificado: ' + result.message);
+            return;
+        }
+
+        // Certificado creado exitosamente en BD
+        console.log('Certificado creado:', result.certificado);
+        const certificadoNumero = result.certificado.numero_certificado;
+
+    } catch (error) {
+        console.error('Error al crear certificado:', error);
+        alert('Error al generar el certificado. Por favor, intenta nuevamente.');
+        return;
+    }
+
+    // 2) Pedir al usuario su nombre. Si no lo proporciona, abortamos.
     const userName = prompt("Por favor, ingresa tu nombre para el certificado:");
     if (!userName) return; // El usuario canceló o dejó el campo vacío.
 
-    // 2) Obtener fecha actual en formato localizado (es-ES) para mostrarla
+    // 3) Obtener fecha actual en formato localizado (es-ES) para mostrarla
     //    en el certificado y usarla en el nombre del archivo.
     const currentDate = new Date().toLocaleDateString('es-ES', {
         year: 'numeric',

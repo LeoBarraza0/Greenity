@@ -81,7 +81,13 @@ def login():
         print(f"CSRF Token inválido. Token recibido: {token}")
         abort(403, description="CSRF Token Inválido")
     
-    data = request.form.to_dict()
+    # Aceptar JSON o form-data
+    payload = request.get_json(silent=True)
+    if payload:
+        data = payload
+    else:
+        data = request.form.to_dict()
+    
     email = data.get('email', '')
     password = data.get('password', '')
     
@@ -104,7 +110,8 @@ def login():
                 db.session.rollback()
         session['user_authenticated'] = True
         session['user_email'] = email
-        print("Login exitoso")
+        session['user_id'] = user.id  # Guardar ID del usuario
+        print(f"Login exitoso. User ID: {user.id}")
         return jsonify({"status": 200, "message": "Login exitoso", "url": "/"})
 
     print(f"Credenciales inválidas para: {email}")
@@ -153,6 +160,7 @@ def register():
         db.session.commit()
         session['user_authenticated'] = True
         session['user_email'] = email
+        session['user_id'] = new_user.id  # Guardar ID del usuario
     except Exception as e:
         db.session.rollback()
         return jsonify({
