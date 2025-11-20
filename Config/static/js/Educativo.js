@@ -245,19 +245,40 @@ function initLearningSystem() {
         // Actualizar progreso visual
         updateModuleCardProgress(moduleNum);
     });
+    // Fallback: asegurar que cualquier botón con la clase .module-start-btn tenga el listener
+    const startButtons = document.querySelectorAll('.module-start-btn');
+    startButtons.forEach(btn => {
+        // Determine module number from closest .module-card
+        const card = btn.closest('.module-card');
+        if (!card) return;
+        const moduleNum = parseInt(card.getAttribute('data-module'));
+        // Attach listener if not already attached (defensive)
+        btn.addEventListener('click', () => openModule(moduleNum));
+    });
     
     // Inicializar controles del modal
     initModuleModal();
     
     // Verificar si debe mostrar popup de certificación
     checkCertificationEligibility();
+    // Asegurar que el estado del botón de certificación se actualiza al iniciar
+    try {
+        updateCertButtonState(getProgressStore());
+    } catch (e) {}
 }
 
 // Cargar progreso desde localStorage
 function loadModuleProgress() {
     const saved = localStorage.getItem('moduleProgress');
     if (saved) {
-        moduleProgress = JSON.parse(saved);
+        try {
+            const parsed = JSON.parse(saved);
+            // Merge saved progress with current modulesData so newly added modules are initialized
+            moduleProgress = Object.assign({}, parsed);
+        } catch (e) {
+            console.error('Error parsing saved moduleProgress, reinitializing', e);
+            moduleProgress = {};
+        }
     } else {
         // Inicializar estructura de progreso
         for (let moduleNum in modulesData) {
@@ -268,12 +289,30 @@ function loadModuleProgress() {
             };
         }
     }
+
+    // Ensure every module in modulesData has an entry in moduleProgress
+    for (let moduleNum in modulesData) {
+        if (!moduleProgress[moduleNum]) {
+            moduleProgress[moduleNum] = {
+                lessons: {},
+                completed: false,
+                percentage: 0
+            };
+        } else {
+            // Ensure structure integrity for existing entries
+            moduleProgress[moduleNum].lessons = moduleProgress[moduleNum].lessons || {};
+            moduleProgress[moduleNum].completed = !!moduleProgress[moduleNum].completed;
+            moduleProgress[moduleNum].percentage = Number(moduleProgress[moduleNum].percentage) || 0;
+        }
+    }
 }
 
 // Guardar progreso
 function saveModuleProgress() {
     localStorage.setItem('moduleProgress', JSON.stringify(moduleProgress));
     checkCertificationEligibility();
+    // Also update cert button state so UI reflects module completion immediately
+    try { updateCertButtonState(getProgressStore()); } catch (e) {}
 }
 
 // Abrir modal de módulo
@@ -663,9 +702,8 @@ function initModuleModal() {
 
 // Verificar elegibilidad para certificación
 function checkCertificationEligibility() {
-    const allCompleted = Object.values(moduleProgress).every(m => m.percentage === 100);
-    
-    if (allCompleted) {
+    // Use modulesAllComplete which is resilient and considers current modulesData
+    if (modulesAllComplete()) {
         setTimeout(() => {
             showCertificationPopup();
         }, 1000);
@@ -989,33 +1027,24 @@ function initCertificationButtons() {
     const popupStartBtn = document.querySelector('.popup-start-btn');
     const popupLaterBtn = document.querySelector('.popup-later-btn');
     
-    // Botón de la sección de certificación
-    const certStartBtn = document.querySelector('.cert-start-btn');
+    // Botones de la sección de certificación (puede haber más de uno)
+    const certStartBtns = document.querySelectorAll('.cert-start-btn');
     
     if (popupStartBtn) {
         popupStartBtn.addEventListener('click', function() {
-            // Primero: verificar que los módulos de aprendizaje están completados al 100%
-            if (!modulesAllComplete()) {
-                // Construir mensaje con módulos incompletos
-                const incomplete = [];
-                for (const m in moduleProgress) {
-                    const pct = moduleProgress[m]?.percentage || 0;
-                    if (pct < 100) incomplete.push(`Módulo ${m} (${pct}%)`);
-                }
-                alert(`Para acceder al examen de certificación debes completar todos los Módulos al 100%. Módulos incompletos: ${incomplete.join(', ')}.`);
-                return;
-            }
-
-            // Luego: verificar el progreso por pasos (si aplica)
-            const progressStore = getProgressStore();
-            const missing = canStartExam(progressStore);
-            if (missing.length === 0) {
+            // Cargar progreso más reciente y basar la decisión únicamente en si los módulos
+            // están al 100% (modulesAllComplete).
+            loadModuleProgress();
+            if (modulesAllComplete()) {
                 hideCertificationPopup();
                 startTrivia();
             } else {
-                // Mostrar mensaje sobre pasos incompletos
-                const friendly = missing.map(n => `Paso ${n} (${progressStore[n] || 0}%)`).join(', ');
-                alert(`Aún faltan pasos por completar al 100%: ${friendly}. Completa todos para habilitar el examen.`);
+                const incomplete = [];
+                Object.keys(modulesData).forEach(m => {
+                    const pct = moduleProgress[m]?.percentage || 0;
+                    if (pct < 100) incomplete.push(`Módulo ${m} (${pct}%)`);
+                });
+                alert(`Para acceder al examen de certificación debes completar todos los Módulos al 100%. Módulos incompletos: ${incomplete.join(', ')}.`);
             }
         });
     }
@@ -1026,28 +1055,26 @@ function initCertificationButtons() {
         });
     }
     
-    if (certStartBtn) {
-        certStartBtn.addEventListener('click', function() {
-            // Verificar módulos completos antes de permitir iniciar el examen
-            if (!modulesAllComplete()) {
-                const incomplete = [];
-                for (const m in moduleProgress) {
-                    const pct = moduleProgress[m]?.percentage || 0;
-                    if (pct < 100) incomplete.push(`Módulo ${m} (${pct}%)`);
-                }
-                alert(`No puedes iniciar el examen. Completa todos los Módulos al 100%. Módulos incompletos: ${incomplete.join(', ')}.`);
-                return;
-            }
+    if (certStartBtns && certStartBtns.length > 0) {
+        certStartBtns.forEach(certStartBtn => {
+            certStartBtn.addEventListener('click', function(event) {
+                // If element is a link, prevent navigation until we validate
+                if (event && event.preventDefault) event.preventDefault();
 
-            // También mantener la verificación por pasos si aplica
-            const progressStore = getProgressStore();
-            const missing = canStartExam(progressStore);
-            if (missing.length === 0) {
-                startTrivia();
-            } else {
-                const friendly = missing.map(n => `Paso ${n} (${progressStore[n] || 0}%)`).join(', ');
-                alert(`Aún faltan pasos por completar al 100%: ${friendly}. Completa todos para habilitar el examen.`);
-            }
+                // Simplificar: basar la autorización del examen únicamente en que los módulos
+                // estén al 100%.
+                loadModuleProgress();
+                if (modulesAllComplete()) {
+                    startTrivia();
+                } else {
+                    const incomplete = [];
+                    Object.keys(modulesData).forEach(m => {
+                        const pct = moduleProgress[m]?.percentage || 0;
+                        if (pct < 100) incomplete.push(`Módulo ${m} (${pct}%)`);
+                    });
+                    alert(`No puedes iniciar el examen. Completa todos los Módulos al 100%. Módulos incompletos: ${incomplete.join(', ')}.`);
+                }
+            });
         });
     }
 }
@@ -1063,7 +1090,12 @@ function modulesAllComplete() {
             else return false;
         }
 
-        return Object.values(moduleProgress).every(m => (m.percentage || 0) === 100);
+        // Only consider modules that exist in modulesData (ignore stale/extra keys)
+        const moduleKeys = Object.keys(modulesData);
+        return moduleKeys.every(k => {
+            const entry = moduleProgress ? moduleProgress[k] : undefined;
+            return !!entry && Number(entry.percentage) === 100;
+        });
     } catch (err) {
         console.error('Error verificando módulos completos', err);
         return false;
@@ -1709,17 +1741,24 @@ function openStepModal(card, progress) {
 }
 
 function updateCertButtonState(progressStore) {
-    const certBtn = document.querySelector('.cert-start-btn');
-    if (!certBtn) return;
+    const certBtns = document.querySelectorAll('.cert-start-btn');
+    if (!certBtns || certBtns.length === 0) return;
+    // Base the button state solely on module completion (not on step progress)
+    const modulesComplete = modulesAllComplete();
+    certBtns.forEach(certBtn => {
+        if (modulesComplete) {
+            certBtn.disabled = false;
+            certBtn.classList.remove('disabled');
+            certBtn.title = 'Puedes iniciar el examen';
+        } else {
+            certBtn.disabled = true;
+            certBtn.classList.add('disabled');
+            certBtn.title = 'Completa todos los Módulos al 100% para habilitar el examen';
+        }
+    });
 
-    // All steps 100%?
-    const allComplete = [1,2,3,4].every(n => (progressStore[n] || 0) === 100);
-    if (allComplete) {
-        certBtn.disabled = false;
-        certBtn.classList.remove('disabled');
-        certBtn.title = 'Puedes iniciar el examen';
-        // Mostrar el pop-up de certificación cuando se complete todo al 100%.
-        // Solo mostrar una vez por usuario/instancia salvo que se resetee la bandera.
+    // Mostrar el pop-up de certificación cuando todos los módulos estén al 100%.
+    if (modulesComplete) {
         try {
             const shown = localStorage.getItem('greennity_cert_popup_shown');
             if (!shown) {
@@ -1727,17 +1766,11 @@ function updateCertButtonState(progressStore) {
                 localStorage.setItem('greennity_cert_popup_shown', '1');
             }
         } catch (err) {
-            // Si localStorage no está disponible, mostramos el popup una sola vez en la sesión
             if (!window.__greennity_cert_shown) {
                 showCertificationPopup();
                 window.__greennity_cert_shown = true;
             }
         }
-    } else {
-        certBtn.disabled = true;
-        certBtn.classList.add('disabled');
-        certBtn.title = 'Completa todos los pasos al 100% para habilitar el examen';
-        // Si el usuario vuelve a estar incompleto, no hacemos nada (no reabrimos popup automáticamente)
     }
 }
 
