@@ -1,9 +1,0 @@
-flask
-flask_sqlalchemy
-flask_marshmallow
-marshmallow
-pymysql
-marshmallow-sqlalchemy
-cryptography
-requests==2.31.0
-beautifulsoup4==4.12.3
