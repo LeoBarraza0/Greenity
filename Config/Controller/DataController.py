@@ -20,10 +20,10 @@ contacts_schema = None
 
 
 def _ensure_models():
-    """Lazily import ORM model classes and initialize schema instances.
-    This avoids importing model modules at top-level and reduces risk of
-    metadata redefinition during app startup. Call this at the start of
-    any CRUD endpoint that needs ORM model classes.
+    """Importar perezosamente las clases de modelos ORM e inicializar las instancias de los esquemas.
+    Esto evita importar los módulos de modelos en el nivel superior y reduce el riesgo de
+    redefinición del metadata durante el arranque de la aplicación. Llame a esta función al inicio de
+    cualquier endpoint CRUD que necesite las clases de modelo ORM.
     """
     global Material, MaterialSchema, Organizacion, OrganizacionSchema, Punto, PuntoSchema, PuntoContacto, PuntoContactoSchema
     global material_schema, materials_schema, org_schema, orgs_schema, punto_schema, puntos_schema, contact_schema, contacts_schema
