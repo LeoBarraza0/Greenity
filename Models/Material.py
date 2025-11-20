@@ -1,4 +1,4 @@
-from Config.db import db, ma, app
+from Config.db import db, ma
 from datetime import datetime
 
 class Material(db.Model):

@@ -51,10 +51,17 @@ def ejecutar_scraping():
         if data.get('success'):
             # Guardar los datos actualizados
             scraper.save_to_json(data)
+            # Import saved data into DB (if DataController available)
+            try:
+                from Config.Controller.DataController import import_scraping_data
+                import_result = import_scraping_data()
+            except Exception as e:
+                import_result = {'success': False, 'error': str(e)}
             return jsonify({
                 "success": True,
                 "message": "Scraping ejecutado exitosamente",
-                "estadisticas": data.get('estadisticas', {})
+                "estadisticas": data.get('estadisticas', {}),
+                "import": import_result
             })
         else:
             return jsonify({

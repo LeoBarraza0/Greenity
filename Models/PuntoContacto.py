@@ -1,4 +1,4 @@
-from Config.db import db, ma, app
+from Config.db import db, ma
 
 class PuntoContacto(db.Model):
     __tablename__ = 'tbl_punto_contacto'
