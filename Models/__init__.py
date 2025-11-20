@@ -15,8 +15,8 @@ ORDERED_MODELS = [
 	'Organizacion',
 	'Material',
     'Certificado',
-    'Punto',
-	'PuntoContacto'
+	'PuntoContacto',
+    'Punto'
 ]
 
 # Importar en el orden definido (ignorar fallos aquí; errores reales se mostrarán luego)

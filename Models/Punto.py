@@ -21,7 +21,7 @@ class Punto(db.Model):
     # Claves foráneas
     organizacion_id = db.Column(db.Integer, db.ForeignKey('tbl_organizacion.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=True)
     id_material = db.Column(db.Integer, db.ForeignKey('tbl_material.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
-    usuario_rel = db.Column(db.Integer, db.ForeignKey('tbl_usuario.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=True)
+    usuario_rel = db.Column(db.String(36), db.ForeignKey('tbl_usuario.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=True)
     
     # Relaciones
     # `usuario_rel` referencia a `Usuario`; exponer `usuario_sugerencia` en el punto
