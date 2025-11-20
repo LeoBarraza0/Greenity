@@ -20,8 +20,8 @@ class Punto(db.Model):
     
     # Claves foráneas
     organizacion_id = db.Column(db.Integer, db.ForeignKey('tbl_organizacion.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=True)
-    usuario_rel = db.Column(db.String(36), db.ForeignKey('tbl_usuario.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=True)
-    id_material = db.Column(db.BigInteger, db.ForeignKey('tbl_material.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
+    id_material = db.Column(db.Integer, db.ForeignKey('tbl_material.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=False)
+    usuario_rel = db.Column(db.Integer, db.ForeignKey('tbl_usuario.id', ondelete='CASCADE', onupdate='CASCADE'), nullable=True)
     
     # Relaciones
     # `usuario_rel` referencia a `Usuario`; exponer `usuario_sugerencia` en el punto
@@ -36,8 +36,9 @@ class Punto(db.Model):
         db.Index('tbl_punto_usuario_rel_index', 'usuario_rel'),
     )
 
-    def __init__(self, nombre, direccion=None, lat=None, lng=None, organizacion_id=None, usuario_rel=None):
+    def __init__(self, nombre, id_material, direccion=None, lat=None, lng=None, organizacion_id=None, usuario_rel=None):
         self.nombre = nombre
+        self.id_material = id_material
         self.direccion = direccion
         self.lat = lat
         self.lng = lng

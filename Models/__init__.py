@@ -14,16 +14,9 @@ ORDERED_MODELS = [
 	'Usuario',
 	'Organizacion',
 	'Material',
-	'Modulo',
-	'OpcionQuiz',
-	'PreguntaQuiz',
     'Certificado',
-    'IntentoQuizUsuario',
-    'ProgresoUsuario',
-	'Leccion',
-    'PuntoMaterial',
-    'PuntoContacto',
-	'Punto'
+    'Punto',
+	'PuntoContacto'
 ]
 
 # Importar en el orden definido (ignorar fallos aquí; errores reales se mostrarán luego)
