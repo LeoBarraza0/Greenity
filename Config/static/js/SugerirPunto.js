@@ -91,6 +91,11 @@ function validateField(field) {
     const fieldContainer = field.closest('.form-field');
     const value = field.value.trim();
     
+    // Si el campo no está en un .form-field (como el checkbox terms), ignorar validación visual
+    if (!fieldContainer) {
+        return true;
+    }
+    
     // Remover clases de error/success anteriores
     fieldContainer.classList.remove('error', 'success');
     
@@ -144,10 +149,13 @@ function showFieldError(fieldContainer, message) {
 
 function clearFieldError(field) {
     const fieldContainer = field.closest('.form-field');
-    fieldContainer.classList.remove('error');
-    const errorMessage = fieldContainer.querySelector('.error-message');
-    if (errorMessage) {
-        errorMessage.remove();
+    // Hacer defensivo: si el campo no está en un .form-field (como el checkbox terms), ignorar
+    if (fieldContainer) {
+        fieldContainer.classList.remove('error');
+        const errorMessage = fieldContainer.querySelector('.error-message');
+        if (errorMessage) {
+            errorMessage.remove();
+        }
     }
 }
 
@@ -289,10 +297,12 @@ function initFormSubmission() {
     }
     
     if (form && submitBtn) {
-        form.addEventListener('submit', function(e) {
+        submitBtn.addEventListener('click', function(e) {
             e.preventDefault();
             
-            // Validar todos los campos
+            console.log('Botón de envío clickeado');
+            
+            // Validar todos los campos requeridos
             const inputs = form.querySelectorAll('input[required], textarea[required], select[required]');
             let isValid = true;
             
@@ -311,42 +321,82 @@ function initFormSubmission() {
             
             // Validar términos y condiciones
             const termsCheckbox = document.getElementById('terms');
-            if (!termsCheckbox.checked) {
+            if (!termsCheckbox || !termsCheckbox.checked) {
                 alert('Debes aceptar los términos y condiciones');
                 isValid = false;
+                console.log('Términos no marcados. termsCheckbox:', termsCheckbox, 'checked:', termsCheckbox?.checked);
+            } else {
+                console.log('Términos OK');
             }
             
             if (isValid) {
-                // Efecto visual de envío
+                console.log('Formulario válido, preparando envío...');
+                
+                // Preparar UI de envío
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
                 submitBtn.disabled = true;
                 submitBtn.classList.add('loading');
+
+                // Construir FormData para enviar incluyendo archivos
+                const formData = new FormData(form);
                 
-                // Simular envío
-                setTimeout(() => {
-                    submitBtn.innerHTML = '<i class="fas fa-check"></i> ¡Enviado!';
-                    submitBtn.style.background = '#22c55e';
-                    
-                    // Mostrar mensaje de éxito
-                    showSuccessMessage();
-                    
-                    // Resetear formulario después de un tiempo
-                    setTimeout(() => {
-                        form.reset();
+                console.log('FormData construido:', {
+                    pointName: formData.get('pointName'),
+                    pointType: formData.get('pointType'),
+                    materials: formData.getAll('materials'),
+                    terms: formData.get('terms')
+                });
+
+                // Enviar al backend
+                fetch('/submit_sugerencia', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Response data:', data);
+                    if (data && data.status === 'ok') {
+                        submitBtn.innerHTML = '<i class="fas fa-check"></i> ¡Enviado!';
+                        submitBtn.style.background = '#22c55e';
+                        showSuccessMessage();
+
+                        // Resetear formulario después de un tiempo
+                        setTimeout(() => {
+                            form.reset();
+                            submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Sugerencia';
+                            submitBtn.style.background = '';
+                            submitBtn.disabled = false;
+                            submitBtn.classList.remove('loading');
+
+                            // Limpiar clases de validación
+                            const fields = form.querySelectorAll('.form-field');
+                            fields.forEach(field => {
+                                field.classList.remove('success', 'error');
+                                const errorMsg = field.querySelector('.error-message');
+                                if (errorMsg) errorMsg.remove();
+                            });
+                        }, 2000);
+                    } else {
+                        const msg = data && data.message ? data.message : 'Error al enviar la sugerencia';
+                        console.error('Error del servidor:', msg);
+                        alert(msg);
                         submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Sugerencia';
-                        submitBtn.style.background = '';
                         submitBtn.disabled = false;
                         submitBtn.classList.remove('loading');
-                        
-                        // Limpiar clases de validación
-                        const fields = form.querySelectorAll('.form-field');
-                        fields.forEach(field => {
-                            field.classList.remove('success', 'error');
-                            const errorMsg = field.querySelector('.error-message');
-                            if (errorMsg) errorMsg.remove();
-                        });
-                    }, 3000);
-                }, 2000);
+                    }
+                })
+                .catch(err => {
+                    console.error('Error enviando sugerencia:', err);
+                    alert('Ocurrió un error al enviar la sugerencia. Revisa la consola para más detalles.');
+                    submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Sugerencia';
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('loading');
+                });
+            } else {
+                console.log('Formulario NO válido. Errores encontrados.');
             }
         });
     }
@@ -388,6 +438,44 @@ function showSuccessMessage() {
 
 // Animaciones adicionales
 function initAnimations() {
+    // IMPORTANTE: Hacer clickeables TODOS los checkboxes personalizados
+    const allCheckboxItems = document.querySelectorAll('.checkbox-item');
+    allCheckboxItems.forEach(checkboxItem => {
+        // Buscar el input dentro de este item
+        const checkboxInput = checkboxItem.querySelector('input[type="checkbox"]');
+        if (checkboxInput) {
+            // Si el checkbox-item es un LABEL, dejar que el navegador maneje todo naturalmente
+            if (checkboxItem.tagName === 'LABEL') {
+                // Los labels ya tienen comportamiento nativo para clickear inputs
+                // No agregamos event listener, solo dejamos que funcione
+                checkboxItem.style.cursor = 'pointer';
+                return;
+            }
+            
+            // Si NO es un label (ej: es un div como el de términos), agregamos manejo manual
+            checkboxItem.addEventListener('click', function(e) {
+                // Si clickearon en un link, dejar que funcione normalmente
+                if (e.target.tagName === 'A') {
+                    return;
+                }
+                // Si clickearon en el input directamente, dejar que sea manejado naturalmente
+                if (e.target === checkboxInput) {
+                    return;
+                }
+                // En cualquier otro caso, toggle el checkbox
+                checkboxInput.checked = !checkboxInput.checked;
+                
+                // Loguear para debugging
+                if (checkboxInput.id === 'terms') {
+                    console.log('Términos checkbox toggled:', checkboxInput.checked);
+                }
+            });
+            
+            // Hacer que el checkboxItem sea focusable
+            checkboxItem.style.cursor = 'pointer';
+        }
+    });
+    
     // Efecto de hover en checkboxes
     const checkboxes = document.querySelectorAll('.checkbox-item');
     checkboxes.forEach(checkbox => {
