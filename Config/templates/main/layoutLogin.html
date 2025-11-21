@@ -1,0 +1,29 @@
+<!-- Plantilla específica para la página de login (sin navbar ni footer) -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- Configuración básica de la página -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Título fijo para la página de login -->
+    <title>Greenity - Iniciar Sesión</title>
+    
+    <!-- CSS específico para el diseño del login -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Login.css') }}">
+    
+    <!-- Iconos de Font Awesome para formularios -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Fuente Google Fonts para tipografía moderna -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Contenido del formulario de login -->
+    {% block content %}
+    {% endblock %}
+    
+    <!-- JavaScript para funcionalidad del login -->
+    <script src="{{ url_for('static', filename='js/Login.js') }}"></script>
+</body>
+</html>
