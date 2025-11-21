@@ -13,10 +13,10 @@ Greenity es una plataforma educativa e interactiva que permite a los ciudadanos:
 
 ## ⚠️ IMPORTANTE: Rama de Desarrollo
 
-**Este proyecto debe ejecutarse desde la rama `newbd`**, que contiene la última versión estable con la base de datos actualizada.
+**Este proyecto ya se puede ejecutar desde la rama `main`**, que contiene la última versión estable con la base de datos actualizada.
 
 ```bash
-git checkout newbd
+git checkout main
 ```
 
 ## 🚀 Tecnologías Utilizadas
@@ -58,11 +58,11 @@ git checkout newbd
 
 ### Opción 1: Instalación con Docker (Recomendado)
 
-1. **Clonar el repositorio y cambiar a la rama `newbd`:**
+1. **Clonar el repositorio y (opcional) cambiar a la rama `main`:**
 ```bash
 git clone https://github.com/LeoBarraza0/Greenity.git
 cd Greenity
-git checkout newbd
+git checkout main
 ```
 
 2. **Configurar variables de entorno (opcional):**
@@ -103,11 +103,11 @@ http://localhost:5000
 
 ### Opción 2: Instalación Manual (Sin Docker)
 
-1. **Clonar el repositorio y cambiar a la rama `newbd`:**
+1. **Clonar el repositorio y (opcional) cambiar a la rama `main`:**
 ```bash
 git clone https://github.com/LeoBarraza0/Greenity.git
 cd Greenity
-git checkout newbd
+git checkout main
 ```
 
 2. **Crear y activar entorno virtual:**
@@ -387,10 +387,10 @@ docker-compose exec web python scraping.py
 ## 🤝 Contribuir
 
 1. Fork el proyecto
-2. Crea tu rama desde `newbd`: `git checkout -b feature/nueva-funcionalidad`
+2. Crea tu rama desde `main`: `git checkout -b feature/nueva-funcionalidad`
 3. Commit tus cambios: `git commit -m 'Agregar nueva funcionalidad'`
 4. Push a la rama: `git push origin feature/nueva-funcionalidad`
-5. Abre un Pull Request hacia la rama `newbd`
+5. Abre un Pull Request hacia la rama `main`
 
 
 ## 👥 Autores
