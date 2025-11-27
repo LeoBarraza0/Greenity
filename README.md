@@ -396,6 +396,7 @@ docker-compose exec web python scraping.py
 ## 👥 Autores
 
 - **LeoBarraza0** - [GitHub](https://github.com/LeoBarraza0)
+- **JuanNogueraA** - [GitHub](https://github.com/JuanNogueraA)
 
 ## 📞 Soporte
 
